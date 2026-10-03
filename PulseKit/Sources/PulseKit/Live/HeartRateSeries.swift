@@ -67,9 +67,10 @@ public struct HeartRateSeries: Sendable, Equatable {
         return now.timeIntervalSince(lastChange) >= Self.staleAfter
     }
 
-    public func zoneRuns(_ zones: HeartRateZones) -> [ZoneRun] {
+    /// `since`: the chart's start; older samples would draw outside the plot.
+    public func zoneRuns(_ zones: HeartRateZones, since: Date = .distantPast) -> [ZoneRun] {
         var runs: [ZoneRun] = []
-        for sample in samples {
+        for sample in samples where sample.date >= since {
             let zone = zones.zone(for: sample.bpm)
             let sameSegment = runs.last?.samples.last?.segment == sample.segment
             if sameSegment, runs.last?.zone == zone {

@@ -51,6 +51,16 @@ struct HeartRateSeriesTests {
         #expect(runs[0].samples.map(\.bpm) == [100, 101])        // no bridge across the gap
     }
 
+    @Test func zoneRunsSkipSamplesBeforeTheChartStart() {
+        let zones = HeartRateZones(max: 180, resting: 60)
+        var s = HeartRateSeries()
+        s.append(100, at: t0)
+        s.append(101, at: t0 + 5)
+        s.append(102, at: t0 + 10)
+        let runs = s.zoneRuns(zones, since: t0 + 5)
+        #expect(runs.flatMap(\.samples).map(\.bpm) == [101, 102])
+    }
+
     @Test func sessionStatsCoverTheWholeSession() {
         var s = HeartRateSeries()
         s.append(90, at: t0)

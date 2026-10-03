@@ -33,11 +33,8 @@ struct SummaryHeader: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .sensoryFeedback(trigger: coordinator.phase) { old, new in
-            guard old == .syncing else { return nil }
-            if case .failed = new { return .error }
-            return new == .idle ? .success : nil
-        }
+        // Only syncs the user started; the hourly automatic one stays silent.
+        .sensoryFeedback(trigger: coordinator.manualSyncFeedback) { _, new in new.succeeded ? .success : .error }
     }
 
     @ViewBuilder private func status(now: Date) -> some View {

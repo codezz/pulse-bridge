@@ -167,6 +167,7 @@ final class SyncCoordinator {
             }
             if toHealth && !hasPendingActivity { await exportPendingActivities() }
             phase = .idle
+            if !toHealth { manualSyncFeedback = SyncFeedback(count: manualSyncFeedback.count + 1, succeeded: true) }
         } catch PulseError.busy {
             // Another connect or sync owns the band; leave its connection alone.
             phase = previous
@@ -174,6 +175,7 @@ final class SyncCoordinator {
         } catch {
             phase = .failed(error.localizedDescription)
             diagnostics.note("sync failed: \(error.localizedDescription)")
+            if !toHealth { manualSyncFeedback = SyncFeedback(count: manualSyncFeedback.count + 1, succeeded: false) }
         }
         await startLive()
     }
@@ -213,10 +215,20 @@ final class SyncCoordinator {
 
     /// Live heart rate on the Summary card. The band's stream is also on during an activity.
     private(set) var isLiveHeartRateOn = false
+    /// Zones for the live line, taken when live starts (computing them reads 180 days of data).
+    private(set) var liveZones: HeartRateZones?
+
+    /// Changes when a sync the user started (button, pull to refresh) ends, for its haptic.
+    struct SyncFeedback: Equatable {
+        var count = 0
+        var succeeded = true
+    }
+    private(set) var manualSyncFeedback = SyncFeedback()
 
     /// Live heart rate on demand: turns the band's heart-rate stream on with an empty chart.
     func startLiveHeartRate() {
         heartRate = HeartRateSeries()
+        liveZones = heartRateProfile().zones
         isLiveHeartRateOn = true
         band.streamsHeartRate = true
     }

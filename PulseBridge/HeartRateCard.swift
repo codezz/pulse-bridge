@@ -17,12 +17,13 @@ struct HeartRateCard: View {
     var body: some View {
         Card(title: Metric.heartRate.title, systemImage: Metric.heartRate.systemImage, color: Metric.heartRate.color) {
             NavigationLink(value: SummaryRoute.metric(.heartRate)) {
-                VStack(alignment: .leading, spacing: 8) {
-                    TimelineView(.periodic(from: .now, by: 5)) { context in
+                // The 5 s tick also moves the live axis while no readings arrive (band out of range).
+                TimelineView(.periodic(from: .now, by: 5)) { context in
+                    VStack(alignment: .leading, spacing: 8) {
                         headline(now: context.date)
+                        Text(subtitle).font(.caption).foregroundStyle(.secondary)
+                        chart(now: context.date)
                     }
-                    Text(subtitle).font(.caption).foregroundStyle(.secondary)
-                    chart
                 }
                 .contentShape(Rectangle())
             }
@@ -39,7 +40,7 @@ struct HeartRateCard: View {
             live ? coordinator.stopLiveHeartRate() : coordinator.startLiveHeartRate()
         } label: {
             if live {
-                Label("Live", systemImage: "stop.fill")
+                Label("LIVE", systemImage: "stop.fill")
                     .font(.caption.bold()).foregroundStyle(.white)
                     .padding(.horizontal, 10).padding(.vertical, 5)
                     .background(.red, in: Capsule())
@@ -59,8 +60,7 @@ struct HeartRateCard: View {
             Text("bpm").foregroundStyle(.secondary)
             if live { BeatingHeart(bpm: series.isStale(now: now) ? nil : series.latest) }
             Spacer()
-            if live, let bpm {
-                let zone = coordinator.heartRateProfile().zones.zone(for: bpm)
+            if live, let bpm, let zone = coordinator.liveZones?.zone(for: bpm) {
                 Text("Zone \(zone) · \(zoneName(zone))").font(.caption.bold()).foregroundStyle(zoneColor(zone))
             }
         }
@@ -84,10 +84,10 @@ struct HeartRateCard: View {
         return parts.isEmpty ? "No data today" : parts.joined(separator: " · ")
     }
 
-    @ViewBuilder private var chart: some View {
-        let domain = HeartRateChartRange.domain(live: live, now: .now, calendar: .current)
+    @ViewBuilder private func chart(now: Date) -> some View {
+        let domain = HeartRateChartRange.domain(live: live, now: now, calendar: .current)
         let stored = readings.filter { domain.contains($0.date) }
-        let runs = live ? series.zoneRuns(coordinator.heartRateProfile().zones) : []
+        let runs = live ? coordinator.liveZones.map { series.zoneRuns($0, since: domain.lowerBound) } ?? [] : []
         if !stored.isEmpty || !runs.isEmpty {
             Chart {
                 ForEach(stored, id: \.date) {
@@ -116,6 +116,8 @@ struct HeartRateCard: View {
 private struct BeatingHeart: View {
     let bpm: Int?
     @State private var beat = false
+    /// Read by the running loop, so a new bpm changes the pace without restarting the rhythm.
+    @State private var current: Int?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
@@ -123,10 +125,12 @@ private struct BeatingHeart: View {
             .foregroundStyle(.red)
             .scaleEffect(beat ? 1.25 : 1)
             .accessibilityHidden(true)
-            .task(id: reduceMotion ? nil : bpm) {
-                guard let bpm, bpm > 0, !reduceMotion else { beat = false; return }
-                let period = max(0.3, 60 / Double(bpm))
+            .onAppear { current = bpm }
+            .onChange(of: bpm) { _, new in current = new }
+            .task(id: bpm != nil && !reduceMotion) {
+                guard bpm != nil, !reduceMotion else { beat = false; return }
                 while !Task.isCancelled {
+                    let period = max(0.3, 60 / Double(max(1, current ?? 60)))
                     withAnimation(.easeOut(duration: 0.1)) { beat = true }
                     try? await Task.sleep(for: .seconds(0.1))
                     withAnimation(.easeIn(duration: 0.25)) { beat = false }
