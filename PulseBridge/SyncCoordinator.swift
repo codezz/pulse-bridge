@@ -211,14 +211,19 @@ final class SyncCoordinator {
         await exportPendingActivities()
     }
 
+    /// Live heart rate on the Summary card. The band's stream is also on during an activity.
+    private(set) var isLiveHeartRateOn = false
+
     /// Live heart rate on demand: turns the band's heart-rate stream on with an empty chart.
     func startLiveHeartRate() {
         heartRate = HeartRateSeries()
+        isLiveHeartRateOn = true
         band.streamsHeartRate = true
     }
 
     func stopLiveHeartRate() {
-        band.streamsHeartRate = false
+        isLiveHeartRateOn = false
+        if activity == nil { band.streamsHeartRate = false }
     }
 
     // MARK: Profile and heart-rate zones
@@ -299,7 +304,7 @@ final class SyncCoordinator {
         session.finish()
         activity = nil
         finishedActivity = session
-        band.streamsHeartRate = heartRateWasStreaming
+        band.streamsHeartRate = heartRateWasStreaming || isLiveHeartRateOn
         band.keepConnected = false
         diagnostics.note("activity finished: \(Int(session.recorder.distance)) m")
     }

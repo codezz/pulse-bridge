@@ -37,13 +37,11 @@ struct SummaryView: View {
                         StepsCard(metrics: model.metrics, today: today, coordinator: coordinator)
                     }
                     .buttonStyle(.plain)
+                    HeartRateCard(coordinator: coordinator, metrics: model.metrics, today: today)
                     NavigationLink(value: SummaryRoute.activities) {
                         ActivitiesCard(workouts: model.metrics?.workouts() ?? [])
                     }
                     .buttonStyle(.plain)
-                    metricLink(.heartRate)
-                    LiveHeartRateCard(coordinator: coordinator)
-                    MeasureCard(coordinator: coordinator)
                     StartActivityCard(coordinator: coordinator)
                     metricLink(.spo2)
                     Text("Updated \(coordinator.lastSync?.formatted(date: .omitted, time: .shortened) ?? "never")")

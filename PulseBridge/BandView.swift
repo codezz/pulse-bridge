@@ -88,32 +88,6 @@ private struct DiagnosticsCard: View {
     }
 }
 
-/// Live heart rate on demand, for Summary: a Start button, then the live chart until Stop.
-struct LiveHeartRateCard: View {
-    let coordinator: SyncCoordinator
-    @State private var running = false
-
-    var body: some View {
-        if running {
-            HeartRateCard(coordinator: coordinator, onStop: {
-                coordinator.stopLiveHeartRate()
-                running = false
-            })
-        } else {
-            Card(title: "Live heart rate", systemImage: "heart.fill", color: .red) {
-                Button {
-                    coordinator.startLiveHeartRate()
-                    running = true
-                } label: {
-                    Label("Start live heart rate", systemImage: "play.fill").frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.borderedProminent)
-                .disabled(coordinator.band.state != .connected)
-            }
-        }
-    }
-}
-
 /// Health-style colored badge with a white symbol.
 struct IconBadge: View {
     let systemImage: String
@@ -129,18 +103,21 @@ struct IconBadge: View {
     }
 }
 
-/// Shared card chrome.
-struct Card<Content: View>: View {
+/// Shared card chrome, with an optional control at the right of the title.
+struct Card<Content: View, Accessory: View>: View {
     let title: String
     let systemImage: String
     var color: Color = .gray
     @ViewBuilder let content: Content
+    @ViewBuilder var accessory: Accessory
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 10) {
                 IconBadge(systemImage: systemImage, color: color)
                 Text(title).font(.headline)
+                Spacer()
+                accessory
             }
             content
         }
@@ -150,111 +127,9 @@ struct Card<Content: View>: View {
     }
 }
 
-private struct HeartRateCard: View {
-    /// Reads the series here, so only this card redraws on every heart-rate notification.
-    let coordinator: SyncCoordinator
-    let onStop: () -> Void
-    private var series: HeartRateSeries { coordinator.heartRate }
-    private var connected: Bool { coordinator.band.state == .connected }
-
-    var body: some View {
-        Card(title: "Live heart rate", systemImage: "heart.fill", color: .red) {
-            TimelineView(.periodic(from: .now, by: 5)) { context in
-                HStack(alignment: .firstTextBaseline) {
-                    Text(series.latest.map(String.init) ?? "-")
-                        .numberFont(56)
-                        .contentTransition(.numericText())
-                    Text("bpm").foregroundStyle(.secondary)
-                    Spacer()
-                    if !connected {
-                        Text("Not connected").foregroundStyle(.secondary)
-                    } else if series.samples.isEmpty {
-                        Text("Starting the sensor...").foregroundStyle(.secondary)
-                    } else if series.isStale(now: context.date) {
-                        Label("Not on wrist?", systemImage: "hand.raised").foregroundStyle(.orange)
-                    }
-                }
-            }
-            Chart(series.samples) { sample in
-                LineMark(x: .value("Time", sample.date), y: .value("BPM", sample.bpm),
-                         series: .value("Segment", sample.segment))
-                    .foregroundStyle(.red)
-            }
-            .chartYScale(domain: .automatic(includesZero: false))
-            .frame(height: 140)
-            HStack {
-                stat("Min", series.minimum)
-                stat("Avg", series.average)
-                stat("Max", series.maximum)
-            }
-            Button("Stop", role: .cancel, action: onStop)
-        }
-    }
-
-    private func stat(_ label: String, _ value: Int?) -> some View {
-        VStack {
-            Text(value.map(String.init) ?? "-").font(.title3.bold())
-            Text(label).font(.caption).foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity)
-    }
-}
-
-struct MeasureCard: View {
-    let coordinator: SyncCoordinator
-    private var live: LiveFeed { coordinator.live }
-
-    var body: some View {
-        Card(title: "Measure now", systemImage: "waveform.path.ecg", color: .purple) {
-            switch live.measurement {
-            case .idle:
-                HStack {
-                    button("HRV", "75 s", .hrv)
-                    button("Heart rate", "30 s", .heartRate)
-                }
-                .disabled(coordinator.band.state != .connected || coordinator.phase.isBusy)
-            case let .running(kind, latest, startedAt):
-                TimelineView(.periodic(from: .now, by: 1)) { context in
-                    let progress = min(1, context.date.timeIntervalSince(startedAt) / kind.expectedDuration)
-                    VStack(alignment: .leading, spacing: 8) {
-                        ProgressView(value: progress) { Text("Measuring \(kind.title)... keep still") }
-                        Text("HR \(latest.map { $0.heartRate > 0 ? "\($0.heartRate) bpm" : "-" } ?? "-")")
-                            .foregroundStyle(.secondary)
-                        Button("Cancel", role: .cancel) { Task { await live.cancelMeasurement() } }
-                    }
-                }
-            case let .finished(values):
-                VStack(alignment: .leading, spacing: 6) {
-                    LabeledContent("Heart rate", value: "\(values.heartRate) bpm")
-                    if values.kind == .hrv {
-                        LabeledContent("HRV", value: "\(values.hrv) ms")
-                        LabeledContent("Stress", value: "\(values.stress)")
-                        LabeledContent("Blood pressure (estimate)", value: "\(values.systolic)/\(values.diastolic)")
-                        Text("Saved on the band; it reaches Apple Health on the next sync.")
-                            .font(.caption).foregroundStyle(.secondary)
-                    }
-                    Button("Done") { live.resetMeasurement() }
-                }
-            case .failed, .interrupted:
-                VStack(alignment: .leading, spacing: 6) {
-                    Text(live.measurement.problem).foregroundStyle(.orange)
-                    Button("OK") { live.resetMeasurement() }
-                }
-            }
-        }
-    }
-
-    private func button(_ title: String, _ duration: String, _ kind: MeasurementKind) -> some View {
-        Button {
-            Task { await coordinator.measure(kind) }
-        } label: {
-            VStack {
-                Text(title).bold()
-                Text(duration).font(.caption)
-            }
-            .frame(maxWidth: .infinity)
-        }
-        .buttonStyle(.bordered)
+extension Card where Accessory == EmptyView {
+    init(title: String, systemImage: String, color: Color = .gray, @ViewBuilder content: () -> Content) {
+        self.init(title: title, systemImage: systemImage, color: color, content: content, accessory: { EmptyView() })
     }
 }
 
