@@ -97,6 +97,7 @@ struct SleepDetailView: View {
                 }
                 .chartYScale(domain: .automatic(includesZero: false))
                 .foregroundStyle(.red)
+                .chartScrub(heart.map { .time($0.date, "\(Int($0.value)) bpm") })
                 .frame(height: 140)
             }
             NavigationLink(value: SummaryRoute.metric(.restingHeartRate, day: day)) {
@@ -151,6 +152,7 @@ struct SleepDetailView: View {
                 }
                 .chartForegroundStyleScale(domain: SleepStage.chartOrder.map(\.title),
                                            range: SleepStage.chartOrder.map(\.color))
+                .chartScrub(nights.map { .day($0.day, "\(hoursAndMinutes($0.night.asleep)) · score \($0.score.value)") })
                 .frame(height: 200)
             }
             Section("Averages") {
@@ -167,6 +169,7 @@ struct SleepDetailView: View {
                 }
                 .chartYScale(domain: .automatic(includesZero: false))
                 .foregroundStyle(.pink)
+                .chartScrub((metrics?.series(.restingHeartRate) ?? []).map { .day($0.day, "\(Int($0.range.average)) bpm") })
                 .frame(height: 120)
             }
         }

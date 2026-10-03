@@ -68,6 +68,7 @@ struct MetricDetailView: View {
                     BarMark(x: .value("Hour", $0.date, unit: .hour), y: .value("Steps", $0.value))
                 }
                 .foregroundStyle(metric.color)
+                .chartScrub(hours.map { .hour($0.date, "\(metric.format($0.value)) \(metric.unit)") })
             }
         } else if range == .day && metric != .restingHeartRate {
             let points = metrics?.readings(metric, on: day) ?? []
@@ -77,6 +78,7 @@ struct MetricDetailView: View {
                 }
                 .chartYScale(domain: .automatic(includesZero: false))
                 .foregroundStyle(metric.color)
+                .chartScrub(points.map { .time($0.date, "\(metric.format($0.value)) \(metric.unit)") })
             }
         } else if series.isEmpty {
             noData
@@ -100,6 +102,17 @@ struct MetricDetailView: View {
             }
             .chartYScale(domain: .automatic(includesZero: metric == .hrv || metric == .steps))
             .foregroundStyle(metric.color)
+            .chartScrub(series.map { .day($0.day, scrubText($0)) })
+        }
+    }
+
+    /// HR and SpO2 bars show the day's range; the rest one value per day.
+    private func scrubText(_ value: DailyValue) -> String {
+        switch metric {
+        case .heartRate, .spo2:
+            "\(metric.format(value.range.min))-\(metric.format(value.range.max)) \(metric.unit)"
+        case .restingHeartRate, .hrv, .steps:
+            "\(metric.format(value.range.average)) \(metric.unit)"
         }
     }
 
