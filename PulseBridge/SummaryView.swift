@@ -29,6 +29,7 @@ struct SummaryView: View {
             ScrollView {
                 VStack(spacing: 16) {
                     SummaryHeader(coordinator: coordinator, onTap: onShowBand)
+                        .unredacted()
                     if let error = model.error {
                         Label("Couldn't load data: \(error)", systemImage: "exclamationmark.triangle").foregroundStyle(.red)
                     }
@@ -45,6 +46,7 @@ struct SummaryView: View {
                     metricLink(.spo2)
                 }
                 .padding()
+                .redacted(reason: model.isLoaded ? [] : .placeholder)
             }
             .background(Color(.systemGroupedBackground))
             .navigationTitle("Summary")

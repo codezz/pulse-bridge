@@ -9,6 +9,8 @@ final class SummaryModel {
     let service: SummaryService
     private(set) var metrics: DailyMetrics?
     private(set) var error: String?
+    /// False until the first load finished, so cards show placeholders instead of "No data".
+    var isLoaded: Bool { metrics != nil || error != nil }
 
     init(service: SummaryService) {
         self.service = service

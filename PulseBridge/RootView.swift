@@ -33,6 +33,7 @@ struct RootView: View {
                                               set: { _ in })) {
             ActivityCover(coordinator: coordinator)
         }
+        .sensoryFeedback(.impact(weight: .heavy), trigger: coordinator.activity != nil)
         .alert("Unfinished activity", isPresented: $showUnfinished, presenting: unfinished) { pending in
             Button("Save") { Task { await coordinator.saveRecovered(id: pending.id, recorder: pending.recorder, end: pending.end) } }
             Button("Discard", role: .destructive) { Task { await coordinator.discardRecovered() } }
