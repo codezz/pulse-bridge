@@ -1,0 +1,50 @@
+import SwiftUI
+
+enum DaySpan: String, CaseIterable, Identifiable {
+    case day = "D", week = "W", month = "M"
+    var id: String { rawValue }
+    var days: Int {
+        switch self {
+        case .day: 1
+        case .week: 7
+        case .month: 30
+        }
+    }
+}
+
+/// D / W / M picker with previous / next, shared by the detail views.
+struct DayRangeHeader: View {
+    @Binding var span: DaySpan
+    @Binding var day: Date
+    /// First loaded day, for the "1 Oct - 7 Oct" title.
+    let firstDay: Date?
+
+    var body: some View {
+        Picker("Range", selection: $span) {
+            ForEach(DaySpan.allCases) { Text($0.rawValue).tag($0) }
+        }
+        .pickerStyle(.segmented)
+        HStack {
+            Button { move(-1) } label: { Image(systemName: "chevron.left") }
+            Spacer()
+            Text(title).font(.headline)
+            Spacer()
+            Button { move(1) } label: { Image(systemName: "chevron.right") }
+                .disabled(Calendar.current.isDateInToday(day))
+        }
+        .buttonStyle(.borderless)
+    }
+
+    private var title: String {
+        let last = day.formatted(date: .abbreviated, time: .omitted)
+        guard span != .day, let firstDay else { return last }
+        return "\(firstDay.formatted(.dateTime.day().month())) - \(last)"
+    }
+
+    private func move(_ direction: Int) {
+        let step = span == .day ? 1 : span.days
+        if let next = Calendar.current.date(byAdding: .day, value: direction * step, to: day) {
+            day = min(next, Calendar.current.startOfDay(for: .now))
+        }
+    }
+}

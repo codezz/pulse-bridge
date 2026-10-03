@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+.device
+.DS_Store
+logs/
+.build/
+PulseBridge.xcodeproj/
+DerivedData/
+.swiftpm/
+Config/Local.xcconfig
+.superpowers/
+xcuserdata/

@@ -1,0 +1,55 @@
+name: PulseBridge
+options:
+  bundleIdPrefix: ro.codez
+  deploymentTarget:
+    iOS: "18.0"
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    CODE_SIGN_STYLE: Automatic
+packages:
+  PulseKit:
+    path: PulseKit
+targets:
+  PulseBridge:
+    type: application
+    platform: iOS
+    sources: [PulseBridge]
+    dependencies:
+      - package: PulseKit
+        product: PulseKit
+      - package: PulseKit
+        product: PulseBLE
+    scheme: {}
+    configFiles:
+      Debug: Config/Signing.xcconfig
+      Release: Config/Signing.xcconfig
+    settings:
+      base:
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        MARKETING_VERSION: 0.1.0
+        CURRENT_PROJECT_VERSION: 1
+        TARGETED_DEVICE_FAMILY: "1"
+    entitlements:
+      path: PulseBridge/PulseBridge.entitlements
+      properties:
+        com.apple.developer.healthkit: true
+        com.apple.developer.healthkit.access: []
+    info:
+      path: PulseBridge/Info.plist
+      properties:
+        CFBundleDisplayName: Pulse Bridge
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        UILaunchScreen:
+          UIImageName: LaunchLogo
+          UIColorName: LaunchBackground
+          UIImageRespectsSafeAreaInsets: true
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        NSBluetoothAlwaysUsageDescription: Pulse Bridge connects to your Pulse band to read your activity and health history.
+        NSHealthUpdateUsageDescription: Pulse Bridge writes steps, distance, heart rate, HRV, blood oxygen, sleep and workouts from your band to Apple Health.
+        NSHealthShareUsageDescription: Pulse Bridge does not read your Health data.
+        NSLocationWhenInUseUsageDescription: Pulse Bridge records your route, distance and pace while an activity you started is running.
+        UIBackgroundModes: [location, bluetooth-central]

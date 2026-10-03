@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test-and-build:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: PulseKit tests
+        run: swift test --package-path PulseKit
+
+      - name: Build pulse-sync
+        run: swift build --package-path tools/pulse-sync
+
+      - name: Build the app for the simulator (no signing)
+        run: |
+          brew install xcodegen
+          xcodegen generate
+          xcodebuild -project PulseBridge.xcodeproj -scheme PulseBridge \
+            -destination 'generic/platform=iOS Simulator' -quiet build CODE_SIGNING_ALLOWED=NO

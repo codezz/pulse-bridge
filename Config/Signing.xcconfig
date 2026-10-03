@@ -1,0 +1,6 @@
+// Signing and bundle ID for your own build.
+// Copy Local.xcconfig.example to Local.xcconfig (gitignored) and set your Apple Team ID there.
+DEVELOPMENT_TEAM =
+PRODUCT_BUNDLE_IDENTIFIER = ro.codez.pulsebridge
+
+#include? "Local.xcconfig"
