@@ -3,10 +3,13 @@ import PulseBLE
 import PulseKit
 import SwiftUI
 
+enum AppTab: Hashable { case summary, band }
+
 struct RootView: View {
     let coordinator: SyncCoordinator
     @State private var summary: SummaryModel
     @State private var showPairing = false
+    @State private var tab = AppTab.summary
     @State private var unfinished: (id: UUID, recorder: ActivityRecorder, end: Date)?
     @State private var showUnfinished = false
     @Environment(\.scenePhase) private var scenePhase
@@ -17,11 +20,11 @@ struct RootView: View {
     }
 
     var body: some View {
-        TabView {
-            Tab("Summary", systemImage: "heart.text.square.fill") {
-                SummaryView(coordinator: coordinator, model: summary)
+        TabView(selection: $tab) {
+            Tab("Summary", systemImage: "heart.text.square.fill", value: AppTab.summary) {
+                SummaryView(coordinator: coordinator, model: summary, onShowBand: { tab = .band })
             }
-            Tab("Band", systemImage: "applewatch.side.right") {
+            Tab("Band", systemImage: "applewatch.side.right", value: AppTab.band) {
                 BandView(coordinator: coordinator, onPair: { showPairing = true })
             }
         }

@@ -138,12 +138,11 @@ private struct BandCard: View {
     let onPair: () -> Void
 
     /// Health only gets data from the automatic hourly sync.
-    private var healthExport: String {
+    private func healthExport(now: Date) -> String {
         guard let last = coordinator.lastHealthExport, let next = coordinator.nextHealthExport else {
             return "On the next automatic sync"
         }
-        let time = { (d: Date) in d.formatted(date: .omitted, time: .shortened) }
-        return "\(time(last)) · next around \(time(next))"
+        return "\(RelativeTime.text(last, now: now)) · next around \(next.formatted(date: .omitted, time: .shortened))"
     }
     @Environment(\.openURL) private var openURL
     private var band: BandClient { coordinator.band }
@@ -152,8 +151,12 @@ private struct BandCard: View {
         Card(title: "Band", systemImage: "applewatch.side.right", color: .gray) {
             LabeledContent("Status", value: band.state.label)
             LabeledContent("Battery", value: band.battery.map { "\($0)%" } ?? "-")
-            LabeledContent("Last sync", value: coordinator.lastSync?.formatted(date: .abbreviated, time: .shortened) ?? "Never")
-            LabeledContent("Health export", value: healthExport)
+            TimelineView(.periodic(from: .now, by: 30)) { context in
+                VStack(spacing: 12) {
+                    LabeledContent("Last sync", value: coordinator.lastSync.map { RelativeTime.text($0, now: context.date) } ?? "Never")
+                    LabeledContent("Health export", value: healthExport(now: context.date))
+                }
+            }
             if let start = coordinator.healthStart {
                 LabeledContent("Health data since", value: start.formatted(date: .abbreviated, time: .shortened))
             }

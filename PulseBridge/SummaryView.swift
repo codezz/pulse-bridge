@@ -12,6 +12,7 @@ enum SummaryRoute: Hashable {
 struct SummaryView: View {
     let coordinator: SyncCoordinator
     let model: SummaryModel
+    let onShowBand: () -> Void
     @State private var showStart = false
 
     private var today: Date { Calendar.current.startOfDay(for: .now) }
@@ -27,6 +28,7 @@ struct SummaryView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 16) {
+                    SummaryHeader(coordinator: coordinator, onTap: onShowBand)
                     if let error = model.error {
                         Label("Couldn't load data: \(error)", systemImage: "exclamationmark.triangle").foregroundStyle(.red)
                     }
@@ -41,8 +43,6 @@ struct SummaryView: View {
                     HeartRateCard(coordinator: coordinator, metrics: model.metrics, today: today)
                     ActivitiesCard(workouts: model.metrics?.workouts() ?? []) { showStart = true }
                     metricLink(.spo2)
-                    Text("Updated \(coordinator.lastSync?.formatted(date: .omitted, time: .shortened) ?? "never")")
-                        .font(.caption).foregroundStyle(.secondary)
                 }
                 .padding()
             }
