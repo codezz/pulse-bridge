@@ -12,6 +12,7 @@ enum SummaryRoute: Hashable {
 struct SummaryView: View {
     let coordinator: SyncCoordinator
     let model: SummaryModel
+    @State private var showStart = false
 
     private var today: Date { Calendar.current.startOfDay(for: .now) }
 
@@ -38,11 +39,7 @@ struct SummaryView: View {
                     }
                     .buttonStyle(.plain)
                     HeartRateCard(coordinator: coordinator, metrics: model.metrics, today: today)
-                    NavigationLink(value: SummaryRoute.activities) {
-                        ActivitiesCard(workouts: model.metrics?.workouts() ?? [])
-                    }
-                    .buttonStyle(.plain)
-                    StartActivityCard(coordinator: coordinator)
+                    ActivitiesCard(workouts: model.metrics?.workouts() ?? []) { showStart = true }
                     metricLink(.spo2)
                     Text("Updated \(coordinator.lastSync?.formatted(date: .omitted, time: .shortened) ?? "never")")
                         .font(.caption).foregroundStyle(.secondary)
@@ -59,6 +56,12 @@ struct SummaryView: View {
                 }
             }
             .refreshable { await coordinator.sync() }
+            .sheet(isPresented: $showStart) {
+                NavigationStack {
+                    StartActivityForm(coordinator: coordinator) { showStart = false }
+                }
+                .presentationDetents([.medium, .large])
+            }
         }
     }
 }

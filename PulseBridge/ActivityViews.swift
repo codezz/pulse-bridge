@@ -44,9 +44,10 @@ func clockText(_ seconds: TimeInterval) -> String {
     return s >= 3600 ? String(format: "%d:%02d:%02d", s / 3600, s % 3600 / 60, s % 60) : String(format: "%02d:%02d", s / 60, s % 60)
 }
 
-/// Summary card: pick an activity and a target zone, then start.
-struct StartActivityCard: View {
+/// Pick an activity and a target zone, then start. Shown in a sheet from the Activities card.
+struct StartActivityForm: View {
     let coordinator: SyncCoordinator
+    let onStarted: () -> Void
     @State private var type = WorkoutActivity.running
     @State private var zone: Int? = 2
     @State private var hr: HeartRateProfile?
@@ -56,46 +57,53 @@ struct StartActivityCard: View {
     private var locationDenied: Bool { [.denied, .restricted].contains(location.status) }
 
     var body: some View {
-        Card(title: "Start activity", systemImage: "figure.run", color: .green) {
-            Picker("Activity", selection: $type) {
-                Text("Run").tag(WorkoutActivity.running)
-                Text("Walk").tag(WorkoutActivity.walking)
-                Text("Ride").tag(WorkoutActivity.cycling)
-            }
-            .pickerStyle(.segmented)
-            Picker("Target", selection: $zone) {
-                Text("Free").tag(Int?.none)
-                ForEach(1...5, id: \.self) { z in
-                    if let hr {
-                        let range = hr.zones.range(of: z)
-                        Text("Zone \(z) · \(range.lowerBound)-\(range.upperBound) bpm").tag(Int?.some(z))
-                    } else {
-                        Text("Zone \(z)").tag(Int?.some(z))
+        Form {
+            Section {
+                Picker("Activity", selection: $type) {
+                    Text("Run").tag(WorkoutActivity.running)
+                    Text("Walk").tag(WorkoutActivity.walking)
+                    Text("Ride").tag(WorkoutActivity.cycling)
+                }
+                .pickerStyle(.segmented)
+                Picker("Target", selection: $zone) {
+                    Text("Free").tag(Int?.none)
+                    ForEach(1...5, id: \.self) { z in
+                        if let hr {
+                            let range = hr.zones.range(of: z)
+                            Text("Zone \(z) · \(range.lowerBound)-\(range.upperBound) bpm").tag(Int?.some(z))
+                        } else {
+                            Text("Zone \(z)").tag(Int?.some(z))
+                        }
                     }
                 }
             }
-            if coordinator.profile == nil {
-                Text("Set your age in Band > Profile for accurate zones.").font(.caption).foregroundStyle(.secondary)
+            Section {
+                if coordinator.profile == nil {
+                    Text("Set your age in Band > Profile for accurate zones.").font(.caption).foregroundStyle(.secondary)
+                }
+                if coordinator.band.state != .connected {
+                    Text("Band not connected: GPS only, no heart rate.").font(.caption).foregroundStyle(.orange)
+                }
+                if locationDenied {
+                    Text("Allow location to record distance and the route.").font(.caption).foregroundStyle(.orange)
+                    Button("Open Settings") { if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) } }
+                } else if location.accuracy == .reducedAccuracy {
+                    Text("Turn on Precise Location for Pulse Bridge in Settings; approximate location can't measure distance.")
+                        .font(.caption).foregroundStyle(.orange)
+                }
+                Button {
+                    onStarted()
+                    Task { await coordinator.startActivity(type, targetZone: zone) }
+                } label: {
+                    Label("Start", systemImage: "play.fill").frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.green)
+                .disabled(coordinator.phase.isBusy || coordinator.live.isMeasuring || locationDenied)
             }
-            if coordinator.band.state != .connected {
-                Text("Band not connected: GPS only, no heart rate.").font(.caption).foregroundStyle(.orange)
-            }
-            if locationDenied {
-                Text("Allow location to record distance and the route.").font(.caption).foregroundStyle(.orange)
-                Button("Open Settings") { if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) } }
-            } else if location.accuracy == .reducedAccuracy {
-                Text("Turn on Precise Location for Pulse Bridge in Settings; approximate location can't measure distance.")
-                    .font(.caption).foregroundStyle(.orange)
-            }
-            Button {
-                Task { await coordinator.startActivity(type, targetZone: zone) }
-            } label: {
-                Label("Start", systemImage: "play.fill").frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.borderedProminent)
-            .tint(.green)
-            .disabled(coordinator.phase.isBusy || coordinator.live.isMeasuring || locationDenied)
         }
+        .navigationTitle("Start activity")
+        .navigationBarTitleDisplayMode(.inline)
         .onAppear { hr = coordinator.heartRateProfile() }
     }
 }

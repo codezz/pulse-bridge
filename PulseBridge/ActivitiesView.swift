@@ -41,27 +41,41 @@ extension Workout {
     }
 }
 
-/// Latest activity and this week's count, for Summary.
+/// Latest activity and this week's count, for Summary, with a Start button.
 struct ActivitiesCard: View {
     /// Newest first (the 7 loaded days).
     let workouts: [Workout]
+    let onStart: () -> Void
 
     var body: some View {
         Card(title: "Activities", systemImage: "figure.walk.motion", color: .green) {
-            if let latest = workouts.first {
-                HStack(spacing: 12) {
-                    Image(systemName: latest.info.activity.systemImage).font(.title2).foregroundStyle(.green)
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("\(latest.info.activity.title) · \(latest.durationText)").font(.headline)
-                        Text("\(latest.start.formatted(date: .abbreviated, time: .shortened)) · \(latest.info.steps.formatted()) steps · \(latest.distanceText)")
-                            .font(.caption).foregroundStyle(.secondary)
+            NavigationLink(value: SummaryRoute.activities) {
+                VStack(alignment: .leading, spacing: 8) {
+                    if let latest = workouts.first {
+                        HStack(spacing: 12) {
+                            Image(systemName: latest.info.activity.systemImage).font(.title2).foregroundStyle(.green)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("\(latest.info.activity.title) · \(latest.durationText)").font(.headline)
+                                Text("\(latest.start.formatted(date: .abbreviated, time: .shortened)) · \(latest.info.steps.formatted()) steps · \(latest.distanceText)")
+                                    .font(.caption).foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                        }
+                        Text("\(workouts.count) in the last 7 days").font(.caption).foregroundStyle(.secondary)
+                    } else {
+                        Text("No activities in the last 7 days").foregroundStyle(.secondary)
                     }
-                    Spacer()
                 }
-                Text("\(workouts.count) in the last 7 days").font(.caption).foregroundStyle(.secondary)
-            } else {
-                Text("No activities in the last 7 days").foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .contentShape(Rectangle())
             }
+            .buttonStyle(.plain)
+        } accessory: {
+            Button("Start", systemImage: "play.fill", action: onStart)
+                .font(.caption.bold())
+                .buttonStyle(.borderedProminent)
+                .tint(.green)
+                .controlSize(.small)
         }
     }
 }
