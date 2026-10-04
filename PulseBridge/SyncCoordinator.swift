@@ -163,6 +163,7 @@ final class SyncCoordinator {
             lastReport = report
             let now = Date()
             lastSync = now
+            recordBattery()
             UserDefaults.standard.set(now, forKey: Self.lastSyncKey)
             cachedHeartRateProfile = nil
             if report.exportedToHealth {
@@ -215,6 +216,13 @@ final class SyncCoordinator {
     private func logConnection() {
         let serial = band.serial.map { "...\($0.suffix(2))" } ?? "?"
         diagnostics.note("connected: band \(serial), battery \(band.battery.map { "\($0)%" } ?? "?")")
+        recordBattery()
+    }
+
+    /// For the battery history chart (the store keeps at most one reading per 15 minutes).
+    private func recordBattery() {
+        guard let percent = band.battery else { return }
+        try? store.recordBattery(percent, at: .now)
     }
 
     /// One line per sync for the diagnostics log.

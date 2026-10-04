@@ -21,6 +21,7 @@ struct BandView: View {
             ScrollView {
                 VStack(spacing: 16) {
                     BandCard(coordinator: coordinator, onPair: onPair)
+                    BatteryCard(coordinator: coordinator)
                     NavigationLink {
                         ProfileView(coordinator: coordinator)
                     } label: {
@@ -85,6 +86,44 @@ private struct DiagnosticsCard: View {
 
     private func refresh() {
         size = (try? FileManager.default.attributesOfItem(atPath: log.url.path)[.size] as? Int) ?? 0
+    }
+}
+
+/// The band's battery over the last 30 days, and its average daily use.
+private struct BatteryCard: View {
+    let coordinator: SyncCoordinator
+    @State private var readings: [BatteryReading] = []
+
+    var body: some View {
+        Card(title: "Battery", systemImage: batterySymbol(coordinator.band.battery), color: .green) {
+            if readings.count < 2 {
+                Text("Collecting data: a reading is saved at each connection and sync.")
+                    .font(.caption).foregroundStyle(.secondary)
+            } else {
+                Chart(readings, id: \.date) {
+                    LineMark(x: .value("Time", $0.date), y: .value("%", $0.percent))
+                }
+                .chartYScale(domain: 0...100)
+                .foregroundStyle(.green)
+                .frame(height: 120)
+                Text(BatteryDrain.perDay(readings).map { "About \(Int($0.rounded()))% per day" } ?? "Collecting data for the daily estimate")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
+        }
+        .task(id: coordinator.lastSync) {
+            readings = (try? coordinator.store.batteryReadings(since: .now.addingTimeInterval(-30 * 86400))) ?? []
+        }
+    }
+}
+
+/// SF Symbol for a battery level.
+func batterySymbol(_ percent: Int?) -> String {
+    switch percent ?? 0 {
+    case ..<13: "battery.0percent"
+    case ..<38: "battery.25percent"
+    case ..<63: "battery.50percent"
+    case ..<88: "battery.75percent"
+    default: "battery.100percent"
     }
 }
 
@@ -155,6 +194,11 @@ private struct BandCard: View {
                 VStack(spacing: 12) {
                     LabeledContent("Last sync", value: coordinator.lastSync.map { RelativeTime.text($0, now: context.date) } ?? "Never")
                     LabeledContent("Health export", value: healthExport(now: context.date))
+                    LabeledContent("Background sync", value: coordinator.lastBackgroundSync.map { RelativeTime.text($0, now: context.date) } ?? "Not yet")
+                    if UIApplication.shared.backgroundRefreshStatus != .available {
+                        Text("Turn on Background App Refresh for Pulse Bridge in Settings to sync without opening the app.")
+                            .font(.caption).foregroundStyle(.secondary)
+                    }
                 }
             }
             if let start = coordinator.healthStart {
