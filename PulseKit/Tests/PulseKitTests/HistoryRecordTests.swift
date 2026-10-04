@@ -11,6 +11,11 @@ struct HistoryRecordTests {
         #expect(Command.history(.spotHR, mode: .next) == bytes("55 02 00 00 00 00 00 00 00 00 00 00 00 00 00 57"))
     }
 
+    /// Daily totals duplicate the 10-minute activity records (kept for less time), so syncs skip them.
+    @Test func syncDoesNotReadDailyTotals() {
+        #expect(!HistoryKind.syncOrder.contains(.dailyTotals))
+    }
+
     @Test func dailyTotals() throws {
         let r = try record(.dailyTotals, "51 0b 26 03 20 bc 0a 00 00 bd 04 00 00 c3 00 00 00 ce 51 02 00 1b 34 00 00 00 00")
         #expect(r.start == utcDate(2026, 3, 20))

@@ -82,8 +82,8 @@ Responses use the same opcode in byte 0. Long responses are streamed as concaten
 | `53` sleep | `sleepAnalysis`: 2 Core, 3 Deep, 1 REM, 4/5 Awake |
 | `5C` workouts | `HKWorkout` with steps, distance, average heart rate and active energy |
 
-Not exported: `51` daily totals (Health sums the per-minute data itself) and the `56` blood-pressure
-estimate (not a measurement).
+Not exported: the `56` blood-pressure estimate (not a measurement). Not read at all: `51` daily
+totals (the `52` activity records hold the same steps and distance, and are kept longer).
 
 ## Open questions
 
