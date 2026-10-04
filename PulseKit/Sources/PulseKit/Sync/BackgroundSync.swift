@@ -4,6 +4,6 @@ import Foundation
 /// last Health export and the last attempt, and only with a paired band and nothing else running.
 public enum BackgroundSync {
     public static func shouldRun(lastExport: Date?, lastAttempt: Date?, paired: Bool, busy: Bool, now: Date) -> Bool {
-        paired && !busy && AutoSync.isDue(lastSync: [lastExport, lastAttempt].compactMap { $0 }.max(), now: now)
+        paired && !busy && AutoSync.isDue(lastExport: lastExport, lastAttempt: lastAttempt, now: now)
     }
 }

@@ -96,7 +96,7 @@ final class SyncCoordinator {
         // Keyed on the last attempt too: if Health export keeps failing, opening the app must not
         // re-read the band every time.
         let lastAttempt = UserDefaults.standard.object(forKey: Self.lastAutoSyncKey) as? Date
-        if AutoSync.isDue(lastSync: [lastHealthExport, lastAttempt].compactMap { $0 }.max()) {
+        if AutoSync.isDue(lastExport: lastHealthExport, lastAttempt: lastAttempt) {
             if !live.isMeasuring && !hasPendingActivity { UserDefaults.standard.set(Date(), forKey: Self.lastAutoSyncKey) }
             if live.isMeasuring {
                 syncAfterMeasurement = true
@@ -198,10 +198,18 @@ final class SyncCoordinator {
         let busy = phase.isBusy || live.isMeasuring || hasPendingActivity
         guard BackgroundSync.shouldRun(lastExport: lastHealthExport, lastAttempt: lastAttempt,
                                        paired: band.pairedID != nil, busy: busy, now: .now) else { return }
+        if let problem = band.bluetoothProblem {
+            diagnostics.note("background sync skipped: \(problem)")
+            return
+        }
         diagnostics.note("background sync started")
+        // Shown as connecting, so a manual Sync tapped meanwhile is disabled instead of skipped.
+        phase = .connecting
         do {
             try await band.connect()
+            phase = .idle
         } catch {
+            phase = .idle
             diagnostics.note("background sync: band not in range (\(error.localizedDescription))")
             return
         }
@@ -210,8 +218,10 @@ final class SyncCoordinator {
         // A locked run can't reach Health: not an attempt, so opening the app exports right away.
         if toHealth { UserDefaults.standard.set(now, forKey: Self.lastAutoSyncKey) }
         await sync(toHealth: toHealth, quiet: true)
-        lastBackgroundSync = now
-        UserDefaults.standard.set(now, forKey: Self.lastBackgroundSyncKey)
+        if phase == .idle {
+            lastBackgroundSync = now
+            UserDefaults.standard.set(now, forKey: Self.lastBackgroundSyncKey)
+        }
         if !isForeground { band.disconnect() }
     }
 
@@ -376,7 +386,10 @@ final class SyncCoordinator {
             try? await liveChannel.send(Command.vibrate(times: times))
         } else {
             try? await syncChannel.send(Command.vibrate(times: times))
-            _ = try? await syncChannel.nextPacket(timeout: .seconds(2))
+            // Take packets until its own ack (an earlier reply may still be queued), 2 s at most.
+            let deadline = Date.now.addingTimeInterval(2)
+            while Date.now < deadline, let packet = try? await syncChannel.nextPacket(timeout: .seconds(2)),
+                  packet.first != Opcode.vibrate {}
         }
     }
 

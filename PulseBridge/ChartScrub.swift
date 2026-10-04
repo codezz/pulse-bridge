@@ -60,6 +60,7 @@ private struct ChartScrub: ViewModifier {
                             .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
                             .fixedSize()
                             .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { bubbleWidth = $0 }
+                            .opacity(bubbleWidth == 0 ? 0 : 1)   // hidden until measured, so it doesn't jump
                             .position(x: bubbleX, y: frame.minY + 10)
                     }
                 }

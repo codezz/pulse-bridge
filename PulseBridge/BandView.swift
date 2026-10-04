@@ -110,7 +110,7 @@ private struct BatteryCard: View {
                     .font(.caption).foregroundStyle(.secondary)
             }
         }
-        .task(id: coordinator.lastSync) {
+        .task(id: "\(coordinator.lastSync?.timeIntervalSince1970 ?? 0)-\(coordinator.band.battery ?? -1)") {
             readings = (try? coordinator.store.batteryReadings(since: .now.addingTimeInterval(-30 * 86400))) ?? []
         }
     }
@@ -118,7 +118,8 @@ private struct BatteryCard: View {
 
 /// SF Symbol for a battery level.
 func batterySymbol(_ percent: Int?) -> String {
-    switch percent ?? 0 {
+    guard let percent else { return "bolt.batteryblock" }   // unknown, not empty
+    return switch percent {
     case ..<13: "battery.0percent"
     case ..<38: "battery.25percent"
     case ..<63: "battery.50percent"
