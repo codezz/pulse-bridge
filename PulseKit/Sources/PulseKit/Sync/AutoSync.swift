@@ -10,4 +10,10 @@ public enum AutoSync {
         let elapsed = now.timeIntervalSince(lastSync)
         return elapsed >= interval || elapsed < 0
     }
+
+    /// Keyed on the later of the last Health export and the last attempt, so a failing export
+    /// doesn't re-read the band on every app open.
+    public static func isDue(lastExport: Date?, lastAttempt: Date?, now: Date = .now) -> Bool {
+        isDue(lastSync: [lastExport, lastAttempt].compactMap { $0 }.max(), now: now)
+    }
 }

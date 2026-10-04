@@ -103,6 +103,10 @@ public final class LiveFeed {
             let packet: Data?
             do {
                 packet = try await channel.nextPacket(timeout: pollTimeout)
+            } catch PulseError.busy {
+                // Another reader briefly holds the channel (a background buzz taking its ack).
+                try? await Task.sleep(for: .milliseconds(100))
+                continue
             } catch {
                 break // disconnected
             }

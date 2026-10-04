@@ -38,6 +38,14 @@ struct HealthSampleTests {
         #expect(HistoryRecord.splitDistance(100, over: [5, 50, 5]).reduce(0, +) == 100)
     }
 
+    /// Every minute with steps keeps its piece (even 0 m), so IDs stay the same when a block grows.
+    @Test func minutesWithStepsKeepAPieceEvenAtZeroMeters() throws {
+        let r = try record(.activity, "52 00 00 26 06 16 13 33 58 5d 00 7a 3b 01 00 5a 03 00 00 00 00 00 00 00 00")
+        let distance = r.healthSamples(id: "X").filter { $0.metric == .distance }
+        #expect(distance.map(\.syncID) == ["X.d", "X.d.1"])
+        #expect(distance.map(\.value) == [10, 0])
+    }
+
     /// A block already in Health as one 10-minute sample ("X.d") is replaced by its first piece.
     @Test func firstPieceKeepsTheOldID() throws {
         let r = try record(.activity, "52 00 00 26 06 16 13 33 58 5d 00 7a 3b 06 00 3c 21 00 00 00 00 00 00 00 00")

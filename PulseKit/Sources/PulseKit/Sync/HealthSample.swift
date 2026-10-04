@@ -68,9 +68,10 @@ extension HistoryRecord {
             }
             // The first piece keeps the old 10-minute sample's ID, so a block already in Health is
             // replaced by it instead of being counted twice.
+            // Every minute with steps keeps a piece, even 0 m, so the IDs don't move when a block grows.
             var first = true
             let distance = pieces.enumerated().compactMap { offset, meters -> HealthSample? in
-                guard meters > 0 else { return nil }
+                guard minuteSteps[offset] > 0 else { return nil }
                 defer { first = false }
                 return HealthSample(metric: .distance, start: minute(offset), end: minute(offset + 1),
                                     value: Double(meters), syncID: first ? "\(id).d" : "\(id).d.\(offset)")

@@ -13,6 +13,12 @@ struct BackgroundSyncTests {
         #expect(!BackgroundSync.shouldRun(lastExport: now - 9000, lastAttempt: now - 600, paired: true, busy: false, now: now))
     }
 
+    @Test func dueRuleUsesTheLaterOfExportAndAttempt() {
+        #expect(AutoSync.isDue(lastExport: now - 9000, lastAttempt: nil, now: now))
+        #expect(!AutoSync.isDue(lastExport: now - 9000, lastAttempt: now - 600, now: now))
+        #expect(AutoSync.isDue(lastExport: nil, lastAttempt: nil, now: now))
+    }
+
     @Test func skipsWhenBusyOrUnpaired() {
         #expect(!BackgroundSync.shouldRun(lastExport: nil, lastAttempt: nil, paired: true, busy: true, now: now))
         #expect(!BackgroundSync.shouldRun(lastExport: nil, lastAttempt: nil, paired: false, busy: false, now: now))

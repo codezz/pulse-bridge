@@ -9,12 +9,16 @@ public struct ZoneAlert: Sendable, Equatable {
     public static let repeatAfter: TimeInterval = 60
     /// A heart-rate gap longer than this (band dropped out) starts the timing over.
     public static let stale: TimeInterval = 10
+    /// Off the wrist the band keeps repeating its last value; unchanged this long is no reading.
+    public static let unchanged: TimeInterval = HeartRateSeries.staleAfter
 
     public let target: ClosedRange<Int>
     private var direction: Direction?
     private var outsideSince: Date?
     private var lastAlert: Date?
     private var lastReading: Date?
+    private var lastBPM: Int?
+    private var unchangedSince: Date?
 
     public init(target: ClosedRange<Int>) {
         self.target = target
@@ -30,6 +34,11 @@ public struct ZoneAlert: Sendable, Equatable {
         guard bpm > 0 else { return nil }
         if let lastReading, date.timeIntervalSince(lastReading) > Self.stale { reset() }
         lastReading = date
+        if bpm != lastBPM {
+            lastBPM = bpm
+            unchangedSince = date
+        }
+        if let unchangedSince, date.timeIntervalSince(unchangedSince) >= Self.unchanged { return nil }
         let now: Direction? = bpm > target.upperBound ? .above : bpm < target.lowerBound ? .below : nil
         guard let now else {
             direction = nil
@@ -53,5 +62,7 @@ public struct ZoneAlert: Sendable, Equatable {
         outsideSince = nil
         lastAlert = nil
         lastReading = nil
+        lastBPM = nil
+        unchangedSince = nil
     }
 }

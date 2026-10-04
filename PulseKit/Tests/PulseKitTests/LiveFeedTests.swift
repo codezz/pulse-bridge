@@ -26,6 +26,15 @@ struct LiveFeedTests {
         #expect(feed.lastActivityAt == clock.now)
     }
 
+    /// Another reader (a background buzz waiting for its ack) briefly holds the channel.
+    @Test func aBusyChannelDoesntStopTheFeed() async throws {
+        channel.busyReads = 3
+        try await feed.start(over: channel)
+        channel.push(activityPacket)
+        #expect(await eventually { feed.activity != nil })
+        #expect(feed.isRunning)
+    }
+
     @Test func stopReturnsOnlyAfterTheLoopStoppedReading() async throws {
         try await feed.start(over: channel)
         await feed.stop()

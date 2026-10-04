@@ -96,6 +96,8 @@ final class ScriptedChannel: CommandChannel {
 
     /// While true, `send` throws instead of recording.
     var failSends = false
+    /// This many reads throw `busy`, as when another reader briefly holds the channel.
+    var busyReads = 0
 
     func send(_ frame: Data) async throws {
         if failSends { throw PulseError.notConnected }
@@ -127,6 +129,10 @@ final class ScriptedChannel: CommandChannel {
 
     func nextPacket(timeout: Duration) async throws -> Data? {
         if broken { throw PulseError.notConnected }
+        if busyReads > 0 {
+            busyReads -= 1
+            throw PulseError.busy
+        }
         if !queue.isEmpty { return queue.removeFirst() }
         return try await withCheckedThrowingContinuation { continuation in
             waiter = continuation

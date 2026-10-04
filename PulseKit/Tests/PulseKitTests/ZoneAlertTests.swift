@@ -51,6 +51,12 @@ struct ZoneAlertTests {
         #expect(feed(&a, bpm: 0, seconds: 0...30).isEmpty)
     }
 
+    /// Off the wrist the band repeats its last value: after 2 minutes unchanged, no more alerts.
+    @Test func unchangedForTwoMinutesStopsAlerts() {
+        var a = ZoneAlert(target: 120...131)
+        #expect(feed(&a, bpm: 140, seconds: 0...200) == [.above, .above])     // at 15 and 75 only
+    }
+
     @Test func buzzCounts() {
         #expect(ZoneAlert.buzzes(for: .above) == 3)
         #expect(ZoneAlert.buzzes(for: .below) == 2)
