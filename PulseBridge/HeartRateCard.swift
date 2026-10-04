@@ -6,13 +6,13 @@ import SwiftUI
 /// on, plus on-demand measurements. Reads live state itself so only this card redraws per beat.
 struct HeartRateCard: View {
     let coordinator: SyncCoordinator
-    let metrics: DailyMetrics?
-    let today: Date
+    /// Today's stored readings and subtitle, computed by Summary (which doesn't redraw per beat).
+    let readings: [Reading]
+    let subtitle: String
 
     private var live: Bool { coordinator.isLiveHeartRateOn }
     private var series: HeartRateSeries { coordinator.heartRate }
     private var connected: Bool { coordinator.band.state == .connected }
-    private var readings: [Reading] { metrics?.readings(.heartRate, on: today) ?? [] }
 
     var body: some View {
         Card(title: Metric.heartRate.title, systemImage: Metric.heartRate.systemImage, color: Metric.heartRate.color) {
@@ -61,7 +61,7 @@ struct HeartRateCard: View {
             if live { BeatingHeart(bpm: series.isStale(now: now) ? nil : series.latest) }
             Spacer()
             if live, let bpm, let zone = coordinator.liveZones?.zone(for: bpm) {
-                Text("Zone \(zone) · \(zoneName(zone))").font(.caption.bold()).foregroundStyle(zoneColor(zone))
+                Text(zone == 0 ? "Below zone 1" : "Zone \(zone) · \(zoneName(zone))").font(.caption.bold()).foregroundStyle(zoneColor(zone))
             }
         }
         if live, let status = status(now: now) {
@@ -77,7 +77,7 @@ struct HeartRateCard: View {
     }
 
     /// "today 54-118 · resting 58"
-    private var subtitle: String {
+    static func subtitle(metrics: DailyMetrics?, today: Date) -> String {
         var parts: [String] = []
         if let range = metrics?.value(.heartRate, on: today) { parts.append("today \(Int(range.min))-\(Int(range.max))") }
         if let resting = metrics?.restingHeartRate(on: today) { parts.append("resting \(resting)") }

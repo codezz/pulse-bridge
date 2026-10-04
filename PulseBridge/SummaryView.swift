@@ -41,7 +41,8 @@ struct SummaryView: View {
                         StepsCard(metrics: model.metrics, today: today, coordinator: coordinator)
                     }
                     .buttonStyle(.plain)
-                    HeartRateCard(coordinator: coordinator, metrics: model.metrics, today: today)
+                    HeartRateCard(coordinator: coordinator, readings: model.metrics?.readings(.heartRate, on: today) ?? [],
+                                  subtitle: HeartRateCard.subtitle(metrics: model.metrics, today: today))
                     ActivitiesCard(workouts: model.metrics?.workouts() ?? []) { showStart = true }
                     metricLink(.spo2)
                 }

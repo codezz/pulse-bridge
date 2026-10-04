@@ -32,6 +32,7 @@ extension View {
 private struct ChartScrub: ViewModifier {
     let points: [ScrubPoint]
     @State private var selected: Date?
+    @State private var bubbleWidth: CGFloat = 0
 
     private var nearest: ScrubPoint? {
         guard let selected else { return nil }
@@ -46,6 +47,9 @@ private struct ChartScrub: ViewModifier {
                     if let point = nearest, let plot = proxy.plotFrame, let x = proxy.position(forX: point.date) {
                         let frame = geo[plot]
                         let xPos = frame.minX + x
+                        let half = bubbleWidth / 2
+                        // Keep the bubble inside the plot; center it when the plot is narrower.
+                        let bubbleX = frame.width <= bubbleWidth ? frame.midX : min(max(xPos, frame.minX + half), frame.maxX - half)
                         Rectangle()
                             .fill(Color.secondary)
                             .frame(width: 1, height: frame.height)
@@ -55,11 +59,13 @@ private struct ChartScrub: ViewModifier {
                             .padding(.horizontal, 8).padding(.vertical, 4)
                             .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
                             .fixedSize()
-                            .position(x: min(max(xPos, frame.minX + 70), frame.maxX - 70), y: frame.minY + 10)
+                            .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { bubbleWidth = $0 }
+                            .position(x: bubbleX, y: frame.minY + 10)
                     }
                 }
                 .allowsHitTesting(false)
             }
-            .sensoryFeedback(.selection, trigger: nearest?.date)
+            // A tick per point, none when the finger lifts.
+            .sensoryFeedback(trigger: nearest?.date) { _, new in new == nil ? nil : .selection }
     }
 }

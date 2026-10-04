@@ -163,13 +163,14 @@ struct SleepDetailView: View {
                 LabeledContent("Bedtime consistency", value: "± \(Int(bedtimeSpread(nights.map(\.night.fellAsleep)))) min")
             }
             Section("Resting heart rate") {
-                Chart(metrics?.series(.restingHeartRate) ?? []) {
+                let resting = metrics?.series(.restingHeartRate) ?? []
+                Chart(resting) {
                     LineMark(x: .value("Day", $0.day, unit: .day), y: .value("bpm", $0.range.average))
                     PointMark(x: .value("Day", $0.day, unit: .day), y: .value("bpm", $0.range.average))
                 }
                 .chartYScale(domain: .automatic(includesZero: false))
                 .foregroundStyle(.pink)
-                .chartScrub((metrics?.series(.restingHeartRate) ?? []).map { .day($0.day, "\(Int($0.range.average)) bpm") })
+                .chartScrub(resting.map { .day($0.day, "\(Int($0.range.average)) bpm") })
                 .frame(height: 120)
             }
         }

@@ -19,8 +19,9 @@ struct SummaryHeader: View {
         Button(action: onTap) {
             HStack(spacing: 8) {
                 Circle().fill(dotColor).frame(width: 8, height: 8)
+                    .accessibilityLabel(band.state.label)
                 if let battery = band.battery, band.state == .connected {
-                    Label("\(battery)%", systemImage: "battery.75percent").labelStyle(.titleAndIcon)
+                    Label("\(battery)%", systemImage: batterySymbol(battery)).labelStyle(.titleAndIcon)
                 }
                 TimelineView(.periodic(from: .now, by: 30)) { context in
                     status(now: context.date)
@@ -31,6 +32,7 @@ struct SummaryHeader: View {
             .font(.subheadline)
             .foregroundStyle(.secondary)
             .contentShape(Rectangle())
+            .accessibilityElement(children: .combine)
         }
         .buttonStyle(.plain)
         // Only syncs the user started; the hourly automatic one stays silent.
