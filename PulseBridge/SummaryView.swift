@@ -24,20 +24,15 @@ extension View {
 
 struct SummaryView: View {
     let coordinator: SyncCoordinator
-    let model: SummaryModel
+    @Bindable var model: SummaryModel
     let onShowBand: () -> Void
     let onShowChallenge: () -> Void
     @State private var showStart = false
     @State private var showChallengeLogger = false
+    @State private var showEdit = false
+    @State private var layout = TodayLayout()
 
-    private var today: Date { Calendar.current.startOfDay(for: .now) }
-
-    private func metricLink(_ metric: Metric) -> some View {
-        NavigationLink(value: SummaryRoute.metric(metric)) {
-            MetricCard(metric: metric, metrics: model.metrics, today: today)
-        }
-        .buttonStyle(.plain)
-    }
+    private var day: Date { model.selectedDay }
 
     var body: some View {
         NavigationStack {
@@ -45,28 +40,30 @@ struct SummaryView: View {
                 VStack(spacing: 16) {
                     SummaryHeader(coordinator: coordinator, onTap: onShowBand)
                         .unredacted()
+                    DayStrip(selected: $model.selectedDay) { DayRings.of($0, metrics: model.metrics, challenge: coordinator.challenge) }
+                        .unredacted()
                     if let error = model.error {
                         Label("Couldn't load data: \(error)", systemImage: "exclamationmark.triangle").foregroundStyle(.red)
                     }
-                    NavigationLink(value: SummaryRoute.sleep) {
-                        SleepCard(metrics: model.metrics, today: today)
+                    TodayHero(day: day, metrics: model.metrics, challenge: coordinator.challenge,
+                              liveSteps: coordinator.live.activity?.steps, isToday: model.isToday)
+                    ForEach(layout.visible) { section in
+                        sectionView(section)
                     }
-                    .buttonStyle(.plain)
-                    NavigationLink(value: SummaryRoute.metric(.steps)) {
-                        StepsCard(metrics: model.metrics, today: today, coordinator: coordinator)
-                    }
-                    .buttonStyle(.plain)
-                    ChallengeCard(model: coordinator.challenge, onLog: { showChallengeLogger = true }, onOpen: onShowChallenge)
-                    HeartRateCard(coordinator: coordinator, readings: model.metrics?.readings(.heartRate, on: today) ?? [],
-                                  subtitle: HeartRateCard.subtitle(metrics: model.metrics, today: today))
-                    ActivitiesCard(workouts: model.metrics?.workouts() ?? []) { showStart = true }
-                    metricLink(.spo2)
+                    Button("Edit Today", systemImage: "slider.horizontal.3") { showEdit = true }
+                        .font(.subheadline)
+                        .padding(.top, 4)
                 }
                 .padding()
                 .redacted(reason: model.isLoaded ? [] : .placeholder)
             }
             .background(Color(.systemGroupedBackground))
-            .navigationTitle("Today")
+            .navigationTitle(model.isToday ? "Today" : day.formatted(.dateTime.weekday(.wide).day().month()))
+            .toolbar {
+                if !model.isToday {
+                    Button("Today") { model.selectedDay = Calendar.current.startOfDay(for: .now) }
+                }
+            }
             .summaryDestinations(service: model.service)
             .refreshable { await coordinator.sync() }
             .sheet(isPresented: $showChallengeLogger) {
@@ -78,7 +75,47 @@ struct SummaryView: View {
                 }
                 .presentationDetents([.medium, .large])
             }
+            .sheet(isPresented: $showEdit) { EditTodayView(layout: layout) }
         }
+    }
+
+    @ViewBuilder private func sectionView(_ section: TodaySection) -> some View {
+        switch section {
+        case .highlights:
+            HighlightsCard(insights: model.insights)
+        case .sleep:
+            NavigationLink(value: SummaryRoute.sleep) {
+                SleepCard(metrics: model.metrics, today: day)
+            }
+            .buttonStyle(.plain)
+        case .heartRate:
+            if model.isToday {
+                HeartRateCard(coordinator: coordinator, readings: model.metrics?.readings(.heartRate, on: day) ?? [],
+                              subtitle: HeartRateCard.subtitle(metrics: model.metrics, today: day))
+            } else {
+                // Past days: the stored readings only (no live heart rate, no measurements).
+                NavigationLink(value: SummaryRoute.metric(.heartRate, day: day)) {
+                    MetricCard(metric: .heartRate, metrics: model.metrics, today: day)
+                }
+                .buttonStyle(.plain)
+            }
+        case .vitals:
+            VStack(alignment: .leading, spacing: 8) {
+                SectionTitle("Vitals")
+                VitalsGrid(day: day, metrics: model.metrics, coordinator: coordinator, isToday: model.isToday)
+            }
+        case .challenge:
+            ChallengeCard(model: coordinator.challenge, day: day, onLog: { showChallengeLogger = true }, onOpen: onShowChallenge)
+        case .activities:
+            ActivitiesCard(workouts: recentWorkouts) { showStart = true }
+        }
+    }
+
+    /// The 7 days up to the selected day.
+    private var recentWorkouts: [Workout] {
+        let from = Calendar.current.date(byAdding: .day, value: -6, to: day)!
+        let to = Calendar.current.date(byAdding: .day, value: 1, to: day)!
+        return (model.metrics?.workouts() ?? []).filter { $0.start >= from && $0.start < to }
     }
 }
 
@@ -179,42 +216,5 @@ private struct SleepCard: View {
             Text(title).font(.caption).foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-    }
-}
-
-/// Today's steps toward the goal. Uses the band's live total while connected, else the last sync.
-/// Reads the live total here so only this card redraws on each live update.
-private struct StepsCard: View {
-    let metrics: DailyMetrics?
-    let today: Date
-    let coordinator: SyncCoordinator
-
-    private var live: LiveActivity? { coordinator.live.activity }
-
-    private var steps: Int { max(live?.steps ?? 0, metrics?.stepsTotal(on: today) ?? 0) }
-    private var meters: Int { max(live?.distanceMeters ?? 0, metrics?.distanceMeters(on: today) ?? 0) }
-
-    var body: some View {
-        Card(title: Metric.steps.title, systemImage: Metric.steps.systemImage, color: Metric.steps.color) {
-            HStack(spacing: 16) {
-                ProgressRing(progress: Double(steps) / Double(stepGoal), color: Metric.steps.color) {
-                    Text("\(steps * 100 / stepGoal)%").font(.system(size: 15, weight: .bold, design: .rounded))
-                }
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(steps.formatted()).numberFont(30)
-                    Text("of \(stepGoal.formatted()) · \(roadDistanceText(Double(meters)))")
-                        .font(.caption).foregroundStyle(.secondary)
-                }
-                Spacer()
-            }
-            let hours = metrics?.stepsByHour(on: today) ?? []
-            if !hours.isEmpty {
-                Chart(hours, id: \.date) {
-                    BarMark(x: .value("Hour", $0.date, unit: .hour), y: .value("Steps", $0.value))
-                }
-                .foregroundStyle(Metric.steps.color)
-                .frame(height: 60)
-            }
-        }
     }
 }

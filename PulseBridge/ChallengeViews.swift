@@ -12,35 +12,30 @@ func weekdayName(_ weekday: Int) -> String { Calendar.current.weekdaySymbols[wee
 /// Summary card: one ring per exercise, the streak, and the way into logging and history.
 struct ChallengeCard: View {
     let model: ChallengeModel
+    /// The day shown; past days are read-only.
+    var day = Date.now
     let onLog: () -> Void
     /// Opens the Challenge tab.
     let onOpen: () -> Void
     @State private var showSetup = false
 
     private var history: ChallengeHistory { model.history }
+    private var isToday: Bool { Calendar.current.isDateInToday(day) }
 
     var body: some View {
-        Card(title: "Daily challenge", systemImage: "figure.strengthtraining.traditional", color: .orange) {
+        Card(title: "Daily challenge", systemImage: "figure.strengthtraining.traditional", color: Palette.challenge) {
             if model.isSetUp {
                 HStack(spacing: 18) {
-                    ForEach(model.exercises) { exercise in
+                    ForEach(model.exercises.filter { history.isActive($0, on: day) }) { exercise in
                         ring(exercise)
                     }
                     Spacer(minLength: 0)
                 }
-                streakLine
-                HStack {
-                    Button(action: onLog) {
-                        Label("Log", systemImage: "plus").frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.orange)
-                    Button(action: onOpen) {
-                        Label("History", systemImage: "calendar").frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.bordered)
-                    ChallengeShareButton(model: model)
-                        .buttonStyle(.bordered)
+                if isToday {
+                    streakLine
+                    buttons
+                } else {
+                    pastDayLine
                 }
             } else {
                 Text("Track a daily goal like push-ups and squats, with streaks and history.")
@@ -53,8 +48,32 @@ struct ChallengeCard: View {
         .sheet(isPresented: $showSetup) { ChallengeSetupView(model: model) }
     }
 
+    @ViewBuilder private var pastDayLine: some View {
+        switch history.status(on: day) {
+        case .done: Label("Done", systemImage: "checkmark.seal.fill").font(.subheadline.bold()).foregroundStyle(.green)
+        case .partial: Text("Partly done").font(.subheadline).foregroundStyle(.secondary)
+        case .none: Text(history.isBeforeTracking(day) ? "Before the app" : "Nothing logged").font(.subheadline).foregroundStyle(.secondary)
+        }
+    }
+
+    private var buttons: some View {
+        HStack {
+            Button(action: onLog) {
+                Label("Log", systemImage: "plus").frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.borderedProminent)
+            .tint(.orange)
+            Button(action: onOpen) {
+                Label("History", systemImage: "calendar").frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.bordered)
+            ChallengeShareButton(model: model)
+                .buttonStyle(.bordered)
+        }
+    }
+
     private func ring(_ exercise: ExerciseInfo) -> some View {
-        let progress = history.progress(of: exercise, on: .now)
+        let progress = history.progress(of: exercise, on: day)
         return VStack(spacing: 6) {
             ProgressRing(progress: progress.fraction, color: .orange) {
                 VStack(spacing: 0) {
