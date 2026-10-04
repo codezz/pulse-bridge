@@ -7,6 +7,7 @@ enum SummaryRoute: Hashable {
     case metric(Metric, day: Date? = nil)
     case sleep
     case activities
+    case challengeHistory
 }
 
 struct SummaryView: View {
@@ -14,6 +15,7 @@ struct SummaryView: View {
     let model: SummaryModel
     let onShowBand: () -> Void
     @State private var showStart = false
+    @State private var showChallengeLogger = false
 
     private var today: Date { Calendar.current.startOfDay(for: .now) }
 
@@ -41,6 +43,7 @@ struct SummaryView: View {
                         StepsCard(metrics: model.metrics, today: today, coordinator: coordinator)
                     }
                     .buttonStyle(.plain)
+                    ChallengeCard(model: coordinator.challenge) { showChallengeLogger = true }
                     HeartRateCard(coordinator: coordinator, readings: model.metrics?.readings(.heartRate, on: today) ?? [],
                                   subtitle: HeartRateCard.subtitle(metrics: model.metrics, today: today))
                     ActivitiesCard(workouts: model.metrics?.workouts() ?? []) { showStart = true }
@@ -56,9 +59,13 @@ struct SummaryView: View {
                 case .metric(let metric, let day): MetricDetailView(metric: metric, service: model.service, day: day)
                 case .sleep: SleepDetailView(service: model.service)
                 case .activities: ActivitiesView(service: model.service)
+                case .challengeHistory: Text("History")
                 }
             }
             .refreshable { await coordinator.sync() }
+            .sheet(isPresented: $showChallengeLogger) {
+                ChallengeLogger(model: coordinator.challenge, coordinator: coordinator)
+            }
             .sheet(isPresented: $showStart) {
                 NavigationStack {
                     StartActivityForm(coordinator: coordinator) { showStart = false }
