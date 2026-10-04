@@ -17,12 +17,15 @@ final class ActivitySession: NSObject {
     private(set) var locationDenied = false
     private(set) var lastHeartRate: (bpm: Int, at: Date)?
     let id: UUID
+    /// The band buzzes when leaving the target zone.
+    let zoneAlerts: Bool
 
     @ObservationIgnored private let manager = CLLocationManager()
     @ObservationIgnored private var saver: Task<Void, Never>?
 
-    init(activity: WorkoutActivity, targetZone: Int?, zones: HeartRateZones) {
+    init(activity: WorkoutActivity, targetZone: Int?, zones: HeartRateZones, zoneAlerts: Bool) {
         id = UUID()
+        self.zoneAlerts = zoneAlerts
         recorder = ActivityRecorder(activity: activity, targetZone: targetZone, zones: zones, start: .now)
         super.init()
     }

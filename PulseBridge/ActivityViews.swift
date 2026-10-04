@@ -50,6 +50,7 @@ struct StartActivityForm: View {
     let onStarted: () -> Void
     @State private var type = WorkoutActivity.running
     @State private var zone: Int? = 2
+    @State private var zoneAlerts = true
     @State private var hr: HeartRateProfile?
     @State private var location = LocationAuthorization()
     @Environment(\.openURL) private var openURL
@@ -76,6 +77,12 @@ struct StartActivityForm: View {
                         }
                     }
                 }
+                if zone != nil {
+                    Toggle(isOn: $zoneAlerts) {
+                        Text("Zone alerts on the band")
+                        Text("3 buzzes above the zone, 2 below").font(.caption)
+                    }
+                }
             }
             Section {
                 if coordinator.profile == nil {
@@ -93,7 +100,7 @@ struct StartActivityForm: View {
                 }
                 Button {
                     onStarted()
-                    Task { await coordinator.startActivity(type, targetZone: zone) }
+                    Task { await coordinator.startActivity(type, targetZone: zone, zoneAlerts: zoneAlerts) }
                 } label: {
                     Label("Start", systemImage: "play.fill").frame(maxWidth: .infinity)
                 }
@@ -146,8 +153,13 @@ private struct ActivityLiveView: View {
     var body: some View {
         TimelineView(.periodic(from: .now, by: 1)) { context in
             VStack(spacing: 20) {
-                Text("\(recorder.activity.title)\(recorder.targetZone.map { " · Zone \($0)" } ?? "")")
-                    .font(.headline).foregroundStyle(.secondary)
+                HStack(spacing: 6) {
+                    Text("\(recorder.activity.title)\(recorder.targetZone.map { " · Zone \($0)" } ?? "")")
+                    if session.zoneAlerts {
+                        Image(systemName: "bell.fill").accessibilityLabel("Zone alerts on")
+                    }
+                }
+                .font(.headline).foregroundStyle(.secondary)
                 Text(clockText(recorder.movingTime(at: context.date)))
                     .numberFont(64, weight: .bold).monospacedDigit()
                 HStack {

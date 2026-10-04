@@ -43,7 +43,7 @@ final class SyncCoordinator {
     private(set) var activity: ActivitySession?
     /// A finished activity waiting for Save or Discard.
     private(set) var finishedActivity: ActivitySession?
-    @ObservationIgnored private var heartRateWasStreaming = false
+    @ObservationIgnored private var zoneAlert: ZoneAlert?
     @ObservationIgnored private var isExportingActivities = false
     @ObservationIgnored private let exporter = ActivityExporter()
     @ObservationIgnored private var syncAfterActivity = false
@@ -73,6 +73,7 @@ final class SyncCoordinator {
         band.onHeartRate = { [weak self] bpm in
             self?.heartRate.append(bpm, at: .now)
             self?.activity?.addHeartRate(bpm)
+            self?.checkZone(bpm)
         }
         live.onMeasurementEnded = { [weak self] _ in
             guard let self, syncAfterMeasurement else { return }
@@ -298,17 +299,39 @@ final class SyncCoordinator {
         activity != nil || finishedActivity != nil || ActivitySession.hasUnfinished
     }
 
-    func startActivity(_ type: WorkoutActivity, targetZone: Int?) async {
+    func startActivity(_ type: WorkoutActivity, targetZone: Int?, zoneAlerts: Bool) async {
         guard activity == nil, !phase.isBusy, !live.isMeasuring else { return }
-        let session = ActivitySession(activity: type, targetZone: targetZone, zones: heartRateProfile().zones)
+        let zones = heartRateProfile().zones
+        let alerts = zoneAlerts && targetZone != nil
+        let session = ActivitySession(activity: type, targetZone: targetZone, zones: zones, zoneAlerts: alerts)
         activity = session
-        diagnostics.note("activity started: \(type.rawValue), target zone \(targetZone.map(String.init) ?? "free")")
-        heartRateWasStreaming = band.streamsHeartRate
+        zoneAlert = alerts ? targetZone.map { ZoneAlert(target: zones.range(of: $0)) } : nil
+        diagnostics.note("activity started: \(type.rawValue), target zone \(targetZone.map(String.init) ?? "free"), alerts \(alerts ? "on" : "off")")
         band.streamsHeartRate = true
         band.keepConnected = true
         session.start()
-        // The band has no screen: 3 buzzes confirm the start. LiveFeed reads (and ignores) the ack.
-        if band.state == .connected { try? await liveChannel.send(Command.vibrate(times: 3)) }
+        // The band has no screen: 3 buzzes confirm the start.
+        await buzz(times: 3)
+    }
+
+    /// Buzzes when the activity's heart rate stays out of the target zone (see ZoneAlert).
+    private func checkZone(_ bpm: Int) {
+        guard let session = activity, session.recorder.state == .recording else { zoneAlert?.reset(); return }
+        guard let direction = zoneAlert?.update(bpm: bpm, at: .now) else { return }
+        diagnostics.note("zone alert: \(direction == .above ? "above" : "below") target")
+        Task { await buzz(times: ZoneAlert.buzzes(for: direction)) }
+    }
+
+    /// The live feed reads (and ignores) the ack in the foreground; in the background nobody does,
+    /// so take it here instead of leaving it for the next sync to misread.
+    private func buzz(times: Int) async {
+        guard band.state == .connected else { return }
+        if live.isRunning {
+            try? await liveChannel.send(Command.vibrate(times: times))
+        } else {
+            try? await syncChannel.send(Command.vibrate(times: times))
+            _ = try? await syncChannel.nextPacket(timeout: .seconds(2))
+        }
     }
 
     func finishActivity() {
@@ -316,8 +339,9 @@ final class SyncCoordinator {
         session.finish()
         activity = nil
         finishedActivity = session
-        band.streamsHeartRate = heartRateWasStreaming || isLiveHeartRateOn
+        band.streamsHeartRate = isLiveHeartRateOn
         band.keepConnected = false
+        zoneAlert = nil
         diagnostics.note("activity finished: \(Int(session.recorder.distance)) m")
     }
 
