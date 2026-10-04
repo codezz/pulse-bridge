@@ -147,56 +147,96 @@ private struct ActivityLiveView: View {
     let session: ActivitySession
     let coordinator: SyncCoordinator
     @State private var confirmFinish = false
+    /// Kept outside the 1 s timeline so the shown page survives each tick.
+    @State private var page = 0
 
     private var recorder: ActivityRecorder { session.recorder }
 
     var body: some View {
-        TimelineView(.periodic(from: .now, by: 1)) { context in
-            VStack(spacing: 20) {
-                HStack(spacing: 6) {
-                    Text("\(recorder.activity.title)\(recorder.targetZone.map { " · Zone \($0)" } ?? "")")
-                    if session.zoneAlerts {
-                        Image(systemName: "bell.fill").accessibilityLabel("Zone alerts on")
-                    }
+        VStack(spacing: 12) {
+            HStack(spacing: 6) {
+                Image(systemName: recorder.activity.systemImage)
+                Text("\(recorder.activity.title)\(recorder.targetZone.map { " · Zone \($0)" } ?? "")")
+                if session.zoneAlerts {
+                    Image(systemName: "bell.fill").accessibilityLabel("Zone alerts on")
                 }
-                .font(.headline).foregroundStyle(.secondary)
-                Text(clockText(recorder.movingTime(at: context.date)))
-                    .numberFont(64, weight: .bold).monospacedDigit()
-                HStack {
-                    stat(String(format: "%.2f", recorder.distance / 1000), "km")
-                    stat(paceText(recorder.currentPace(at: context.date)), "pace /km")
-                    stat(paceText(recorder.averagePace(at: context.date)), "avg /km")
-                }
-                heartRate(at: context.date)
-                if let last = recorder.splitDurations.last {
-                    Text("Km \(recorder.splits.count): \(paceText(last))").font(.subheadline)
-                }
-                if session.locationDenied {
-                    Text("Allow location in Settings to record distance and the route.").foregroundStyle(.orange)
-                } else if (session.gpsAccuracy ?? 99) > ActivityRecorder.maxAccuracy {
-                    Text("Waiting for GPS...").foregroundStyle(.secondary)
-                }
-                Spacer()
-                HStack(spacing: 16) {
-                    if recorder.state == .paused {
-                        Button { session.resume() } label: { Label("Resume", systemImage: "play.fill").frame(maxWidth: .infinity) }
-                            .buttonStyle(.borderedProminent).tint(.green)
-                    } else {
-                        Button { session.pause() } label: { Label("Pause", systemImage: "pause.fill").frame(maxWidth: .infinity) }
-                            .buttonStyle(.bordered)
-                    }
-                    Button(role: .destructive) { confirmFinish = true } label: {
-                        Label("Finish", systemImage: "stop.fill").frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.borderedProminent)
-                }
-                .controlSize(.large)
             }
-            .padding()
+            .font(.headline).foregroundStyle(Palette.activity)
+            // Swipe between the main numbers, heart rate and splits; the controls stay put.
+            TimelineView(.periodic(from: .now, by: 1)) { context in
+                TabView(selection: $page) {
+                    mainPage(at: context.date).tag(0)
+                    heartRate(at: context.date).padding().tag(1)
+                    splitsPage.tag(2)
+                }
+                .tabViewStyle(.page(indexDisplayMode: .always))
+                .indexViewStyle(.page(backgroundDisplayMode: .always))
+            }
+            if session.locationDenied {
+                Text("Allow location in Settings to record distance and the route.").font(.caption).foregroundStyle(.orange)
+            } else if (session.gpsAccuracy ?? 99) > ActivityRecorder.maxAccuracy {
+                Text("Waiting for GPS...").font(.caption).foregroundStyle(.secondary)
+            }
+            HStack(spacing: 16) {
+                if recorder.state == .paused {
+                    Button { session.resume() } label: { Label("Resume", systemImage: "play.fill").frame(maxWidth: .infinity) }
+                        .buttonStyle(.borderedProminent).tint(.green)
+                } else {
+                    Button { session.pause() } label: { Label("Pause", systemImage: "pause.fill").frame(maxWidth: .infinity) }
+                        .buttonStyle(.bordered)
+                }
+                Button(role: .destructive) { confirmFinish = true } label: {
+                    Label("Finish", systemImage: "stop.fill").frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+            }
+            .controlSize(.large)
         }
+        .padding()
         .confirmationDialog("Finish this activity?", isPresented: $confirmFinish) {
             Button("Finish", role: .destructive) { coordinator.finishActivity() }
         }
+    }
+
+    private func mainPage(at now: Date) -> some View {
+        VStack(spacing: 24) {
+            Text(clockText(recorder.movingTime(at: now)))
+                .numberFont(72, weight: .bold).monospacedDigit()
+                .foregroundStyle(recorder.state == .paused ? .secondary : .primary)
+            HStack {
+                stat(String(format: "%.2f", recorder.distance / 1000), "km")
+                stat(paceText(recorder.currentPace(at: now)), "pace /km")
+                stat(paceText(recorder.averagePace(at: now)), "avg /km")
+            }
+            if let bpm = session.heartRate(at: now) {
+                Label("\(bpm) bpm", systemImage: "heart.fill")
+                    .font(.title3.bold())
+                    .foregroundStyle(zoneColor(recorder.zones.zone(for: bpm)))
+            }
+        }
+        .frame(maxHeight: .infinity)
+    }
+
+    private var splitsPage: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Splits").font(.title2.bold())
+            if recorder.splitDurations.isEmpty {
+                Text("Your first kilometre shows here.").foregroundStyle(.secondary)
+            }
+            ScrollView {
+                ForEach(Array(recorder.splitDurations.enumerated().reversed()), id: \.offset) { index, seconds in
+                    HStack {
+                        Text("Km \(index + 1)").font(.headline)
+                        Spacer()
+                        Text("\(paceText(seconds)) /km").font(.title3.bold()).monospacedDigit()
+                    }
+                    .padding(.vertical, 6)
+                    Divider()
+                }
+            }
+        }
+        .padding()
+        .frame(maxHeight: .infinity, alignment: .top)
     }
 
     @ViewBuilder private func heartRate(at now: Date) -> some View {
@@ -205,7 +245,7 @@ private struct ActivityLiveView: View {
         VStack(spacing: 6) {
             HStack(alignment: .firstTextBaseline) {
                 Image(systemName: "heart.fill").foregroundStyle(zone.map(zoneColor) ?? .gray)
-                Text(bpm.map(String.init) ?? "-").numberFont(44)
+                Text(bpm.map(String.init) ?? "-").numberFont(80)
                 Text("bpm").foregroundStyle(.secondary)
             }
             if let zone {
@@ -246,11 +286,8 @@ struct ActivitySummaryView: View {
         List {
             let points = recorder.points
             if points.count > 1 {
-                Map {
-                    MapPolyline(coordinates: points.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) })
-                        .stroke(.green, lineWidth: 4)
-                }
-                .frame(height: 220)
+                RouteMap(points: points)
+                    .frame(height: 220)
                 .listRowInsets(EdgeInsets())
             }
             Section {
@@ -281,5 +318,20 @@ struct ActivitySummaryView: View {
         }
         .navigationTitle("\(recorder.activity.title) · \(recorder.start.formatted(date: .abbreviated, time: .shortened))")
         .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+/// The route of a GPS activity. `interactive: false` for list thumbnails.
+struct RouteMap: View {
+    let points: [GeoPoint]
+    var interactive = true
+
+    var body: some View {
+        Map(interactionModes: interactive ? .all : []) {
+            MapPolyline(coordinates: points.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) })
+                .stroke(Palette.activity, lineWidth: interactive ? 4 : 3)
+        }
+        .allowsHitTesting(interactive)
+        .accessibilityLabel("Route map")
     }
 }

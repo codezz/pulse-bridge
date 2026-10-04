@@ -104,10 +104,8 @@ struct ActivitiesView: View {
             if !recorded.isEmpty {
                 Section("Recorded with GPS") {
                     ForEach(recorded, id: \.id) { item in
-                        let r = item.recorder
-                        NavigationLink { ActivitySummaryView(recorder: r) } label: {
-                            LabeledContent("\(r.activity.title) · \(r.start.formatted(date: .abbreviated, time: .shortened))",
-                                           value: kmText(r.distance))
+                        NavigationLink { ActivitySummaryView(recorder: item.recorder) } label: {
+                            RecordedActivityRow(recorder: item.recorder)
                         }
                     }
                 }
@@ -139,7 +137,11 @@ private struct ActivityRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            Image(systemName: workout.info.activity.systemImage).font(.title3).foregroundStyle(.green).frame(width: 28)
+            Image(systemName: workout.info.activity.systemImage)
+                .font(.title3).foregroundStyle(.white)
+                .frame(width: 44, height: 44)
+                .background(Palette.activity.gradient, in: Circle())
+                .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 4) {
                 HStack {
                     Text(workout.info.activity.title).font(.headline)
@@ -154,6 +156,35 @@ private struct ActivityRow: View {
                       workout.info.calories > 0 ? "\(Int(workout.info.calories)) kcal" : nil]
                         .compactMap { $0 }.joined(separator: " · "))
                     .font(.caption).foregroundStyle(.secondary)
+            }
+        }
+        .padding(.vertical, 2)
+    }
+}
+
+/// A GPS activity: route thumbnail, then title, date, distance, time and pace.
+private struct RecordedActivityRow: View {
+    let recorder: ActivityRecorder
+
+    private var end: Date { recorder.end ?? recorder.start }
+
+    var body: some View {
+        HStack(spacing: 12) {
+            if recorder.points.count > 1 {
+                RouteMap(points: recorder.points, interactive: false)
+                    .frame(width: 64, height: 64)
+                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            } else {
+                Image(systemName: recorder.activity.systemImage)
+                    .font(.title2).foregroundStyle(.white)
+                    .frame(width: 64, height: 64)
+                    .background(Palette.activity.gradient, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            }
+            VStack(alignment: .leading, spacing: 3) {
+                Text(recorder.activity.title).font(.headline)
+                Text(recorder.start.formatted(date: .abbreviated, time: .shortened)).font(.caption).foregroundStyle(.secondary)
+                Text("\(kmText(recorder.distance)) · \(clockText(recorder.movingTime(at: end))) · \(paceText(recorder.averagePace(at: end))) /km")
+                    .font(.subheadline).monospacedDigit()
             }
         }
         .padding(.vertical, 2)
