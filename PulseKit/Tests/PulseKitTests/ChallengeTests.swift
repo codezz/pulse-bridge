@@ -108,6 +108,42 @@ struct ChallengeTests {
         #expect(week.end == utcDate(2026, 10, 5))
     }
 
+    /// Progress from before the app: started 39 days ago, 33 days done, streak 1 and best 14 then.
+    private func withBaseline(_ sets: [SetInfo]) -> ChallengeHistory {
+        let e = exercise(push, created: 0, [change(0, 60)])
+        let baseline = ChallengeBaseline(startDate: day(-38, 0), daysDoneBefore: 33, streakBefore: 1, bestBefore: 14)
+        return ChallengeHistory(exercises: [e], sets: sets, calendar: calendar, baseline: baseline)
+    }
+
+    @Test func baselineCarriesStreakDaysAndBest() {
+        let h = withBaseline([SetInfo(exerciseID: push, date: day(0), count: 60)])
+        #expect(h.streak(today: day(0)) == 2)
+        #expect(h.bestStreak(today: day(0)) == 14)
+        #expect(h.daysDone(today: day(0)) == 34)
+        #expect(h.challengeDay(today: day(0)) == 39)
+        #expect(h.isBeforeTracking(day(-5)))
+        #expect(!h.isBeforeTracking(day(0)))
+        #expect(!h.isBeforeTracking(day(-40)))           // before the challenge started
+    }
+
+    @Test func baselineStreakContinuesAndBreaks() {
+        let next = [0, 1].map { SetInfo(exerciseID: push, date: day($0), count: 60) }
+        #expect(withBaseline(next).streak(today: day(1)) == 3)
+        #expect(withBaseline(next).streak(today: day(2)) == 3)               // tomorrow not done yet
+        #expect(withBaseline(next).streak(today: day(3)) == 0)               // missed day 2
+        // A run in the app that doesn't reach back to the first tracked day doesn't add the old streak.
+        let gap = [SetInfo(exerciseID: push, date: day(0), count: 60), SetInfo(exerciseID: push, date: day(2), count: 60)]
+        #expect(withBaseline(gap).streak(today: day(2)) == 1)
+    }
+
+    @Test func noBaselineNumbers() {
+        let e = exercise(push, created: 0, [change(0, 60)])
+        let h = ChallengeHistory(exercises: [e], sets: [SetInfo(exerciseID: push, date: day(0), count: 60)], calendar: calendar)
+        #expect(h.daysDone(today: day(0)) == 1)
+        #expect(h.challengeDay(today: day(0)) == 1)
+        #expect(!h.isBeforeTracking(day(-1)))
+    }
+
     @Test func periodTotals() {
         let e = exercise(push, [change(-10, 10)])
         let sets = [SetInfo(exerciseID: push, date: day(0), count: 10), SetInfo(exerciseID: push, date: day(6), count: 5),

@@ -57,6 +57,22 @@ public enum DayStatus: Sendable, Equatable {
     case none, partial, done
 }
 
+/// Progress from before the app, entered once: when the challenge started and the numbers up to the
+/// day before tracking began. Past days aren't invented; the counts just carry over.
+public struct ChallengeBaseline: Codable, Sendable, Equatable {
+    public var startDate: Date
+    public var daysDoneBefore: Int
+    public var streakBefore: Int
+    public var bestBefore: Int
+
+    public init(startDate: Date, daysDoneBefore: Int, streakBefore: Int, bestBefore: Int) {
+        self.startDate = startDate
+        self.daysDoneBefore = daysDoneBefore
+        self.streakBefore = streakBefore
+        self.bestBefore = bestBefore
+    }
+}
+
 /// One exercise on one day: what was done against what was asked.
 public struct ChallengeProgress: Sendable, Equatable {
     public let total: Int
@@ -76,13 +92,15 @@ public struct ChallengeProgress: Sendable, Equatable {
 public struct ChallengeHistory: Sendable {
     public let exercises: [ExerciseInfo]
     public let sets: [SetInfo]
+    public let baseline: ChallengeBaseline?
     private let calendar: Calendar
     private let dayTotals: [UUID: [Date: Int]]
 
-    public init(exercises: [ExerciseInfo], sets: [SetInfo], calendar: Calendar) {
+    public init(exercises: [ExerciseInfo], sets: [SetInfo], calendar: Calendar, baseline: ChallengeBaseline? = nil) {
         self.exercises = exercises
         self.sets = sets
         self.calendar = calendar
+        self.baseline = baseline
         var totals: [UUID: [Date: Int]] = [:]
         for set in sets { totals[set.exerciseID, default: [:]][calendar.startOfDay(for: set.date), default: 0] += set.count }
         dayTotals = totals
@@ -137,7 +155,8 @@ public struct ChallengeHistory: Sendable {
         return exercises.contains { total(of: $0.id, on: day) > 0 } ? .partial : .none
     }
 
-    /// Done days in a row, ending today if today is done, otherwise yesterday.
+    /// Done days in a row, ending today if today is done, otherwise yesterday. A run reaching back to
+    /// the first tracked day continues the streak from before the app.
     public func streak(today: Date) -> Int {
         var day = calendar.startOfDay(for: today)
         if status(on: day) != .done { day = calendar.date(byAdding: .day, value: -1, to: day)! }
@@ -146,11 +165,13 @@ public struct ChallengeHistory: Sendable {
             count += 1
             day = calendar.date(byAdding: .day, value: -1, to: day)!
         }
+        if day < earliest { count += baseline?.streakBefore ?? 0 }
         return count
     }
 
     public func bestStreak(today: Date) -> Int {
-        var best = 0, run = 0
+        var run = baseline?.streakBefore ?? 0
+        var best = max(baseline?.bestBefore ?? 0, run)
         var day = earliest
         let end = calendar.startOfDay(for: today)
         while day <= end {
@@ -160,6 +181,34 @@ public struct ChallengeHistory: Sendable {
         }
         return best
     }
+
+    /// Days completed, including the ones from before the app.
+    public func daysDone(today: Date) -> Int {
+        var count = baseline?.daysDoneBefore ?? 0
+        var day = earliest
+        let end = calendar.startOfDay(for: today)
+        while day <= end {
+            if status(on: day) == .done { count += 1 }
+            day = calendar.date(byAdding: .day, value: 1, to: day)!
+        }
+        return count
+    }
+
+    /// Day number of the challenge today (1 on its first day).
+    public func challengeDay(today: Date) -> Int {
+        let start = calendar.startOfDay(for: baseline?.startDate ?? earliest)
+        return (calendar.dateComponents([.day], from: start, to: calendar.startOfDay(for: today)).day ?? 0) + 1
+    }
+
+    /// Between the challenge's start and the first day tracked in the app: known only as totals.
+    public func isBeforeTracking(_ day: Date) -> Bool {
+        guard let baseline else { return false }
+        let start = calendar.startOfDay(for: day)
+        return start >= calendar.startOfDay(for: baseline.startDate) && start < earliest
+    }
+
+    /// The first day tracked in the app.
+    public var firstTrackedDay: Date { earliest }
 
     /// Sum of an exercise's sets in `[start, end)`.
     public func total(of exerciseID: UUID, in interval: DateInterval) -> Int {
