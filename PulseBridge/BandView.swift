@@ -3,7 +3,7 @@ import PulseBLE
 import PulseKit
 import SwiftUI
 
-/// The Band tab: connection, sync and Apple Health export. Data lives in Summary.
+/// The Band tab: the device, sync and Apple Health export, battery, profile, diagnostics.
 struct BandView: View {
     let coordinator: SyncCoordinator
     let onPair: () -> Void
@@ -20,29 +20,29 @@ struct BandView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 16) {
+                    DeviceHeader(coordinator: coordinator)
                     BandCard(coordinator: coordinator, onPair: onPair)
                     BatteryCard(coordinator: coordinator)
                     NavigationLink {
                         ProfileView(coordinator: coordinator)
                     } label: {
-                        Card(title: "Profile and zones", systemImage: "person.crop.circle", color: .blue) {
+                        Card(title: "Profile and zones", systemImage: "person.crop.circle", color: .blue, chevron: true) {
                             Text(profileSummary).foregroundStyle(.secondary)
                         }
                     }
                     .buttonStyle(.plain)
                     DiagnosticsCard(log: coordinator.diagnostics)
+                    if band.pairedID != nil {
+                        Button("Forget band", role: .destructive) { confirmForget = true }
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+                    }
                 }
                 .padding()
             }
             .background(Color(.systemGroupedBackground))
             .navigationTitle("Band")
-            .toolbar {
-                Menu {
-                    Button("Forget band", role: .destructive) { confirmForget = true }
-                } label: {
-                    Image(systemName: "ellipsis.circle")
-                }
-            }
             .confirmationDialog("Forget this band? You'll need to pair it again. Data on the phone stays.", isPresented: $confirmForget,
                                 titleVisibility: .visible) {
                 Button("Forget band", role: .destructive) {
@@ -50,6 +50,49 @@ struct BandView: View {
                     onPair()
                 }
             }
+        }
+    }
+}
+
+/// The band at a glance: symbol, name, connection and a battery ring.
+private struct DeviceHeader: View {
+    let coordinator: SyncCoordinator
+    private var band: BandClient { coordinator.band }
+
+    var body: some View {
+        HStack(spacing: 16) {
+            Image(systemName: "applewatch.side.right")
+                .font(.system(size: 34))
+                .foregroundStyle(.white)
+                .frame(width: 64, height: 64)
+                .background(Palette.band.gradient, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Pulse One").font(.title3.bold())
+                Label(band.state.label, systemImage: "circle.fill")
+                    .font(.subheadline)
+                    .foregroundStyle(band.state == .connected ? .green : .secondary)
+                    .labelStyle(DotLabelStyle())
+            }
+            Spacer()
+            if let battery = band.battery {
+                ProgressRing(progress: Double(battery) / 100, color: battery < 20 ? .red : .green, size: 56) {
+                    Text("\(battery)%").font(.caption.bold())
+                }
+                .accessibilityLabel("Battery \(battery) percent")
+            }
+        }
+        .padding()
+        .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+    }
+}
+
+/// A small coloured dot before the text.
+private struct DotLabelStyle: LabelStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(spacing: 6) {
+            configuration.icon.font(.system(size: 8))
+            configuration.title.foregroundStyle(.primary)
         }
     }
 }
@@ -143,9 +186,7 @@ private struct BandCard: View {
     private var band: BandClient { coordinator.band }
 
     var body: some View {
-        Card(title: "Band", systemImage: "applewatch.side.right", color: .gray) {
-            LabeledContent("Status", value: band.state.label)
-            LabeledContent("Battery", value: band.battery.map { "\($0)%" } ?? "-")
+        Card(title: "Sync", systemImage: "arrow.triangle.2.circlepath", color: .blue) {
             TimelineView(.periodic(from: .now, by: 30)) { context in
                 VStack(spacing: 12) {
                     LabeledContent("Last sync", value: coordinator.lastSync.map { RelativeTime.text($0, now: context.date) } ?? "Never")

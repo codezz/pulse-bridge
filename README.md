@@ -17,10 +17,13 @@ phone and writes it to **Apple Health**. No account, no cloud, no third-party se
 - **Background sync:** with the app closed (not force-quit) iOS wakes it a few times a day to sync
   from the band; Health export happens on those runs while the phone is unlocked. iOS decides the
   timing, and Background App Refresh must be on.
-- **Summary:** an Oura-style **Sleep** section (sleep score with contributors, stages, night
-  vitals: resting heart rate and HRV), **Steps** toward a 10,000-step goal, heart rate and blood
-  oxygen, each with day / week / month charts from the data stored on the phone.
-- **Activities:** walks the band records on its own (and other workouts) appear on Summary and go
+- **Today:** Fitness-style rings for sleep score, steps and the daily challenge, a day strip to look
+  at any past day, highlights from your data ("resting heart rate 3 below your recent average"),
+  an Oura-style sleep card (score, stages, night vitals), live heart rate with zones and
+  measurements, and vitals tiles with sparklines. Sections can be reordered and hidden.
+- **Trends:** this week against last week for every metric, with highlights; detail screens with
+  day / week / month / 6-month charts you can scrub.
+- **Activities:** walks the band records on its own (and other workouts) appear on Today and go
   to Apple Health as workouts with active energy, steps, distance and average heart rate.
 - **Start activity:** run, walk or ride with a target heart-rate zone. The phone's GPS records the
   route, distance and pace, the band supplies heart rate (and buzzes at the start); the result is
@@ -33,7 +36,7 @@ phone and writes it to **Apple Health**. No account, no cloud, no third-party se
   a Strength training workout with band heart rate.
 - **Profile and zones:** age, sex, height and weight (shared with the band); max and resting heart
   rate come from your own data, and the five Karvonen zones update by themselves.
-- **Live data in Summary:** live heart rate on demand, on-demand HRV and heart-rate measurements,
+- **Live data on Today:** live heart rate on demand, on-demand HRV and heart-rate measurements,
   and today's steps following the band's live count while the app is open.
 - **Band tab:** connection, battery with a 30-day history and daily use, sync, Apple Health export,
   pairing, and a diagnostics log (band traffic and sync events) you can export for bug reports.
@@ -52,7 +55,7 @@ The app is split into a tested Swift package and a thin iOS app:
 | Folder | What it is |
 |---|---|
 | `PulseKit/` | Protocol, sync engine, local store (SwiftData), daily metrics, live feed, and the Bluetooth client (`PulseBLE`). Tested with `swift test`. |
-| `PulseBridge/` | The SwiftUI app: Summary and Band tabs, HealthKit export. |
+| `PulseBridge/` | The SwiftUI app: Today, Trends, Challenge and Band tabs, HealthKit export. |
 | `tools/ble-probe/` | Python (bleak) probe used to reverse engineer the band from a Mac. |
 | `tools/pulse-sync/` | Mac command-line tool that runs the app's real sync engine against the band. |
 | `docs/` | Protocol notes and the manual test checklist. |
@@ -121,7 +124,7 @@ Bridge's Start activity; Fitness shows zones after the workout.
 
 ## Testing on a device
 
-See [docs/TESTING.md](docs/TESTING.md) for the manual checklist, grouped by tab (pairing, Summary,
+See [docs/TESTING.md](docs/TESTING.md) for the manual checklist, grouped by tab (pairing, Today, Trends, Challenge,
 activities, Band, sync and Health export). Changes per version are in [CHANGELOG.md](CHANGELOG.md).
 
 ## License

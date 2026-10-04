@@ -11,9 +11,10 @@ connection at a time.
    on the phone and is not written to Health.
 3. Band > Profile and zones is pre-filled from the band (age, sex, height, weight).
 
-## Summary tab
+## Today tab
 
-Order: status header, Sleep, Steps, Heart rate, Activities, Blood oxygen.
+Tabs: Today, Trends, Challenge, Band. Today: status line, day strip, rings, then the sections in the
+order set in Edit Today (default: Highlights, Sleep, Heart rate, Vitals, Daily challenge, Activities).
 
 **Header**
 
@@ -22,125 +23,152 @@ Order: status header, Sleep, Steps, Heart rate, Activities, Blood oxygen.
    Band tab.
 5. On launch, cards show grey placeholders for a moment, never "No data" before the data loaded.
 
+**Day strip, rings, highlights**
+
+6. The day strip shows this week (Monday first) with tiny rings per day; chevrons move by week, the
+   next week is disabled while it contains today, future days are dimmed. Tapping a past day shows
+   that day everywhere: the title becomes the date, a Today button returns.
+7. On a past day: no live heart rate and no HRV / HR buttons (the day's stored readings instead); the
+   challenge card shows that day's rings and "Done" / "Partly done" / "Nothing logged" without Log.
+8. Rings: Sleep score, Steps (of 10,000), Challenge, with one line each. Reaching 10,000 steps or
+   finishing the challenge for today while the screen is open: a sparkle burst and a success haptic
+   (once, not on every open). Over 100% steps draws a second, darker lap.
+9. Highlights: up to 3 lines like "Resting heart rate 56 bpm, 3 below your recent average" with a
+   green (better) or orange (worse) arrow; tapping opens the metric. With little data: "Nothing
+   stands out yet".
+10. Edit Today: switch sections off and drag to reorder; the order stays after relaunching.
+
 **Sleep**
 
-6. After a night with the band: score ring and label, time asleep, fell asleep and woke up times,
+11. After a night with the band: score ring and label, time asleep, fell asleep and woke up times,
    a stage bar, resting HR and HRV. Without one: "No sleep data for last night".
-7. Sleep detail D: score with 7 contributors, stage chart (Awake / REM / Core / Deep), stage times
+12. Sleep detail D: score with 7 contributors, stage chart (Awake / REM / Core / Deep), stage times
    with typical ranges, timing (efficiency, time to fall asleep, awakenings), night heart-rate chart
    with the lowest point, resting HR and HRV rows that open their trends. The info button explains
    the score. Regularity shows "midpoint HH:MM · usual HH:MM" once 3 earlier nights exist.
-8. Sleep detail W and M: stacked stage bars per night, averages (time asleep, score, fell asleep,
+13. Sleep detail W and M: stacked stage bars per night, averages (time asleep, score, fell asleep,
    woke up, bedtime consistency) and the resting HR trend.
 
-**Steps**
+**Vitals and steps**
 
-9. Today's steps, % of the 10,000 goal, distance and steps per hour. With the app open and the band
-   connected, the number follows the band's live total while you walk.
-10. Steps detail: D shows steps per hour; W and M show daily totals with a dashed goal line and
-   "Goal reached on N of M days".
+14. Vitals tiles: Resting HR and HRV (last night, 14-night sparkline), Blood oxygen (latest, today's
+   readings), Steps (today, steps per hour). Steps follow the band's live total while connected.
+   Tapping a tile opens its detail on that day.
+15. Steps detail: D shows steps per hour; W and M show daily totals with a dashed goal line and
+   "Goal reached on N of M days"; 6M shows weekly averages. Every detail shows a big average, the
+   range under it and the metric's highlight on top when there is one.
 
 **Heart rate**
 
-11. Live off: latest stored reading, "today 54-118 · resting 58", today's readings from 00:00.
-12. Tap Live: the button turns into a red pill, the chart eases to the last hour (stored readings
+16. Live off: latest stored reading, "today 54-118 · resting 58", today's readings from 00:00.
+17. Tap Live: the button turns into a red pill, the chart eases to the last hour (stored readings
    faded), "Starting the sensor..." then the live number, a heart beating at that rate and the zone
    name. The line changes color with the zone. With Reduce Motion on, the heart stays still.
-13. Take the band off for 2 minutes: "Not on wrist?". Walk out of range: "Not connected", the line
+18. Take the band off for 2 minutes: "Not on wrist?". Walk out of range: "Not connected", the line
    breaks and continues after the reconnect. Tap the pill: back to today's chart.
-14. HRV 75 s / Heart rate 30 s run inside the card (progress, Cancel), results inline with Done, a
+19. HRV 75 s / Heart rate 30 s run inside the card (progress, Cancel), results inline with Done, a
    success haptic at the end. Tapping the headline or chart opens the Heart rate detail; tapping the
    buttons doesn't.
-15. Pull down to sync while live is on: the sync completes and the live line continues.
+20. Pull down to sync while live is on: the sync completes and the live line continues.
 
 **Activities**
 
-16. The card shows the latest activity and the 7-day count; tapping it opens the list. A walk the band
+21. The card shows the latest activity and the 7-day count; tapping it opens the list (GPS activities
+   with a route thumbnail, distance, time and pace). A walk the band
    detected appears after a sync and in Health > Workouts after the next export.
-17. Start opens a half-height sheet (Run / Walk / Ride, zones with bpm, warnings). Location denied:
+22. Start opens a half-height sheet (Run / Walk / Ride, zones with bpm, warnings). Location denied:
    Start disabled with Open Settings; allowing it in Settings clears the warning.
-18. Run, Zone 2 > Start: the sheet closes, a strong haptic, the band buzzes 3 times; the live screen
-   shows time, distance, pace, heart rate (after about 15 s) with zone status. Lock the phone, run
+23. Run, Zone 2 > Start: the sheet closes, a strong haptic, the band buzzes 3 times; the live screen
+   shows time, distance, pace, heart rate (after about 15 s); swipe for the heart-rate page (zone,
+   time in target) and splits, the Pause / Finish buttons stay at the bottom. Lock the phone, run
    10+ minutes, unlock: still recording, heart rate included.
-19. Finish > Save: summary with map, splits and zones; Health shows a Running workout with route and
+24. Finish > Save: summary with map, splits and zones; Health shows a Running workout with route and
    heart rate from Pulse Bridge. Band distance for that time span is not added to Health twice.
-20. Finish > Discard asks for confirmation first.
-21. Kill the app during an activity and reopen: "Unfinished activity" offers Save or Discard.
-22. Zone 2 run with "Zone alerts on the band" on (bell on the live screen): after 15 s above the zone
+25. Finish > Discard asks for confirmation first.
+26. Kill the app during an activity and reopen: "Unfinished activity" offers Save or Discard.
+27. Zone 2 run with "Zone alerts on the band" on (bell on the live screen): after 15 s above the zone
    the band buzzes 3 times, after 15 s below 2 times (can you feel the 2? if not, report it), at most
    once a minute while outside; also with the screen locked. With the toggle off: no alerts.
 
-**Daily challenge**
+**Blood oxygen**
 
-23. Before setup the card offers "Set up challenge"; setup is pre-filled with Push-ups 60 and Squats 60
-   (reps). Start: the card shows two rings at 0/60 and "Start a streak today".
-24. Log: +5 / +10 / +20 and Custom add sets; the ring and the big number update with a light tap
+28. The Blood oxygen tile shows the latest reading and today's range; detail D shows the day's readings (arrows move
+   between days, next is disabled on today), W and M one value per day; "No data" without readings.
+
+**Charts**
+
+29. In every detail chart (HR / SpO2 day, steps per hour, W/M bars, night HR, sleep W/M, resting HR
+   trend), press and drag: a rule and a bubble with value and time or day follow the finger, with a
+   light tick per point. Scrolling the page over a chart still works.
+
+## Trends tab
+
+30. Highlights (all of them), then a card per metric (time asleep, steps, resting HR, HRV, heart rate,
+   blood oxygen): this week's average, the change against last week with a green or orange arrow,
+   and a 30-day sparkline; "Not enough data yet" with fewer than 4 days in either week. Tapping
+   opens the detail.
+
+## Challenge tab
+
+31. Before setup the Challenge tab and the Today card offer "Set up challenge"; setup is pre-filled with Push-ups 60 and Squats 60
+   (reps). Start: the tab shows a ring per exercise at 0/60 and "Start a streak today".
+32. In the tab (or Log on the Today card, which opens it): +5 / +10 / +20 and Custom add sets; the ring and the big number update with a light tap
    haptic; Undo last removes the latest set of that exercise today (disabled when there is none).
    Reaching both targets: a success haptic and "Done for today" on the card.
-25. Exercises (gear): change a target; the card uses it today, History shows earlier days with the old
+33. Exercises (gear): change a target; the card uses it today, the calendar shows earlier days with the old
    target. Turn on "+5 every Monday": the target grows from next Monday, not today. Add an exercise
    (reps or seconds); archive one (confirmation): it leaves the card and logger, its history stays.
-26. History: current and best streak (an unfinished today doesn't break the streak), month calendar
+34. Below the logging: current and best streak (an unfinished today doesn't break the streak), month calendar
    (green done, light partial, gray nothing, today ringed, previous/next month), tap a day for its
    sets and targets; a card per exercise with totals and the last 14 days against the target.
-27. Exercises > Progress before the app: enter start date, days done, streak and best (e.g. 27 Aug,
-   33, 1, 14). History shows "🔥 2 day streak, best 14 · 34 days done of 39"; days between the start
+35. Exercises > Progress before the app: enter start date, days done, streak and best (e.g. 27 Aug,
+   33, 1, 14). the tab shows "🔥 2 day streak, best 14 · 34 days done of 39"; days between the start
    and your first day in the app have a dashed ring and can't be opened; earlier days are plain.
    With an average per day entered (e.g. 50), each exercise's all-time total includes 33 x 50.
    Top row: streak (best), days done (of day number), % of days hit. Each exercise has a card:
    all-time total, bars for the last 14 days (full color when the target was hit) with the target as
    a dashed line, and Week / Month / Avg/day.
-28. Share: the share button opens the share sheet with an image of today's numbers, the streak and the
+36. Share: the share button opens the share sheet with an image of today's numbers, the streak and the
    last 7 days.
-29. Timed session: Start timed session shows a timer and band heart rate; log sets; Finish session:
+37. Timed session: Start timed session shows a timer and band heart rate; log sets; Finish session:
    Health shows a Strength training workout from Pulse Bridge with that duration and heart rate.
    Lock the phone for a few minutes during the session: heart rate keeps coming (no gap in Health).
    Cancel session keeps the sets but saves nothing to Health. Live heart rate on the Heart rate card
    keeps running when a session ends. Kill the app mid-session and reopen: the session is saved up
    to its last set and reaches Health with the next sync.
 
-**Blood oxygen**
-
-30. The card shows the latest reading and today's range; detail D shows the day's readings (arrows move
-   between days, next is disabled on today), W and M one value per day; "No data" without readings.
-
-**Charts**
-
-31. In every detail chart (HR / SpO2 day, steps per hour, W/M bars, night HR, sleep W/M, resting HR
-   trend), press and drag: a rule and a bubble with value and time or day follow the finger, with a
-   light tick per point. Scrolling the page over a chart still works.
-
 ## Band tab
 
-32. Status "Connected", battery percentage, last sync and Health export as "N min ago".
-33. Sync (or pull down on Summary): "Last sync" updates but "Health export" does not.
+38. Top: "Pulse One" with a green dot and "Connected", battery ring. Sync card: last sync, Health
+   export and background sync as "N min ago". Forget band is the last button.
+39. Sync (or pull down on Summary): "Last sync" updates but "Health export" does not.
     "Export to Health now" writes what is queued without talking to the band.
-34. Forget band asks for confirmation, then shows the pairing sheet.
-35. Diagnostics: after a sync the size grows; Export log opens the share sheet with "sync started",
+40. Forget band asks for confirmation, then shows the pairing sheet.
+41. Diagnostics: after a sync the size grows; Export log opens the share sheet with "sync started",
     sent/received hex lines and "sync finished: new ..."; the serial appears only as its last 2
     digits. Clear asks for confirmation, then empties it.
-36. Battery card: "Collecting data" at first, a 30-day chart after a few connections, "About N% per
+42. Battery card: "Collecting data" at first, a 30-day chart after a few connections, "About N% per
    day" after 2 days (charging doesn't lower it).
-37. Background App Refresh off for Pulse Bridge: the Band card shows the hint to turn it on.
+43. Background App Refresh off for Pulse Bridge: the Band card shows the hint to turn it on.
 
 ## Sync and Health
 
-38. Health app: only data from after "Health data since" appears, from Pulse Bridge, at the right times.
-39. Sync twice: the second adds nothing and Health shows no duplicates.
-40. Walk out of range mid-sync: an error shows; come back and sync: it completes, nothing duplicated.
-41. Deny Heart Rate in Settings > Health > Data Access > Pulse Bridge and wait for the hourly export:
+44. Health app: only data from after "Health data since" appears, from Pulse Bridge, at the right times.
+45. Sync twice: the second adds nothing and Health shows no duplicates.
+46. Walk out of range mid-sync: an error shows; come back and sync: it completes, nothing duplicated.
+47. Deny Heart Rate in Settings > Health > Data Access > Pulse Bridge and wait for the hourly export:
     "Not allowed in Health: heartRate" shows. Allow it again: the queued samples reach Health.
-42. Background the app: the band disconnects (unless an activity is running). Reopen within the hour: it only reconnects. Reopen after
+48. Background the app: the band disconnects (unless an activity is running). Reopen within the hour: it only reconnects. Reopen after
     an hour: a sync with Health export runs by itself.
-43. Sync after more than 3 days without syncing: every type completes (multi-page read).
-44. Sync during a walk, sync again 10 minutes later: the later minutes of that block reach Health.
-45. Change the phone's time zone and sync: the band shows the new local time and no data is missing.
-46. Background sync: leave the app in the background (don't force-quit) with the band nearby for a
+49. Sync after more than 3 days without syncing: every type completes (multi-page read).
+50. Sync during a walk, sync again 10 minutes later: the later minutes of that block reach Health.
+51. Change the phone's time zone and sync: the band shows the new local time and no data is missing.
+52. Background sync: leave the app in the background (don't force-quit) with the band nearby for a
    few hours: "Background sync" on the Band card shows a time and new data is in Health (if the
    phone was unlocked at that moment). Diagnostics shows "background sync started".
-47. Band away during a background run: diagnostics shows "band not in range"; opening the app later
+53. Band away during a background run: diagnostics shows "band not in range"; opening the app later
    syncs right away.
-48. Health > Steps or Walking + Running Distance > Show All Data: a new sample shows device
+54. Health > Steps or Walking + Running Distance > Show All Data: a new sample shows device
    "Pulse One"; distance samples are one minute long.
-49. Fitness workout with the band paired in Settings > Bluetooth: heart rate shows in the workout;
+55. Fitness workout with the band paired in Settings > Bluetooth: heart rate shows in the workout;
    Pulse Bridge still syncs afterwards.
