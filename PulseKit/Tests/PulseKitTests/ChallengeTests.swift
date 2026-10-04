@@ -42,19 +42,22 @@ struct ChallengeTests {
         #expect(h.target(of: e, on: day(15)) == 70)
     }
 
-    /// Two years of daily sets with weekly growth: the streak must stay instant (it runs on every tap).
+    /// Five years of daily sets with weekly growth: the streak must stay quick (it runs on every tap).
+    /// The old day-by-day target loop took seconds here; the limit leaves room for a busy machine.
     @Test func streaksStayFastWithAutoGrowth() {
-        let es = [exercise(push, created: -730, [change(-730, 10, step: 1, weekday: 2)]),
-                  exercise(squat, created: -730, [change(-730, 10, step: 1, weekday: 2)])]
-        let sets = (-730...0).flatMap { [SetInfo(exerciseID: push, date: day($0), count: 500), SetInfo(exerciseID: squat, date: day($0), count: 500)] }
+        let span = 1825
+        let es = [exercise(push, created: -span, [change(-span, 10, step: 1, weekday: 2)]),
+                  exercise(squat, created: -span, [change(-span, 10, step: 1, weekday: 2)])]
+        let sets = (-span...0).flatMap { [SetInfo(exerciseID: push, date: day($0), count: 5000), SetInfo(exerciseID: squat, date: day($0), count: 5000)] }
         let h = ChallengeHistory(exercises: es, sets: sets, calendar: calendar)
         let start = Date()
-        #expect(h.bestStreak(today: day(0)) == 731)
-        #expect(h.streak(today: day(0)) == 731)
-        #expect(Date().timeIntervalSince(start) < 0.2)
-        // Day -730 is a Saturday: 105 Mondays from day -728 up to today (a Monday): 10 + 105
-        #expect(h.target(of: es[0], on: day(0)) == 115)
-        #expect(h.target(of: es[0], on: day(-1)) == 114)
+        #expect(h.bestStreak(today: day(0)) == span + 1)
+        #expect(h.streak(today: day(0)) == span + 1)
+        #expect(Date().timeIntervalSince(start) < 1.5)
+        // Mondays after the change day, counted the slow way
+        let mondays = (-span + 1...0).filter { calendar.component(.weekday, from: day($0)) == 2 }.count
+        #expect(h.target(of: es[0], on: day(0)) == 10 + mondays)
+        #expect(h.target(of: es[0], on: day(-1)) == 10 + mondays - 1)     // today is a Monday
     }
 
     @Test func statusDonePartialNone() {

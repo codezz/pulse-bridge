@@ -155,11 +155,11 @@ struct ChallengeSetupView: View {
     }
 }
 
-/// Log sets through the day, optionally inside a timed session that goes to Health.
-struct ChallengeLogger: View {
+/// Today's sets per exercise (ring, quick buttons, undo) and the timed session, as List sections.
+/// Sessions go to Health as Strength training workouts.
+struct ChallengeLogSections: View {
     let model: ChallengeModel
     let coordinator: SyncCoordinator
-    @Environment(\.dismiss) private var dismiss
     @State private var customFor: ExerciseInfo?
     @State private var customText = ""
 
@@ -167,22 +167,12 @@ struct ChallengeLogger: View {
     private var totalToday: Int { model.exercises.reduce(0) { $0 + history.total(of: $1.id, on: .now) } }
 
     var body: some View {
-        NavigationStack {
-            List {
-                ForEach(model.exercises) { exercise in
-                    exerciseSection(exercise)
-                }
-                sessionSection
+        Group {
+            ForEach(model.exercises) { exercise in
+                exerciseSection(exercise)
             }
-            .navigationTitle("Log sets")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } }
-                ToolbarItem(placement: .topBarLeading) {
-                    NavigationLink { ChallengeSettingsView(model: model) } label: { Image(systemName: "gearshape") }
-                        .accessibilityLabel("Exercises and targets")
-                }
-            }
+            sessionSection
+        }
             .alert("Log \(customFor?.name ?? "")", isPresented: Binding(get: { customFor != nil }, set: { if !$0 { customFor = nil } })) {
                 TextField("Count", text: $customText).keyboardType(.numberPad)
                 Button("Log") {
@@ -195,21 +185,26 @@ struct ChallengeLogger: View {
             }
             .sensoryFeedback(.impact(weight: .light), trigger: totalToday)
             .sensoryFeedback(.success, trigger: history.status(on: .now) == .done) { _, done in done }
-        }
     }
 
     private func exerciseSection(_ exercise: ExerciseInfo) -> some View {
         let progress = history.progress(of: exercise, on: .now)
         return Section(exercise.name) {
-            HStack(alignment: .firstTextBaseline) {
-                Text("\(progress.total)").numberFont(34)
-                Text("/ \(progress.target) \(exercise.unit.short)").foregroundStyle(.secondary)
-                Spacer()
-                if progress.isDone {
-                    Image(systemName: "checkmark.circle.fill").foregroundStyle(.green).accessibilityLabel("Done")
+            HStack(spacing: 16) {
+                ProgressRing(progress: progress.fraction, color: Palette.challenge, size: 72) {
+                    Image(systemName: progress.isDone ? "checkmark" : "figure.strengthtraining.traditional")
+                        .font(.title3.bold()).foregroundStyle(progress.isDone ? .green : Palette.challenge)
+                }
+                VStack(alignment: .leading, spacing: 2) {
+                    HStack(alignment: .firstTextBaseline, spacing: 4) {
+                        Text("\(progress.total)").numberFont(34)
+                        Text("/ \(progress.target) \(exercise.unit.short)").foregroundStyle(.secondary)
+                    }
+                    Text(progress.isDone ? "Done for today" : "\(max(0, progress.target - progress.total)) to go")
+                        .font(.caption).foregroundStyle(progress.isDone ? .green : .secondary)
                 }
             }
-            ProgressView(value: min(progress.fraction, 1)).tint(.orange)
+            .accessibilityElement(children: .combine)
             HStack {
                 ForEach([5, 10, 20], id: \.self) { step in
                     Button("+\(step)") { model.log(step, to: exercise.id) }

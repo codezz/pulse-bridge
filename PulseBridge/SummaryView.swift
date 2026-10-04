@@ -28,7 +28,6 @@ struct SummaryView: View {
     let onShowBand: () -> Void
     let onShowChallenge: () -> Void
     @State private var showStart = false
-    @State private var showChallengeLogger = false
     @State private var showEdit = false
     @State private var layout = TodayLayout()
 
@@ -66,9 +65,6 @@ struct SummaryView: View {
             }
             .summaryDestinations(service: model.service)
             .refreshable { await coordinator.sync() }
-            .sheet(isPresented: $showChallengeLogger) {
-                ChallengeLogger(model: coordinator.challenge, coordinator: coordinator)
-            }
             .sheet(isPresented: $showStart) {
                 NavigationStack {
                     StartActivityForm(coordinator: coordinator) { showStart = false }
@@ -105,7 +101,7 @@ struct SummaryView: View {
                 VitalsGrid(day: day, metrics: model.metrics, coordinator: coordinator, isToday: model.isToday)
             }
         case .challenge:
-            ChallengeCard(model: coordinator.challenge, day: day, onLog: { showChallengeLogger = true }, onOpen: onShowChallenge)
+            ChallengeCard(model: coordinator.challenge, day: day, onLog: onShowChallenge, onOpen: onShowChallenge)
         case .activities:
             ActivitiesCard(workouts: recentWorkouts) { showStart = true }
         }

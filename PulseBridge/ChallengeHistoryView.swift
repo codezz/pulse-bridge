@@ -2,9 +2,11 @@ import Charts
 import PulseKit
 import SwiftUI
 
-/// Month calendar, streaks, totals and how targets grew.
+/// The Challenge tab's screen: today's logging and session, then streaks, the month calendar and
+/// a card per exercise.
 struct ChallengeHistoryView: View {
     let model: ChallengeModel
+    let coordinator: SyncCoordinator
     @State private var month = Calendar.current.dateInterval(of: .month, for: .now)!.start
     @State private var selectedDay: Date?
     @ScaledMetric(relativeTo: .caption) private var cellSize: CGFloat = 32
@@ -14,6 +16,7 @@ struct ChallengeHistoryView: View {
 
     var body: some View {
         List {
+            ChallengeLogSections(model: model, coordinator: coordinator)
             Section {
                 HStack(alignment: .top) {
                     let streak = history.streak(today: .now)
