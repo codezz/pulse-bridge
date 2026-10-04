@@ -12,8 +12,11 @@ phone and writes it to **Apple Health**. No account, no cloud, no third-party se
 - **Sync from the band:** heart rate (spot checks and per-minute), HRV, blood oxygen, steps,
   distance, sleep stages and workouts, incrementally, with resume after a dropped connection.
 - **Apple Health export:** automatic, at most hourly, or manually with "Export to Health now".
-  Stable sync IDs, so nothing is duplicated; per-minute steps so Health's source priority works
-  well next to your iPhone's own step counting.
+  Stable sync IDs, so nothing is duplicated; steps and distance per minute so Health's source
+  priority works well next to your iPhone's own step counting. Samples show "Pulse One" as the device.
+- **Background sync:** with the app closed (not force-quit) iOS wakes it a few times a day to sync
+  from the band; Health export happens on those runs while the phone is unlocked. iOS decides the
+  timing, and Background App Refresh must be on.
 - **Summary:** an Oura-style **Sleep** section (sleep score with contributors, stages, night
   vitals: resting heart rate and HRV), **Steps** toward a 10,000-step goal, heart rate and blood
   oxygen, each with day / week / month charts from the data stored on the phone.
@@ -22,12 +25,14 @@ phone and writes it to **Apple Health**. No account, no cloud, no third-party se
 - **Start activity:** run, walk or ride with a target heart-rate zone. The phone's GPS records the
   route, distance and pace, the band supplies heart rate (and buzzes at the start); the result is
   saved with a map, splits and time in zones, and goes to Apple Health as a workout with its route.
+  Optional zone alerts: the band buzzes 3 times after 15 s above the target zone and 2 times after
+  15 s below (at most once a minute), also with the screen locked.
 - **Profile and zones:** age, sex, height and weight (shared with the band); max and resting heart
   rate come from your own data, and the five Karvonen zones update by themselves.
 - **Live data in Summary:** live heart rate on demand, on-demand HRV and heart-rate measurements,
   and today's steps following the band's live count while the app is open.
-- **Band tab:** connection, battery, sync, Apple Health export, pairing, and a diagnostics log
-  (band traffic and sync events) you can export for bug reports.
+- **Band tab:** connection, battery with a 30-day history and daily use, sync, Apple Health export,
+  pairing, and a diagnostics log (band traffic and sync events) you can export for bug reports.
 - **Safe by design:** the commands that reset or wipe the band (`12`, `2E`, `61`, history delete
   mode `99`) can't be built by the code at all.
 
@@ -95,7 +100,20 @@ The band accepts one connection at a time, so close the iPhone app (or nRF Conne
 
 Health > Browse > Activity > Steps > Data Sources & Access > Edit: move Pulse Bridge above iPhone
 (same for Walking + Running Distance). Health then uses the band's steps where both overlap and
-the phone's steps when the band wasn't worn.
+the phone's steps when the band wasn't worn. On current iOS the Fitness app follows the same
+priority; older versions of Fitness added both sources together.
+
+## Use the band in Fitness workouts
+
+The band is also a standard Bluetooth heart-rate monitor, so Apple's Fitness app can use it:
+
+1. Close Pulse Bridge (swipe it away) so the band advertises.
+2. Settings > Bluetooth: pair "Pulse One ...".
+3. Fitness > Workout > Heart Rate Devices: the band is listed; start a workout. Heart rate appears
+   after about 15 s.
+
+Pulse Bridge keeps syncing alongside. Live zone training with buzzes on the band is only in Pulse
+Bridge's Start activity; Fitness shows zones after the workout.
 
 ## Testing on a device
 
