@@ -1,3 +1,4 @@
+import MapKit
 import PulseKit
 import SwiftUI
 
@@ -171,7 +172,7 @@ private struct RecordedActivityRow: View {
     var body: some View {
         HStack(spacing: 12) {
             if recorder.points.count > 1 {
-                RouteMap(points: recorder.points, interactive: false)
+                RouteThumbnail(points: recorder.points)
                     .frame(width: 64, height: 64)
                     .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             } else {
@@ -188,5 +189,54 @@ private struct RecordedActivityRow: View {
             }
         }
         .padding(.vertical, 2)
+    }
+}
+
+/// A route snapshot for list rows: one rendered image per activity (cached), not a live map per row.
+private struct RouteThumbnail: View {
+    let points: [GeoPoint]
+    @State private var image: UIImage?
+    @Environment(\.displayScale) private var scale
+    private static let cache = NSCache<NSString, UIImage>()
+
+    private var key: String { "\(points.first?.date.timeIntervalSince1970 ?? 0)-\(points.count)" }
+
+    var body: some View {
+        Group {
+            if let image {
+                Image(uiImage: image).resizable().scaledToFill()
+            } else {
+                Color(.tertiarySystemFill)
+            }
+        }
+        .accessibilityLabel("Route map")
+        .task(id: key) { image = await render() }
+    }
+
+    private func render() async -> UIImage? {
+        if let cached = Self.cache.object(forKey: key as NSString) { return cached }
+        let coordinates = points.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) }
+        let rect = MKPolyline(coordinates: coordinates, count: coordinates.count).boundingMapRect
+        let pad = max(rect.size.width, rect.size.height) * 0.25 + 200
+        let options = MKMapSnapshotter.Options()
+        options.mapRect = rect.insetBy(dx: -pad, dy: -pad)
+        options.size = CGSize(width: 64, height: 64)
+        options.scale = scale
+        guard let snapshot = try? await MKMapSnapshotter(options: options).start() else { return nil }
+        let image = UIGraphicsImageRenderer(size: options.size).image { context in
+            snapshot.image.draw(at: .zero)
+            let path = UIBezierPath()
+            for (index, coordinate) in coordinates.enumerated() {
+                let point = snapshot.point(for: coordinate)
+                index == 0 ? path.move(to: point) : path.addLine(to: point)
+            }
+            UIColor(Palette.activity).setStroke()
+            path.lineWidth = 2.5
+            path.lineCapStyle = .round
+            path.lineJoinStyle = .round
+            path.stroke()
+        }
+        Self.cache.setObject(image, forKey: key as NSString)
+        return image
     }
 }

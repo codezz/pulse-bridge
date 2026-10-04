@@ -89,15 +89,20 @@ struct DayStrip: View {
 }
 
 /// Rings for the day with one line per ring, and a celebration when a goal is reached.
+/// Reads the live step count itself, so only the hero redraws on live updates.
 struct TodayHero: View {
     let day: Date
     let metrics: DailyMetrics?
-    let challenge: ChallengeModel
-    let liveSteps: Int?
+    let coordinator: SyncCoordinator
     let isToday: Bool
+    let isLoaded: Bool
+
+    private var challenge: ChallengeModel { coordinator.challenge }
 
     var body: some View {
-        let values = DayRings.of(day, metrics: metrics, challenge: challenge, liveSteps: isToday ? liveSteps : nil)
+        let liveSteps = isToday ? coordinator.live.activity?.steps : nil
+        let values = DayRings.of(day, metrics: metrics, challenge: challenge, liveSteps: liveSteps)
+        let context = "\(day.timeIntervalSince1970)-\(isLoaded)"
         HStack(spacing: 20) {
             ActivityRings(rings: values.rings, size: 118)
             VStack(alignment: .leading, spacing: 10) {
@@ -111,8 +116,8 @@ struct TodayHero: View {
         }
         .padding()
         .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
-        .celebrates(isToday && values.steps >= 1)
-        .celebrates(isToday && challenge.history.status(on: day) == .done)
+        .celebrates(isToday && values.steps >= 1, context: context)
+        .celebrates(isToday && challenge.history.status(on: day) == .done, context: context)
     }
 
     private func row(_ title: String, _ color: Color, _ value: String) -> some View {

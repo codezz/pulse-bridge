@@ -15,14 +15,15 @@ struct MetricDetailView: View {
     @State private var day: Date
     @State private var metrics: DailyMetrics?
     @State private var error: String?
+    @State private var insight: Insight?
 
     var body: some View {
         List {
             Section {
                 DayRangeHeader(span: $range, day: $day, firstDay: metrics?.days.first)
             }
-            if let topic = metric.insightTopic {
-                TopicInsightRow(service: service, topic: topic)
+            if let insight {
+                TopicInsightRow(insight: insight)
             }
             Section {
                 if let error {
@@ -151,6 +152,7 @@ struct MetricDetailView: View {
     private func load() {
         do {
             metrics = try service.load(days: range.days, endingOn: day)
+            insight = metric.insightTopic.flatMap { topicInsight($0, service: service, day: day) }
             error = nil
         } catch {
             self.error = "Couldn't load data: \(error.localizedDescription)"

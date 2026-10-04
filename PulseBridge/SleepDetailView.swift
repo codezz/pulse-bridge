@@ -9,13 +9,16 @@ struct SleepDetailView: View {
     @State private var metrics: DailyMetrics?
     @State private var error: String?
     @State private var showScoreInfo = false
+    @State private var insight: Insight?
 
     var body: some View {
         List {
             Section {
-                DayRangeHeader(span: $span, day: $day, firstDay: metrics?.days.first)
+                DayRangeHeader(span: $span, day: $day, firstDay: metrics?.days.first, spans: [.day, .week, .month])
             }
-            TopicInsightRow(service: service, topic: .sleep)
+            if let insight {
+                TopicInsightRow(insight: insight)
+            }
             if let error {
                 Label(error, systemImage: "exclamationmark.triangle").foregroundStyle(.red)
             } else if span == .day {
@@ -198,6 +201,7 @@ struct SleepDetailView: View {
     private func load() {
         do {
             metrics = try service.load(days: span.days, endingOn: day)
+            insight = topicInsight(.sleep, service: service, day: day)
             error = nil
         } catch {
             self.error = "Couldn't load data: \(error.localizedDescription)"

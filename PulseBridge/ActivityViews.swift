@@ -321,17 +321,15 @@ struct ActivitySummaryView: View {
     }
 }
 
-/// The route of a GPS activity. `interactive: false` for list thumbnails.
+/// The route of a GPS activity on a map you can move.
 struct RouteMap: View {
     let points: [GeoPoint]
-    var interactive = true
 
     var body: some View {
-        Map(interactionModes: interactive ? .all : []) {
+        Map {
             MapPolyline(coordinates: points.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) })
-                .stroke(Palette.activity, lineWidth: interactive ? 4 : 3)
+                .stroke(Palette.activity, lineWidth: 4)
         }
-        .allowsHitTesting(interactive)
         .accessibilityLabel("Route map")
     }
 }

@@ -183,11 +183,21 @@ struct SectionTitle: View {
     }
 }
 
-/// A short sparkle burst and a success haptic when `done` changes to true (not on appear).
-private struct Celebration: ViewModifier {
+/// A short sparkle burst and a success haptic when `done` changes to true while the view is on
+/// screen and `context` stays the same (so loading data, picking another day or coming back from
+/// another tab doesn't count as reaching the goal).
+private struct Celebration<Context: Hashable>: ViewModifier {
     let done: Bool
+    let context: Context
     @State private var burst = false
+    @State private var fired = 0
+    @State private var visible = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    private struct Snapshot: Equatable {
+        let done: Bool
+        let context: Context
+    }
 
     func body(content: Content) -> some View {
         content
@@ -204,9 +214,12 @@ private struct Celebration: ViewModifier {
                     .allowsHitTesting(false)
                 }
             }
-            .sensoryFeedback(.success, trigger: done) { old, new in !old && new }
-            .onChange(of: done) { old, new in
-                guard !old, new else { return }
+            .sensoryFeedback(.success, trigger: fired)
+            .onAppear { visible = true }
+            .onDisappear { visible = false }
+            .onChange(of: Snapshot(done: done, context: context)) { old, new in
+                guard visible, old.context == new.context, !old.done, new.done else { return }
+                fired += 1
                 withAnimation(.spring(duration: 0.5)) { burst = true }
                 Task {
                     try? await Task.sleep(for: .seconds(1.2))
@@ -217,5 +230,5 @@ private struct Celebration: ViewModifier {
 }
 
 extension View {
-    func celebrates(_ done: Bool) -> some View { modifier(Celebration(done: done)) }
+    func celebrates(_ done: Bool, context: some Hashable) -> some View { modifier(Celebration(done: done, context: context)) }
 }

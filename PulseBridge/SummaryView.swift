@@ -24,7 +24,7 @@ extension View {
 
 struct SummaryView: View {
     let coordinator: SyncCoordinator
-    @Bindable var model: SummaryModel
+    let model: SummaryModel
     let onShowBand: () -> Void
     let onShowChallenge: () -> Void
     @State private var showStart = false
@@ -39,13 +39,15 @@ struct SummaryView: View {
                 VStack(spacing: 16) {
                     SummaryHeader(coordinator: coordinator, onTap: onShowBand)
                         .unredacted()
-                    DayStrip(selected: $model.selectedDay) { DayRings.of($0, metrics: model.metrics, challenge: coordinator.challenge) }
+                    DayStrip(selected: Binding(get: { model.selectedDay }, set: { model.select($0) })) {
+                        DayRings.of($0, metrics: model.metrics, challenge: coordinator.challenge)
+                    }
                         .unredacted()
                     if let error = model.error {
                         Label("Couldn't load data: \(error)", systemImage: "exclamationmark.triangle").foregroundStyle(.red)
                     }
-                    TodayHero(day: day, metrics: model.metrics, challenge: coordinator.challenge,
-                              liveSteps: coordinator.live.activity?.steps, isToday: model.isToday)
+                    TodayHero(day: day, metrics: model.metrics, coordinator: coordinator, isToday: model.isToday,
+                              isLoaded: model.isLoaded)
                     ForEach(layout.visible) { section in
                         sectionView(section)
                     }
@@ -60,7 +62,7 @@ struct SummaryView: View {
             .navigationTitle(model.isToday ? "Today" : day.formatted(.dateTime.weekday(.wide).day().month()))
             .toolbar {
                 if !model.isToday {
-                    Button("Today") { model.selectedDay = Calendar.current.startOfDay(for: .now) }
+                    Button("Today") { model.select(.now) }
                 }
             }
             .summaryDestinations(service: model.service)
@@ -153,8 +155,9 @@ private struct MetricCard: View {
     private var caption: String {
         switch metric {
         case .heartRate, .spo2:
-            guard let range = metrics?.value(metric, on: today), let last = todayReadings.last else { return "No data today" }
-            return "\(last.date.formatted(date: .omitted, time: .shortened)) · today \(Int(range.min))-\(Int(range.max))"
+            let isToday = Calendar.current.isDateInToday(today)
+            guard let range = metrics?.value(metric, on: today), let last = todayReadings.last else { return isToday ? "No data today" : "No data" }
+            return "\(last.date.formatted(date: .omitted, time: .shortened)) · \(isToday ? "today " : "")\(Int(range.min))-\(Int(range.max))"
         case .restingHeartRate, .hrv, .steps:
             return metrics?.value(metric, on: today) == nil ? "No data last night" : "Last night"
         }
@@ -201,7 +204,8 @@ private struct SleepCard: View {
                     vital("HRV", metrics.hrv(on: today).map { "\($0) ms" })
                 }
             } else {
-                Text("No sleep data for last night").foregroundStyle(.secondary)
+                Text(Calendar.current.isDateInToday(today) ? "No sleep data for last night" : "No sleep data for this night")
+                    .foregroundStyle(.secondary)
             }
         }
     }

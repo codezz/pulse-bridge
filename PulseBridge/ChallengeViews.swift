@@ -167,12 +167,11 @@ struct ChallengeLogSections: View {
     private var totalToday: Int { model.exercises.reduce(0) { $0 + history.total(of: $1.id, on: .now) } }
 
     var body: some View {
-        Group {
-            ForEach(model.exercises) { exercise in
-                exerciseSection(exercise)
-            }
-            sessionSection
+        ForEach(model.exercises) { exercise in
+            exerciseSection(exercise)
         }
+        // On the session section only: modifiers on a group of List sections would repeat per section.
+        sessionSection
             .alert("Log \(customFor?.name ?? "")", isPresented: Binding(get: { customFor != nil }, set: { if !$0 { customFor = nil } })) {
                 TextField("Count", text: $customText).keyboardType(.numberPad)
                 Button("Log") {

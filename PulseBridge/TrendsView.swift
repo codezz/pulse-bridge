@@ -141,27 +141,24 @@ struct TrendsView: View {
     }
 }
 
-/// The one insight for a topic, if there is one, at the top of a detail screen.
+/// The insight for a detail screen's topic on its day, if there is one.
+@MainActor
+func topicInsight(_ topic: InsightTopic, service: SummaryService, day: Date) -> Insight? {
+    guard let metrics = try? service.load(days: SummaryModel.loadedDays, endingOn: day) else { return nil }
+    return Insights.make(metrics.insightSeries(), today: day, calendar: .current).first { $0.topic == topic }
+}
+
+/// The insight line at the top of a detail screen.
 struct TopicInsightRow: View {
-    let service: SummaryService
-    let topic: InsightTopic
-    @State private var insight: Insight?
+    let insight: Insight
 
     var body: some View {
-        Group {
-            if let insight {
-                Section {
-                    Label {
-                        Text(insight.text).font(.subheadline)
-                    } icon: {
-                        Image(systemName: insight.direction.symbol).foregroundStyle(insight.direction.color)
-                    }
-                }
+        Section {
+            Label {
+                Text(insight.text).font(.subheadline)
+            } icon: {
+                Image(systemName: insight.direction.symbol).foregroundStyle(insight.direction.color)
             }
-        }
-        .task {
-            let metrics = try? service.load(days: SummaryModel.loadedDays, endingOn: .now)
-            insight = metrics.flatMap { m in Insights.make(m.insightSeries(), today: .now, calendar: .current).first { $0.topic == topic } }
         }
     }
 }

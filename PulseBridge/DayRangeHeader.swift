@@ -19,10 +19,12 @@ struct DayRangeHeader: View {
     @Binding var day: Date
     /// First loaded day, for the "1 Oct - 7 Oct" title.
     let firstDay: Date?
+    /// Sleep has no 6M (one bar per night would be unreadable).
+    var spans: [DaySpan] = DaySpan.allCases
 
     var body: some View {
         Picker("Range", selection: $span) {
-            ForEach(DaySpan.allCases) { Text($0.rawValue).tag($0) }
+            ForEach(spans) { Text($0.rawValue).tag($0) }
         }
         .pickerStyle(.segmented)
         HStack {
