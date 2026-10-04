@@ -5,6 +5,9 @@ import PulseKit
 @MainActor
 final class HealthExporter: HealthWriter {
     private static let batchSize = 500
+    /// Shown as the device in Health's sample details.
+    static let band = HKDevice(name: "Pulse One", manufacturer: nil, model: nil, hardwareVersion: nil,
+                               firmwareVersion: nil, softwareVersion: nil, localIdentifier: nil, udiDeviceIdentifier: nil)
     private let store = HKHealthStore()
 
     func requestAuthorization() async throws {
@@ -35,7 +38,7 @@ final class HealthExporter: HealthWriter {
         guard let info = sample.workout else { return }
         let configuration = HKWorkoutConfiguration()
         configuration.activityType = info.activity.healthKitType
-        let builder = HKWorkoutBuilder(healthStore: store, configuration: configuration, device: nil)
+        let builder = HKWorkoutBuilder(healthStore: store, configuration: configuration, device: Self.band)
         do {
             try await fill(builder, sample, info)
             _ = try await builder.finishWorkout()
@@ -51,7 +54,7 @@ final class HealthExporter: HealthWriter {
         if info.calories > 0, store.authorizationStatus(for: HKQuantityType(.activeEnergyBurned)) == .sharingAuthorized {
             let energy = HKQuantitySample(type: HKQuantityType(.activeEnergyBurned),
                                           quantity: HKQuantity(unit: .kilocalorie(), doubleValue: info.calories),
-                                          start: sample.start, end: sample.end)
+                                          start: sample.start, end: sample.end, device: Self.band, metadata: nil)
             try await builder.addSamples([energy])
         }
         var metadata: [String: Any] = [HKMetadataKeySyncIdentifier: sample.syncID, HKMetadataKeySyncVersion: sample.version,
@@ -66,13 +69,14 @@ final class HealthExporter: HealthWriter {
         if sample.metric == .sleep {
             let stage = SleepStage(rawValue: Int(sample.value)) ?? .core
             return HKCategorySample(type: HKCategoryType(.sleepAnalysis), value: stage.healthKitValue.rawValue,
-                                    start: sample.start, end: sample.end, metadata: metadata)
+                                    start: sample.start, end: sample.end, device: band, metadata: metadata)
         }
         return HKQuantitySample(
             type: HKQuantityType(sample.metric.quantityIdentifier),
             quantity: HKQuantity(unit: sample.metric.unit, doubleValue: sample.value),
             start: sample.start,
             end: sample.end,
+            device: band,
             metadata: metadata)
     }
 }
