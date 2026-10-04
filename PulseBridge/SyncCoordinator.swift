@@ -27,6 +27,7 @@ final class SyncCoordinator {
     let live = LiveFeed()
     private(set) var heartRate = HeartRateSeries()
     let store: RecordStore
+    let challenge: ChallengeModel
     private(set) var phase: Phase = .idle
     private(set) var lastReport: SyncReport?
     private(set) var lastSync = UserDefaults.standard.object(forKey: SyncCoordinator.lastSyncKey) as? Date
@@ -59,6 +60,7 @@ final class SyncCoordinator {
 
     init(container: ModelContainer) {
         store = RecordStore(container: container)
+        challenge = ChallengeModel(store: ChallengeStore(container: container))
         engine = SyncEngine(store: store, health: HealthExporter())
         let support = URL.applicationSupportDirectory
         try? FileManager.default.createDirectory(at: support, withIntermediateDirectories: true)
@@ -68,6 +70,8 @@ final class SyncCoordinator {
         liveChannel = RecordingChannel(band, log: diagnostics, skip: { $0.first == Opcode.realTimeActivity }, logQuiet: false)
         let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"
         diagnostics.note("app \(version) launched, iOS \(ProcessInfo.processInfo.operatingSystemVersionString)")
+        challenge.onSessionChange = { [weak self] in self?.updateHeartRateStream() }
+        challenge.log = { [weak self] in self?.diagnostics.note($0) }
         engine.onBandClockSet = { offset in
             // Saved right away: a sync that fails later must not leave the old offset behind.
             UserDefaults.standard.set(offset, forKey: SyncCoordinator.bandClockOffsetKey)
@@ -76,6 +80,7 @@ final class SyncCoordinator {
             self?.heartRate.append(bpm, at: .now)
             self?.activity?.addHeartRate(bpm)
             self?.checkZone(bpm)
+            self?.challenge.addHeartRate(bpm)
         }
         live.onMeasurementEnded = { [weak self] _ in
             guard let self, syncAfterMeasurement else { return }
@@ -287,12 +292,18 @@ final class SyncCoordinator {
         heartRate = HeartRateSeries()
         liveZones = heartRateProfile().zones
         isLiveHeartRateOn = true
-        band.streamsHeartRate = true
+        updateHeartRateStream()
     }
 
     func stopLiveHeartRate() {
         isLiveHeartRateOn = false
-        if activity == nil { band.streamsHeartRate = false }
+        updateHeartRateStream()
+    }
+
+    /// The band's heart-rate stream is on while anything needs it: live heart rate, an activity, or
+    /// a timed challenge session. One place decides, so stopping one never cuts off another.
+    private func updateHeartRateStream() {
+        band.streamsHeartRate = isLiveHeartRateOn || activity != nil || challenge.isSessionRunning
     }
 
     // MARK: Profile and heart-rate zones
@@ -363,7 +374,7 @@ final class SyncCoordinator {
         activity = session
         zoneAlert = alerts ? targetZone.map { ZoneAlert(target: zones.range(of: $0)) } : nil
         diagnostics.note("activity started: \(type.rawValue), target zone \(targetZone.map(String.init) ?? "free"), alerts \(alerts ? "on" : "off")")
-        band.streamsHeartRate = true
+        updateHeartRateStream()
         band.keepConnected = true
         session.start()
         // The band has no screen: 3 buzzes confirm the start.
@@ -398,7 +409,7 @@ final class SyncCoordinator {
         session.finish()
         activity = nil
         finishedActivity = session
-        band.streamsHeartRate = isLiveHeartRateOn
+        updateHeartRateStream()
         band.keepConnected = false
         zoneAlert = nil
         diagnostics.note("activity finished: \(Int(session.recorder.distance)) m")
@@ -465,6 +476,7 @@ final class SyncCoordinator {
                 diagnostics.note("activity export failed: \(error.localizedDescription)")
             }
         }
+        await challenge.exportPendingSessions()
     }
 
     /// HRV or a 30 s heart-rate reading. Results show on Summary; HRV also reaches Health
