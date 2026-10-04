@@ -15,6 +15,7 @@ struct SleepDetailView: View {
             Section {
                 DayRangeHeader(span: $span, day: $day, firstDay: metrics?.days.first)
             }
+            TopicInsightRow(service: service, topic: .sleep)
             if let error {
                 Label(error, systemImage: "exclamationmark.triangle").foregroundStyle(.red)
             } else if span == .day {

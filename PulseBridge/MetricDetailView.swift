@@ -21,13 +21,23 @@ struct MetricDetailView: View {
             Section {
                 DayRangeHeader(span: $range, day: $day, firstDay: metrics?.days.first)
             }
+            if let topic = metric.insightTopic {
+                TopicInsightRow(service: service, topic: topic)
+            }
             Section {
                 if let error {
                     Label(error, systemImage: "exclamationmark.triangle").foregroundStyle(.red)
                 } else {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(averageLabel).font(.caption).foregroundStyle(.secondary)
-                        Text("\(metric.format(average)) \(metric.unit)").font(.title.bold())
+                        HStack(alignment: .firstTextBaseline, spacing: 4) {
+                            Text(metric.format(average)).numberFont(40)
+                            Text(metric.unit).foregroundStyle(.secondary)
+                        }
+                        if range != .day, let low = series.map(\.range.average).min(), let high = series.map(\.range.average).max() {
+                            Text("Range \(metric.format(low))-\(metric.format(high)) \(metric.unit)")
+                                .font(.caption).foregroundStyle(.secondary)
+                        }
                         if metric == .steps && range != .day && !series.isEmpty {
                             Text("Goal reached on \(series.filter { $0.range.average >= Double(stepGoal) }.count) of \(series.count) days")
                                 .font(.caption).foregroundStyle(.secondary)
@@ -42,6 +52,23 @@ struct MetricDetailView: View {
     }
 
     private var series: [DailyValue] { metrics?.series(metric) ?? [] }
+
+    /// 6M draws one value per week (min of the week's minimums, average, max of maximums).
+    private var chartSeries: [DailyValue] {
+        guard range == .sixMonths else { return series }
+        var calendar = Calendar.current
+        calendar.firstWeekday = 2
+        let weeks = Dictionary(grouping: series) { (value: DailyValue) -> Date in
+            calendar.dateInterval(of: .weekOfYear, for: value.day)!.start
+        }
+        return weeks.map { (week: Date, values: [DailyValue]) -> DailyValue in
+            let low = values.map(\.range.min).min() ?? 0
+            let high = values.map(\.range.max).max() ?? 0
+            let average = values.map(\.range.average).reduce(0, +) / Double(values.count)
+            return DailyValue(day: week, range: DayRange(min: low, average: average, max: high))
+        }
+        .sorted { $0.day < $1.day }
+    }
 
     /// HRV and resting HR are values of the night (D-1 18:00 to D 12:00), not of the calendar day.
     private var averageLabel: String {
@@ -83,15 +110,16 @@ struct MetricDetailView: View {
         } else if series.isEmpty {
             noData
         } else {
+            let unit: Calendar.Component = range == .sixMonths ? .weekOfYear : .day
             Chart {
-                ForEach(series) { value in
+                ForEach(chartSeries) { value in
                     if metric == .heartRate || metric == .spo2 {
-                        BarMark(x: .value("Day", value.day, unit: .day),
+                        BarMark(x: .value("Day", value.day, unit: unit),
                                 yStart: .value("Min", value.range.min), yEnd: .value("Max", value.range.max))
                             .opacity(0.35)
-                        PointMark(x: .value("Day", value.day, unit: .day), y: .value("Average", value.range.average))
+                        PointMark(x: .value("Day", value.day, unit: unit), y: .value("Average", value.range.average))
                     } else {
-                        BarMark(x: .value("Day", value.day, unit: .day), y: .value(metric.unit, value.range.average))
+                        BarMark(x: .value("Day", value.day, unit: unit), y: .value(metric.unit, value.range.average))
                     }
                 }
                 if metric == .steps {
@@ -102,7 +130,7 @@ struct MetricDetailView: View {
             }
             .chartYScale(domain: .automatic(includesZero: metric == .hrv || metric == .steps))
             .foregroundStyle(metric.color)
-            .chartScrub(series.map { .day($0.day, scrubText($0)) })
+            .chartScrub(chartSeries.map { range == .sixMonths ? .week($0.day, scrubText($0)) : .day($0.day, scrubText($0)) })
         }
     }
 

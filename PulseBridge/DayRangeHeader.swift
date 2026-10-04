@@ -1,13 +1,14 @@
 import SwiftUI
 
 enum DaySpan: String, CaseIterable, Identifiable {
-    case day = "D", week = "W", month = "M"
+    case day = "D", week = "W", month = "M", sixMonths = "6M"
     var id: String { rawValue }
     var days: Int {
         switch self {
         case .day: 1
         case .week: 7
         case .month: 30
+        case .sixMonths: 182
         }
     }
 }
