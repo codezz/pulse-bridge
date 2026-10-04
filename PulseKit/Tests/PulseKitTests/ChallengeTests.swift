@@ -42,6 +42,21 @@ struct ChallengeTests {
         #expect(h.target(of: e, on: day(15)) == 70)
     }
 
+    /// Two years of daily sets with weekly growth: the streak must stay instant (it runs on every tap).
+    @Test func streaksStayFastWithAutoGrowth() {
+        let es = [exercise(push, created: -730, [change(-730, 10, step: 1, weekday: 2)]),
+                  exercise(squat, created: -730, [change(-730, 10, step: 1, weekday: 2)])]
+        let sets = (-730...0).flatMap { [SetInfo(exerciseID: push, date: day($0), count: 500), SetInfo(exerciseID: squat, date: day($0), count: 500)] }
+        let h = ChallengeHistory(exercises: es, sets: sets, calendar: calendar)
+        let start = Date()
+        #expect(h.bestStreak(today: day(0)) == 731)
+        #expect(h.streak(today: day(0)) == 731)
+        #expect(Date().timeIntervalSince(start) < 0.2)
+        // Day -730 is a Saturday: 105 Mondays from day -728 up to today (a Monday): 10 + 105
+        #expect(h.target(of: es[0], on: day(0)) == 115)
+        #expect(h.target(of: es[0], on: day(-1)) == 114)
+    }
+
     @Test func statusDonePartialNone() {
         let es = [exercise(push, [change(-10, 60)]), exercise(squat, [change(-10, 60)])]
         let sets = [SetInfo(exerciseID: push, date: day(0, 9), count: 40), SetInfo(exerciseID: push, date: day(0, 18), count: 20),

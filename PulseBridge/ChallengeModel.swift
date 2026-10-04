@@ -25,6 +25,8 @@ final class ChallengeModel {
 
     init(store: ChallengeStore) {
         self.store = store
+        // A session the app was killed in: closed at its last set and exported with the next sync.
+        _ = try? store.closeOpenSessions()
         reload()
     }
 

@@ -87,8 +87,10 @@ Order: status header, Sleep, Steps, Heart rate, Activities, Blood oxygen.
    last 7 days.
 28. Timed session: Start timed session shows a timer and band heart rate; log sets; Finish session:
    Health shows a Strength training workout from Pulse Bridge with that duration and heart rate.
+   Lock the phone for a few minutes during the session: heart rate keeps coming (no gap in Health).
    Cancel session keeps the sets but saves nothing to Health. Live heart rate on the Heart rate card
-   keeps running when a session ends.
+   keeps running when a session ends. Kill the app mid-session and reopen: the session is saved up
+   to its last set and reaches Health with the next sync.
 
 **Blood oxygen**
 

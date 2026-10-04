@@ -70,7 +70,7 @@ final class SyncCoordinator {
         liveChannel = RecordingChannel(band, log: diagnostics, skip: { $0.first == Opcode.realTimeActivity }, logQuiet: false)
         let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"
         diagnostics.note("app \(version) launched, iOS \(ProcessInfo.processInfo.operatingSystemVersionString)")
-        challenge.onSessionChange = { [weak self] in self?.updateHeartRateStream() }
+        challenge.onSessionChange = { [weak self] in self?.updateBandUse() }
         challenge.log = { [weak self] in self?.diagnostics.note($0) }
         engine.onBandClockSet = { offset in
             // Saved right away: a sync that fails later must not leave the old offset behind.
@@ -144,7 +144,7 @@ final class SyncCoordinator {
         Task {
             await live.stop()
             // The app may have come back while the feed was stopping.
-            if !isForeground && activity == nil { band.disconnect() }
+            if !isForeground && !needsBandInBackground { band.disconnect() }
         }
     }
 
@@ -292,18 +292,23 @@ final class SyncCoordinator {
         heartRate = HeartRateSeries()
         liveZones = heartRateProfile().zones
         isLiveHeartRateOn = true
-        updateHeartRateStream()
+        updateBandUse()
     }
 
     func stopLiveHeartRate() {
         isLiveHeartRateOn = false
-        updateHeartRateStream()
+        updateBandUse()
     }
 
-    /// The band's heart-rate stream is on while anything needs it: live heart rate, an activity, or
-    /// a timed challenge session. One place decides, so stopping one never cuts off another.
-    private func updateHeartRateStream() {
-        band.streamsHeartRate = isLiveHeartRateOn || activity != nil || challenge.isSessionRunning
+    /// An activity or a timed challenge session keeps the band connected with the phone locked.
+    private var needsBandInBackground: Bool { activity != nil || challenge.isSessionRunning }
+
+    /// The band's heart-rate stream is on while anything needs it (live heart rate, an activity, a
+    /// timed challenge session), and the connection is kept for the ones that run locked. One place
+    /// decides, so stopping one never cuts off another.
+    private func updateBandUse() {
+        band.streamsHeartRate = isLiveHeartRateOn || needsBandInBackground
+        band.keepConnected = needsBandInBackground
     }
 
     // MARK: Profile and heart-rate zones
@@ -374,8 +379,7 @@ final class SyncCoordinator {
         activity = session
         zoneAlert = alerts ? targetZone.map { ZoneAlert(target: zones.range(of: $0)) } : nil
         diagnostics.note("activity started: \(type.rawValue), target zone \(targetZone.map(String.init) ?? "free"), alerts \(alerts ? "on" : "off")")
-        updateHeartRateStream()
-        band.keepConnected = true
+        updateBandUse()
         session.start()
         // The band has no screen: 3 buzzes confirm the start.
         await buzz(times: 3)
@@ -409,8 +413,7 @@ final class SyncCoordinator {
         session.finish()
         activity = nil
         finishedActivity = session
-        updateHeartRateStream()
-        band.keepConnected = false
+        updateBandUse()
         zoneAlert = nil
         diagnostics.note("activity finished: \(Int(session.recorder.distance)) m")
     }

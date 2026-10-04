@@ -61,8 +61,11 @@ public final class ChallengeStore {
         try context.save()
     }
 
+    /// Counts outside 1...10000 are typos (and could overflow the totals), so they're ignored.
+    public static let countRange = 1...10_000
+
     public func log(_ count: Int, exerciseID: UUID, at date: Date, sessionID: UUID? = nil) throws {
-        guard count > 0 else { return }
+        guard Self.countRange.contains(count) else { return }
         context.insert(ChallengeSet(exerciseID: exerciseID, date: date, count: count, sessionID: sessionID))
         try context.save()
     }
@@ -105,6 +108,26 @@ public final class ChallengeStore {
         for set in try context.fetch(FetchDescriptor<ChallengeSet>(predicate: #Predicate { $0.sessionID == id })) { set.sessionID = nil }
         if let session = try session(id) { context.delete(session) }
         try context.save()
+    }
+
+    /// Sessions left open by an app that was killed: closed at their last set (and then exported
+    /// like any finished session), or removed when they have no sets. Returns how many were closed.
+    @discardableResult
+    public func closeOpenSessions() throws -> Int {
+        var closed = 0
+        for session in try context.fetch(FetchDescriptor<ChallengeSession>(predicate: #Predicate { $0.end == nil })) {
+            let id = session.id
+            let last = try context.fetch(FetchDescriptor<ChallengeSet>(predicate: #Predicate { $0.sessionID == id },
+                                                                   sortBy: [SortDescriptor(\.date, order: .reverse)])).first
+            if let last {
+                session.end = max(last.date, session.start)
+                closed += 1
+            } else {
+                context.delete(session)
+            }
+        }
+        try context.save()
+        return closed
     }
 
     /// Finished sessions not yet in Health, with their reps per exercise.

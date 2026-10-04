@@ -21,6 +21,28 @@ struct ChallengeStoreTests {
         #expect(try store.exercises().map(\.name) == ["Push-ups"])
     }
 
+    /// A typo like 100000000 must not end up in the totals.
+    @Test func implausibleCountsAreRejected() throws {
+        let id = try store.addExercise(name: "Push-ups", unit: .reps, target: 60, at: t0)
+        try store.log(10_001, exerciseID: id, at: t0)
+        try store.log(0, exerciseID: id, at: t0)
+        try store.log(10_000, exerciseID: id, at: t0)
+        #expect(try store.sets().map(\.count) == [10_000])
+    }
+
+    /// The app was killed mid-session: close it at its last set so the workout still reaches Health.
+    @Test func openSessionsAreClosedAtTheirLastSet() throws {
+        let id = try store.addExercise(name: "Push-ups", unit: .reps, target: 60, at: t0)
+        let kept = try store.startSession(at: t0)
+        try store.log(20, exerciseID: id, at: t0 + 300, sessionID: kept)
+        let empty = try store.startSession(at: t0 + 1000)
+        #expect(try store.closeOpenSessions() == 1)
+        let pending = try store.pendingSessions()
+        #expect(pending.map(\.id) == [kept])
+        #expect(pending.first?.end == t0 + 300)
+        _ = empty
+    }
+
     @Test func sameDayEditReplaces() throws {
         let id = try store.addExercise(name: "Squats", unit: .reps, target: 60, at: t0)
         try store.setTarget(id, target: 65, autoStep: 0, autoWeekday: nil, at: t0 + 3600)

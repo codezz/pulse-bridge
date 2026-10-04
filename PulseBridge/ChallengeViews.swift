@@ -163,7 +163,9 @@ struct ChallengeLogger: View {
             .alert("Log \(customFor?.name ?? "")", isPresented: Binding(get: { customFor != nil }, set: { if !$0 { customFor = nil } })) {
                 TextField("Count", text: $customText).keyboardType(.numberPad)
                 Button("Log") {
-                    if let exercise = customFor, let count = Int(customText), count > 0 { model.log(count, to: exercise.id) }
+                    if let exercise = customFor, let count = Int(customText), ChallengeStore.countRange.contains(count) {
+                        model.log(count, to: exercise.id)
+                    }
                     customText = ""
                 }
                 Button("Cancel", role: .cancel) { customText = "" }

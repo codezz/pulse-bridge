@@ -77,13 +77,18 @@ public struct ChallengeHistory: Sendable {
         let start = calendar.startOfDay(for: day)
         guard let change = exercise.changes.last(where: { calendar.startOfDay(for: $0.day) <= start }) else { return nil }
         guard change.autoStep != 0, let weekday = change.autoWeekday else { return change.target }
-        var weeks = 0
-        var cursor = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: change.day))!
-        while cursor <= start {
-            if calendar.component(.weekday, from: cursor) == weekday { weeks += 1 }
-            cursor = calendar.date(byAdding: .day, value: 1, to: cursor)!
-        }
-        return max(0, change.target + change.autoStep * weeks)
+        let from = calendar.startOfDay(for: change.day)
+        return max(0, change.target + change.autoStep * occurrences(of: weekday, after: from, through: start))
+    }
+
+    /// How many `weekday` dates fall in `(from, through]`, without walking the days (this runs for
+    /// every day of every streak).
+    private func occurrences(of weekday: Int, after from: Date, through: Date) -> Int {
+        let days = calendar.dateComponents([.day], from: from, to: through).day ?? 0
+        guard days > 0 else { return 0 }
+        let first = (weekday - calendar.component(.weekday, from: from) + 7) % 7
+        let firstOffset = first == 0 ? 7 : first
+        return firstOffset > days ? 0 : (days - firstOffset) / 7 + 1
     }
 
     public func total(of exerciseID: UUID, on day: Date) -> Int {
