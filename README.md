@@ -27,6 +27,10 @@ phone and writes it to **Apple Health**. No account, no cloud, no third-party se
   saved with a map, splits and time in zones, and goes to Apple Health as a workout with its route.
   Optional zone alerts: the band buzzes 3 times after 15 s above the target zone and 2 times after
   15 s below (at most once a minute), also with the screen locked.
+- **Daily challenge:** a daily goal like push-ups and squats. Log sets with +5 / +10 / +20 or a
+  custom count, change targets any time (optionally +N every week), and follow streaks, a month
+  calendar and totals. Share an image with your group; a timed session is saved to Apple Health as
+  a Strength training workout with band heart rate.
 - **Profile and zones:** age, sex, height and weight (shared with the band); max and resting heart
   rate come from your own data, and the five Karvonen zones update by themselves.
 - **Live data in Summary:** live heart rate on demand, on-demand HRV and heart-rate measurements,

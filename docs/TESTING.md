@@ -70,48 +70,68 @@ Order: status header, Sleep, Steps, Heart rate, Activities, Blood oxygen.
    the band buzzes 3 times, after 15 s below 2 times (can you feel the 2? if not, report it), at most
    once a minute while outside; also with the screen locked. With the toggle off: no alerts.
 
+**Daily challenge**
+
+23. Before setup the card offers "Set up challenge"; setup is pre-filled with Push-ups 60 and Squats 60
+   (reps). Start: the card shows two rings at 0/60 and "Start a streak today".
+24. Log: +5 / +10 / +20 and Custom add sets; the ring and the big number update with a light tap
+   haptic; Undo last removes the latest set of that exercise today (disabled when there is none).
+   Reaching both targets: a success haptic and "Done for today" on the card.
+25. Exercises (gear): change a target; the card uses it today, History shows earlier days with the old
+   target. Turn on "+5 every Monday": the target grows from next Monday, not today. Add an exercise
+   (reps or seconds); archive one (confirmation): it leaves the card and logger, its history stays.
+26. History: current and best streak (an unfinished today doesn't break the streak), month calendar
+   (green done, light partial, gray nothing, today ringed, previous/next month), tap a day for its
+   sets and targets; totals for this week, month and all time; target chart per exercise.
+27. Share: the share button opens the share sheet with an image of today's numbers, the streak and the
+   last 7 days.
+28. Timed session: Start timed session shows a timer and band heart rate; log sets; Finish session:
+   Health shows a Strength training workout from Pulse Bridge with that duration and heart rate.
+   Cancel session keeps the sets but saves nothing to Health. Live heart rate on the Heart rate card
+   keeps running when a session ends.
+
 **Blood oxygen**
 
-23. The card shows the latest reading and today's range; detail D shows the day's readings (arrows move
+29. The card shows the latest reading and today's range; detail D shows the day's readings (arrows move
    between days, next is disabled on today), W and M one value per day; "No data" without readings.
 
 **Charts**
 
-24. In every detail chart (HR / SpO2 day, steps per hour, W/M bars, night HR, sleep W/M, resting HR
+30. In every detail chart (HR / SpO2 day, steps per hour, W/M bars, night HR, sleep W/M, resting HR
    trend), press and drag: a rule and a bubble with value and time or day follow the finger, with a
    light tick per point. Scrolling the page over a chart still works.
 
 ## Band tab
 
-25. Status "Connected", battery percentage, last sync and Health export as "N min ago".
-26. Sync (or pull down on Summary): "Last sync" updates but "Health export" does not.
+31. Status "Connected", battery percentage, last sync and Health export as "N min ago".
+32. Sync (or pull down on Summary): "Last sync" updates but "Health export" does not.
     "Export to Health now" writes what is queued without talking to the band.
-27. Forget band asks for confirmation, then shows the pairing sheet.
-28. Diagnostics: after a sync the size grows; Export log opens the share sheet with "sync started",
+33. Forget band asks for confirmation, then shows the pairing sheet.
+34. Diagnostics: after a sync the size grows; Export log opens the share sheet with "sync started",
     sent/received hex lines and "sync finished: new ..."; the serial appears only as its last 2
     digits. Clear asks for confirmation, then empties it.
-29. Battery card: "Collecting data" at first, a 30-day chart after a few connections, "About N% per
+35. Battery card: "Collecting data" at first, a 30-day chart after a few connections, "About N% per
    day" after 2 days (charging doesn't lower it).
-30. Background App Refresh off for Pulse Bridge: the Band card shows the hint to turn it on.
+36. Background App Refresh off for Pulse Bridge: the Band card shows the hint to turn it on.
 
 ## Sync and Health
 
-31. Health app: only data from after "Health data since" appears, from Pulse Bridge, at the right times.
-32. Sync twice: the second adds nothing and Health shows no duplicates.
-33. Walk out of range mid-sync: an error shows; come back and sync: it completes, nothing duplicated.
-34. Deny Heart Rate in Settings > Health > Data Access > Pulse Bridge and wait for the hourly export:
+37. Health app: only data from after "Health data since" appears, from Pulse Bridge, at the right times.
+38. Sync twice: the second adds nothing and Health shows no duplicates.
+39. Walk out of range mid-sync: an error shows; come back and sync: it completes, nothing duplicated.
+40. Deny Heart Rate in Settings > Health > Data Access > Pulse Bridge and wait for the hourly export:
     "Not allowed in Health: heartRate" shows. Allow it again: the queued samples reach Health.
-35. Background the app: the band disconnects (unless an activity is running). Reopen within the hour: it only reconnects. Reopen after
+41. Background the app: the band disconnects (unless an activity is running). Reopen within the hour: it only reconnects. Reopen after
     an hour: a sync with Health export runs by itself.
-36. Sync after more than 3 days without syncing: every type completes (multi-page read).
-37. Sync during a walk, sync again 10 minutes later: the later minutes of that block reach Health.
-38. Change the phone's time zone and sync: the band shows the new local time and no data is missing.
-39. Background sync: leave the app in the background (don't force-quit) with the band nearby for a
+42. Sync after more than 3 days without syncing: every type completes (multi-page read).
+43. Sync during a walk, sync again 10 minutes later: the later minutes of that block reach Health.
+44. Change the phone's time zone and sync: the band shows the new local time and no data is missing.
+45. Background sync: leave the app in the background (don't force-quit) with the band nearby for a
    few hours: "Background sync" on the Band card shows a time and new data is in Health (if the
    phone was unlocked at that moment). Diagnostics shows "background sync started".
-40. Band away during a background run: diagnostics shows "band not in range"; opening the app later
+46. Band away during a background run: diagnostics shows "band not in range"; opening the app later
    syncs right away.
-41. Health > Steps or Walking + Running Distance > Show All Data: a new sample shows device
+47. Health > Steps or Walking + Running Distance > Show All Data: a new sample shows device
    "Pulse One"; distance samples are one minute long.
-42. Fitness workout with the band paired in Settings > Bluetooth: heart rate shows in the workout;
+48. Fitness workout with the band paired in Settings > Bluetooth: heart rate shows in the workout;
    Pulse Bridge still syncs afterwards.
