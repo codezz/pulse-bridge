@@ -13,6 +13,8 @@ func weekdayName(_ weekday: Int) -> String { Calendar.current.weekdaySymbols[wee
 struct ChallengeCard: View {
     let model: ChallengeModel
     let onLog: () -> Void
+    /// Opens the Challenge tab.
+    let onOpen: () -> Void
     @State private var showSetup = false
 
     private var history: ChallengeHistory { model.history }
@@ -33,7 +35,7 @@ struct ChallengeCard: View {
                     }
                     .buttonStyle(.borderedProminent)
                     .tint(.orange)
-                    NavigationLink(value: SummaryRoute.challengeHistory) {
+                    Button(action: onOpen) {
                         Label("History", systemImage: "calendar").frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.bordered)

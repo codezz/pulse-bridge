@@ -78,11 +78,11 @@ extension Metric {
 
     var color: Color {
         switch self {
-        case .heartRate: .red
-        case .restingHeartRate: .pink
-        case .hrv: .blue
-        case .spo2: .cyan
-        case .steps: .orange
+        case .heartRate: Palette.heart
+        case .restingHeartRate: Palette.resting
+        case .hrv: Palette.hrv
+        case .spo2: Palette.oxygen
+        case .steps: Palette.steps
         }
     }
 

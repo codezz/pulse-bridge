@@ -7,13 +7,26 @@ enum SummaryRoute: Hashable {
     case metric(Metric, day: Date? = nil)
     case sleep
     case activities
-    case challengeHistory
+}
+
+extension View {
+    /// Detail screens reachable from Today and Trends.
+    func summaryDestinations(service: SummaryService) -> some View {
+        navigationDestination(for: SummaryRoute.self) { route in
+            switch route {
+            case .metric(let metric, let day): MetricDetailView(metric: metric, service: service, day: day)
+            case .sleep: SleepDetailView(service: service)
+            case .activities: ActivitiesView(service: service)
+            }
+        }
+    }
 }
 
 struct SummaryView: View {
     let coordinator: SyncCoordinator
     let model: SummaryModel
     let onShowBand: () -> Void
+    let onShowChallenge: () -> Void
     @State private var showStart = false
     @State private var showChallengeLogger = false
 
@@ -43,7 +56,7 @@ struct SummaryView: View {
                         StepsCard(metrics: model.metrics, today: today, coordinator: coordinator)
                     }
                     .buttonStyle(.plain)
-                    ChallengeCard(model: coordinator.challenge) { showChallengeLogger = true }
+                    ChallengeCard(model: coordinator.challenge, onLog: { showChallengeLogger = true }, onOpen: onShowChallenge)
                     HeartRateCard(coordinator: coordinator, readings: model.metrics?.readings(.heartRate, on: today) ?? [],
                                   subtitle: HeartRateCard.subtitle(metrics: model.metrics, today: today))
                     ActivitiesCard(workouts: model.metrics?.workouts() ?? []) { showStart = true }
@@ -53,15 +66,8 @@ struct SummaryView: View {
                 .redacted(reason: model.isLoaded ? [] : .placeholder)
             }
             .background(Color(.systemGroupedBackground))
-            .navigationTitle("Summary")
-            .navigationDestination(for: SummaryRoute.self) { route in
-                switch route {
-                case .metric(let metric, let day): MetricDetailView(metric: metric, service: model.service, day: day)
-                case .sleep: SleepDetailView(service: model.service)
-                case .activities: ActivitiesView(service: model.service)
-                case .challengeHistory: ChallengeHistoryView(model: coordinator.challenge)
-                }
-            }
+            .navigationTitle("Today")
+            .summaryDestinations(service: model.service)
             .refreshable { await coordinator.sync() }
             .sheet(isPresented: $showChallengeLogger) {
                 ChallengeLogger(model: coordinator.challenge, coordinator: coordinator)

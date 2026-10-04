@@ -128,51 +128,6 @@ func batterySymbol(_ percent: Int?) -> String {
     }
 }
 
-/// Health-style colored badge with a white symbol.
-struct IconBadge: View {
-    let systemImage: String
-    let color: Color
-
-    var body: some View {
-        Image(systemName: systemImage)
-            .font(.system(size: 15, weight: .semibold))
-            .foregroundStyle(.white)
-            .frame(width: 30, height: 30)
-            .background(color.gradient, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
-            .accessibilityHidden(true)
-    }
-}
-
-/// Shared card chrome, with an optional control at the right of the title.
-struct Card<Content: View, Accessory: View>: View {
-    let title: String
-    let systemImage: String
-    var color: Color = .gray
-    @ViewBuilder let content: Content
-    @ViewBuilder var accessory: Accessory
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack(spacing: 10) {
-                IconBadge(systemImage: systemImage, color: color)
-                Text(title).font(.headline)
-                Spacer()
-                accessory
-            }
-            content
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding()
-        .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 16))
-    }
-}
-
-extension Card where Accessory == EmptyView {
-    init(title: String, systemImage: String, color: Color = .gray, @ViewBuilder content: () -> Content) {
-        self.init(title: title, systemImage: systemImage, color: color, content: content, accessory: { EmptyView() })
-    }
-}
-
 private struct BandCard: View {
     let coordinator: SyncCoordinator
     let onPair: () -> Void
