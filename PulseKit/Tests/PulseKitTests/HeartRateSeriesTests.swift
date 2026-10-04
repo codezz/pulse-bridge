@@ -22,8 +22,6 @@ struct HeartRateSeriesTests {
         let kept = s.samples.dropLast().map { $0.date.timeIntervalSince(t0) }
         #expect(kept == stride(from: 0.0, through: 55, by: 5).map { $0 })
         #expect(s.latest == 119)
-        #expect(s.maximum == 119)        // session stats still see every reading
-        #expect(s.minimum == 60)
     }
 
     @Test func zoneRunsSplitAtZoneChangesAndStayConnected() {
@@ -61,21 +59,11 @@ struct HeartRateSeriesTests {
         #expect(runs.flatMap(\.samples).map(\.bpm) == [101, 102])
     }
 
-    @Test func sessionStatsCoverTheWholeSession() {
-        var s = HeartRateSeries()
-        s.append(90, at: t0)
-        s.append(60, at: t0 + 700) // the session keeps the 90 whatever the chart window holds
-        s.append(63, at: t0 + 701)
-        #expect(s.minimum == 60)
-        #expect(s.maximum == 90)
-        #expect(s.average == 71)
-    }
 
     @Test func ignoresZero() {
         var s = HeartRateSeries()
         s.append(0, at: t0)
         #expect(s.samples.isEmpty)
-        #expect(s.average == nil)
     }
 
     @Test func notStaleRightAfterAGap() {

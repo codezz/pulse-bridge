@@ -1,6 +1,6 @@
 import Foundation
 
-/// Live heart rate: the last hour for the chart, plus whole-session statistics.
+/// Live heart rate: the last hour for the chart.
 public struct HeartRateSeries: Sendable, Equatable {
     public struct Sample: Sendable, Equatable, Identifiable {
         public let date: Date
@@ -28,10 +28,6 @@ public struct HeartRateSeries: Sendable, Equatable {
     static let gapAfter: TimeInterval = 5
 
     public private(set) var samples: [Sample] = []
-    private var sessionMin: Int?
-    private var sessionMax: Int?
-    private var sum = 0
-    private var count = 0
     private var lastChange: Date?
 
     public init() {}
@@ -51,16 +47,9 @@ public struct HeartRateSeries: Sendable, Equatable {
         }
         let cutoff = date.addingTimeInterval(-Self.window)
         if let firstKept = samples.firstIndex(where: { $0.date >= cutoff }) { samples.removeFirst(firstKept) }
-        sessionMin = min(sessionMin ?? bpm, bpm)
-        sessionMax = max(sessionMax ?? bpm, bpm)
-        sum += bpm
-        count += 1
     }
 
     public var latest: Int? { samples.last?.bpm }
-    public var minimum: Int? { sessionMin }
-    public var maximum: Int? { sessionMax }
-    public var average: Int? { count > 0 ? Int((Double(sum) / Double(count)).rounded()) : nil }
 
     public func isStale(now: Date) -> Bool {
         guard let lastChange else { return false }

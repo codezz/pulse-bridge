@@ -32,6 +32,11 @@ struct HeartRateChartRangeTests {
 
 struct RelativeTimeTests {
     let now = utcDate(2026, 10, 3, 14, 0)
+    private var calendar: Calendar {
+        var c = Calendar(identifier: .gregorian)
+        c.timeZone = utc
+        return c
+    }
 
     @Test func steps() {
         #expect(RelativeTime.text(now - 30, now: now) == "just now")
@@ -39,8 +44,15 @@ struct RelativeTimeTests {
         #expect(RelativeTime.text(now - 59 * 60, now: now) == "59 min ago")
         #expect(RelativeTime.text(now - 3600, now: now) == "1 h ago")
         #expect(RelativeTime.text(now - 23 * 3600, now: now) == "23 h ago")
-        #expect(RelativeTime.text(now - 86400, now: now) == "yesterday")
-        #expect(RelativeTime.text(now - 3 * 86400, now: now) == "3 days ago")
+        #expect(RelativeTime.text(now - 86400, now: now, calendar: calendar) == "yesterday")
+        #expect(RelativeTime.text(now - 3 * 86400, now: now, calendar: calendar) == "3 days ago")
+    }
+
+    @Test func daysAreCalendarDays() {
+        let now = utcDate(2026, 10, 4, 0, 30)
+        #expect(RelativeTime.text(utcDate(2026, 10, 2, 23, 30), now: now, calendar: calendar) == "2 days ago")   // 25 h, 2 calendar days
+        #expect(RelativeTime.text(utcDate(2026, 10, 3, 0, 20), now: now, calendar: calendar) == "yesterday")      // 24 h 10 min
+        #expect(RelativeTime.text(utcDate(2026, 10, 3, 1, 0), now: now, calendar: calendar) == "23 h ago")
     }
 
     @Test func futureDatesReadJustNow() {
