@@ -3,6 +3,7 @@ import Foundation
 import Observation
 import PulseKit
 import SwiftData
+import UIKit
 
 /// UI state around one SyncEngine. Syncs when the app opens (at most once per hour), stays connected
 /// while it is in the foreground (live heart rate), and disconnects in the background.
@@ -18,6 +19,7 @@ final class SyncCoordinator {
     private static let lastSyncKey = "lastSync"
     private static let lastHealthExportKey = "lastHealthExport"
     private static let lastAutoSyncKey = "lastAutoSyncAttempt"
+    private static let lastBackgroundSyncKey = "lastBackgroundSync"
     private static let healthStartKey = "healthStart"
     private static let bandClockOffsetKey = "bandClockOffset"
 
@@ -144,7 +146,8 @@ final class SyncCoordinator {
     /// Set time, pull new history, store it, write it to Health. The connection stays open for live data.
     /// Manual sync (button, pull to refresh) reads the band only; the automatic hourly sync passes
     /// `toHealth: true` and also exports everything queued to Apple Health.
-    func sync(toHealth: Bool = false) async {
+    /// `quiet`: a background sync, no haptic.
+    func sync(toHealth: Bool = false, quiet: Bool = false) async {
         guard canSync else { return }
         let previous = phase
         phase = .connecting
@@ -168,7 +171,7 @@ final class SyncCoordinator {
             }
             if toHealth && !hasPendingActivity { await exportPendingActivities() }
             phase = .idle
-            if !toHealth { manualSyncFeedback = SyncFeedback(count: manualSyncFeedback.count + 1, succeeded: true) }
+            if !toHealth && !quiet { manualSyncFeedback = SyncFeedback(count: manualSyncFeedback.count + 1, succeeded: true) }
         } catch PulseError.busy {
             // Another connect or sync owns the band; leave its connection alone.
             phase = previous
@@ -176,9 +179,37 @@ final class SyncCoordinator {
         } catch {
             phase = .failed(error.localizedDescription)
             diagnostics.note("sync failed: \(error.localizedDescription)")
-            if !toHealth { manualSyncFeedback = SyncFeedback(count: manualSyncFeedback.count + 1, succeeded: false) }
+            if !toHealth && !quiet { manualSyncFeedback = SyncFeedback(count: manualSyncFeedback.count + 1, succeeded: false) }
         }
         await startLive()
+    }
+
+    // MARK: Background sync
+
+    private(set) var lastBackgroundSync = UserDefaults.standard.object(forKey: SyncCoordinator.lastBackgroundSyncKey) as? Date
+
+    /// A background refresh: same hourly rule as opening the app. A band out of reach isn't an
+    /// attempt, so the next app open syncs right away. Health only while the phone is unlocked.
+    func backgroundSync() async {
+        // Launched by iOS only for this task: no scene came to the foreground.
+        if UIApplication.shared.applicationState != .active { isForeground = false }
+        let lastAttempt = UserDefaults.standard.object(forKey: Self.lastAutoSyncKey) as? Date
+        let busy = phase.isBusy || live.isMeasuring || hasPendingActivity
+        guard BackgroundSync.shouldRun(lastExport: lastHealthExport, lastAttempt: lastAttempt,
+                                       paired: band.pairedID != nil, busy: busy, now: .now) else { return }
+        diagnostics.note("background sync started")
+        do {
+            try await band.connect()
+        } catch {
+            diagnostics.note("background sync: band not in range (\(error.localizedDescription))")
+            return
+        }
+        let now = Date()
+        UserDefaults.standard.set(now, forKey: Self.lastAutoSyncKey)
+        await sync(toHealth: UIApplication.shared.isProtectedDataAvailable, quiet: true)
+        lastBackgroundSync = now
+        UserDefaults.standard.set(now, forKey: Self.lastBackgroundSyncKey)
+        if !isForeground { band.disconnect() }
     }
 
     private func logConnection() {

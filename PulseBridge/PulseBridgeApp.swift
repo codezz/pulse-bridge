@@ -21,9 +21,15 @@ struct PulseBridgeApp: App {
         .onChange(of: scenePhase) { _, phase in
             switch phase {
             case .active: Task { await coordinator.appBecameActive() }
-            case .background: coordinator.appWentToBackground()
+            case .background:
+                coordinator.appWentToBackground()
+                BackgroundRefresh.schedule()
             default: break
             }
+        }
+        .backgroundTask(.appRefresh(BackgroundRefresh.identifier)) {
+            await coordinator.backgroundSync()
+            BackgroundRefresh.schedule()
         }
     }
 }

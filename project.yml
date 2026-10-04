@@ -52,4 +52,5 @@ targets:
         NSHealthUpdateUsageDescription: Pulse Bridge writes steps, distance, heart rate, HRV, blood oxygen, sleep and workouts from your band to Apple Health.
         NSHealthShareUsageDescription: Pulse Bridge does not read your Health data.
         NSLocationWhenInUseUsageDescription: Pulse Bridge records your route, distance and pace while an activity you started is running.
-        UIBackgroundModes: [location, bluetooth-central]
+        UIBackgroundModes: [location, bluetooth-central, fetch]
+        BGTaskSchedulerPermittedIdentifiers: [ro.codez.pulsebridge.sync]
