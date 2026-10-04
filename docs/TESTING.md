@@ -86,7 +86,10 @@ Order: status header, Sleep, Steps, Heart rate, Activities, Blood oxygen.
 27. Exercises > Progress before the app: enter start date, days done, streak and best (e.g. 27 Aug,
    33, 1, 14). History shows "🔥 2 day streak, best 14 · 34 days done of 39"; days between the start
    and your first day in the app have a dashed ring and can't be opened; earlier days are plain.
-   Targets show "60 reps a day since <date>" until a target changes, then a chart.
+   With an average per day entered (e.g. 50), each exercise's all-time total includes 33 x 50.
+   Top row: streak (best), days done (of day number), % of days hit. Each exercise has a card:
+   all-time total, bars for the last 14 days (full color when the target was hit) with the target as
+   a dashed line, and Week / Month / Avg/day.
 28. Share: the share button opens the share sheet with an image of today's numbers, the streak and the
    last 7 days.
 29. Timed session: Start timed session shows a timer and band heart rate; log sets; Finish session:

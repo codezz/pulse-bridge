@@ -20,29 +20,12 @@ struct ChallengeHistoryView: View {
                     let best = history.bestStreak(today: .now)
                     stat("🔥 \(streak)", "day streak", note: best > streak ? "best \(best)" : nil)
                     stat("\(history.daysDone(today: .now))", "days done", note: "of \(history.challengeDay(today: .now))")
-                    stat(totalText, "total", note: "since \(history.firstTrackedDay.formatted(.dateTime.day().month(.abbreviated)))")
+                    stat("\(Int((history.successRate(today: .now) * 100).rounded()))%", "days hit")
                 }
             }
             Section { monthGrid } header: { monthHeader }
-            Section("Totals") {
-                ForEach(model.exercises) { exercise in
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(exercise.name).font(.headline)
-                        Text(totals(exercise)).font(.subheadline).foregroundStyle(.secondary)
-                    }
-                }
-            }
-            Section("Targets") {
-                ForEach(model.exercises) { exercise in
-                    if targetHasChanged(exercise) {
-                        VStack(alignment: .leading) {
-                            Text(exercise.name).font(.subheadline)
-                            targetChart(exercise).frame(height: 100)
-                        }
-                    } else {
-                        LabeledContent(exercise.name, value: steadyTargetText(exercise))
-                    }
-                }
+            ForEach(model.exercises) { exercise in
+                Section { ExerciseTotalsCard(history: history, exercise: exercise) }
             }
         }
         .navigationTitle("Challenge")
@@ -64,16 +47,6 @@ struct ChallengeHistoryView: View {
         }
         .frame(maxWidth: .infinity)
         .accessibilityElement(children: .combine)
-    }
-
-    /// All logged reps (and seconds, if a timed exercise exists), across exercises.
-    private var totalText: String {
-        let all = DateInterval(start: .distantPast, end: .distantFuture)
-        func sum(_ unit: ExerciseUnit) -> Int {
-            history.exercises.filter { $0.unit == unit }.reduce(0) { $0 + history.total(of: $1.id, in: all) }
-        }
-        let reps = sum(.reps), seconds = sum(.seconds)
-        return seconds > 0 ? "\(reps) · \(seconds)s" : "\(reps)"
     }
 
     private var monthHeader: some View {
@@ -150,43 +123,72 @@ struct ChallengeHistoryView: View {
         case .none: "nothing logged"
         }
     }
+}
 
-    private func totals(_ exercise: ExerciseInfo) -> String {
-        let week = history.week(containing: .now)
-        let month = calendar.dateInterval(of: .month, for: .now)!
-        let all = DateInterval(start: .distantPast, end: .distantFuture)
-        return "This week \(history.total(of: exercise.id, in: week)) · This month \(history.total(of: exercise.id, in: month)) · All time \(history.total(of: exercise.id, in: all))"
+/// One exercise: all-time total, the last 14 days against the daily target, and week / month / average.
+private struct ExerciseTotalsCard: View {
+    let history: ChallengeHistory
+    let exercise: ExerciseInfo
+
+    private var calendar: Calendar { .current }
+
+    private struct Day: Identifiable {
+        let day: Date
+        let total: Int
+        let target: Int?
+        var id: Date { day }
     }
 
-    /// A chart only once there's a change to draw: more than one target, or weekly growth.
-    private func targetHasChanged(_ exercise: ExerciseInfo) -> Bool {
-        Set(exercise.changes.map(\.target)).count > 1 || history.target(of: exercise, on: .now) != exercise.changes.first?.target
+    private var days: [Day] {
+        let today = calendar.startOfDay(for: .now)
+        return (0..<14).reversed().compactMap { back in
+            let day = calendar.date(byAdding: .day, value: -back, to: today)!
+            guard day >= history.firstTrackedDay else { return nil }
+            return Day(day: day, total: history.total(of: exercise.id, on: day), target: history.target(of: exercise, on: day))
+        }
     }
 
-    /// "60 reps a day since 4 Oct", plus the growth rule if there is one.
-    private func steadyTargetText(_ exercise: ExerciseInfo) -> String {
-        let target = history.target(of: exercise, on: .now) ?? 0
-        let since = (exercise.changes.first?.day ?? exercise.createdAt).formatted(.dateTime.day().month(.abbreviated))
-        var text = "\(target) \(exercise.unit.short) a day since \(since)"
-        if let change = exercise.latestChange, change.autoStep != 0, let weekday = change.autoWeekday {
-            text += ", +\(change.autoStep) every \(weekdayName(weekday))"
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .firstTextBaseline) {
+                Text(exercise.name).font(.headline)
+                Spacer()
+                Text(history.allTime(of: exercise.id).formatted()).numberFont(28)
+                Text("all time").font(.caption).foregroundStyle(.secondary)
+            }
+            Chart {
+                ForEach(days) { day in
+                    BarMark(x: .value("Day", day.day, unit: .day), y: .value(exercise.unit.short, day.total))
+                        .foregroundStyle(day.target.map { day.total >= $0 } ?? false ? Color.orange : Color.orange.opacity(0.4))
+                }
+                ForEach(days.filter { $0.target != nil }) { day in
+                    LineMark(x: .value("Day", day.day, unit: .day), y: .value("Target", day.target ?? 0))
+                        .interpolationMethod(.stepCenter)
+                        .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 3]))
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .chartXAxis { AxisMarks(values: .stride(by: .day, count: 7)) { AxisValueLabel(format: .dateTime.day().month(.abbreviated)) } }
+            .frame(height: 90)
+            .accessibilityLabel("\(exercise.name), last 14 days against the daily target")
+            HStack(spacing: 8) {
+                chip("Week", history.total(of: exercise.id, in: history.week(containing: .now)))
+                chip("Month", history.total(of: exercise.id, in: calendar.dateInterval(of: .month, for: .now)!))
+                chip("Avg/day", history.averagePerDay(of: exercise.id, today: .now))
+            }
         }
-        return text
+        .padding(.vertical, 4)
     }
 
-    private func targetChart(_ exercise: ExerciseInfo) -> some View {
-        let start = max(calendar.startOfDay(for: exercise.createdAt), calendar.date(byAdding: .day, value: -89, to: calendar.startOfDay(for: .now))!)
-        // Calendar days (not 86400 s), so a daylight-saving change doesn't skip or repeat one.
-        let count = calendar.dateComponents([.day], from: start, to: calendar.startOfDay(for: .now)).day ?? 0
-        let points = (0...max(0, count)).compactMap { offset -> (day: Date, target: Int)? in
-            let day = calendar.date(byAdding: .day, value: offset, to: start)!
-            return history.target(of: exercise, on: day).map { (day, $0) }
+    private func chip(_ title: String, _ value: Int) -> some View {
+        VStack(spacing: 2) {
+            Text(value.formatted()).font(.subheadline.bold())
+            Text(title).font(.caption2).foregroundStyle(.secondary)
         }
-        return Chart(points, id: \.day) {
-            LineMark(x: .value("Day", $0.day), y: .value("Target", $0.target)).interpolationMethod(.stepEnd)
-        }
-        .foregroundStyle(.orange)
-        .chartYScale(domain: .automatic(includesZero: false))
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 6)
+        .background(Color.orange.opacity(0.12), in: RoundedRectangle(cornerRadius: 8))
+        .accessibilityElement(children: .combine)
     }
 }
 

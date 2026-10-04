@@ -294,6 +294,7 @@ struct BaselineEditor: View {
     @State private var daysDone = 0
     @State private var streak = 0
     @State private var best = 0
+    @State private var averages: [UUID: Int] = [:]
 
     private var firstTracked: Date { model.history.firstTrackedDay }
 
@@ -306,6 +307,15 @@ struct BaselineEditor: View {
                 numberRow("Best streak", $best)
             } footer: {
                 Text("Up to \(dayBefore.formatted(date: .abbreviated, time: .omitted)), the day before your first day in the app. Days you complete here add to these.")
+            }
+            Section {
+                ForEach(model.exercises) { exercise in
+                    numberRow(exercise.name, Binding(get: { averages[exercise.id] ?? 0 }, set: { averages[exercise.id] = $0 }))
+                }
+            } header: {
+                Text("Average per day")
+            } footer: {
+                Text("A rough number is fine: it's multiplied by the days done and added to each exercise's all-time total.")
             }
             if model.baseline != nil {
                 Section {
@@ -320,7 +330,7 @@ struct BaselineEditor: View {
         .toolbar {
             Button("Save") {
                 model.setBaseline(ChallengeBaseline(startDate: start, daysDoneBefore: daysDone, streakBefore: streak,
-                                                    bestBefore: max(best, streak)))
+                                                    bestBefore: max(best, streak), averagePerDay: averages.filter { $0.value > 0 }))
                 dismiss()
             }
         }
@@ -333,6 +343,7 @@ struct BaselineEditor: View {
             daysDone = baseline.daysDoneBefore
             streak = baseline.streakBefore
             best = baseline.bestBefore
+            averages = baseline.averagePerDay
         }
     }
 
@@ -379,7 +390,7 @@ struct ExerciseEditor: View {
                     }
                 }
             } footer: {
-                Text("Changes start today. Past days keep the target they had.")
+                Text("The daily target is how many you aim for each day; a day counts as done when every exercise reaches it. Changes start today and past days keep the target they had. With growth on, the target goes up by itself every week.")
             }
         }
         .navigationTitle(exercise == nil ? "New exercise" : "Edit exercise")
