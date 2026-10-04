@@ -256,6 +256,13 @@ struct ChallengeSettingsView: View {
             } footer: {
                 Text("Archived exercises leave the card and the logger; their history stays.")
             }
+            Section {
+                NavigationLink { BaselineEditor(model: model) } label: {
+                    LabeledContent("Progress before the app", value: model.baseline.map { "\($0.daysDoneBefore) days" } ?? "None")
+                }
+            } footer: {
+                Text("Started before using Pulse Bridge? Bring over your days done and streaks.")
+            }
         }
         .navigationTitle("Exercises")
         .toolbar {
@@ -275,6 +282,68 @@ struct ChallengeSettingsView: View {
             return "\(target) \(exercise.unit.short)"
         }
         return "\(target) \(exercise.unit.short), +\(change.autoStep) \(weekdayName(weekday))s"
+    }
+}
+
+/// Numbers from before the app: when the challenge started, days done, streak and best streak up to
+/// the day before the first day tracked here.
+struct BaselineEditor: View {
+    let model: ChallengeModel
+    @Environment(\.dismiss) private var dismiss
+    @State private var start = Date.now
+    @State private var daysDone = 0
+    @State private var streak = 0
+    @State private var best = 0
+
+    private var firstTracked: Date { model.history.firstTrackedDay }
+
+    var body: some View {
+        Form {
+            Section {
+                DatePicker("Challenge started", selection: $start, in: ...firstTracked, displayedComponents: .date)
+                numberRow("Days done", $daysDone)
+                numberRow("Streak", $streak)
+                numberRow("Best streak", $best)
+            } footer: {
+                Text("Up to \(dayBefore.formatted(date: .abbreviated, time: .omitted)), the day before your first day in the app. Days you complete here add to these.")
+            }
+            if model.baseline != nil {
+                Section {
+                    Button("Remove", role: .destructive) {
+                        model.setBaseline(nil)
+                        dismiss()
+                    }
+                }
+            }
+        }
+        .navigationTitle("Before the app")
+        .toolbar {
+            Button("Save") {
+                model.setBaseline(ChallengeBaseline(startDate: start, daysDoneBefore: daysDone, streakBefore: streak,
+                                                    bestBefore: max(best, streak)))
+                dismiss()
+            }
+        }
+        .onAppear {
+            guard let baseline = model.baseline else {
+                start = Calendar.current.date(byAdding: .day, value: -1, to: firstTracked) ?? firstTracked
+                return
+            }
+            start = baseline.startDate
+            daysDone = baseline.daysDoneBefore
+            streak = baseline.streakBefore
+            best = baseline.bestBefore
+        }
+    }
+
+    private var dayBefore: Date { Calendar.current.date(byAdding: .day, value: -1, to: firstTracked) ?? firstTracked }
+
+    private func numberRow(_ title: String, _ value: Binding<Int>) -> some View {
+        LabeledContent(title) {
+            TextField(title, value: value, format: .number)
+                .keyboardType(.numberPad)
+                .multilineTextAlignment(.trailing)
+        }
     }
 }
 

@@ -22,6 +22,11 @@ final class ChallengeModel {
     private(set) var sessionHeartRate: Int?
     @ObservationIgnored private var sessionHeart: [HeartSample] = []
 
+    private static let baselineKey = "challengeBaseline"
+    /// Progress from before the app (entered once in settings).
+    private(set) var baseline: ChallengeBaseline? = UserDefaults.standard.data(forKey: ChallengeModel.baselineKey)
+        .flatMap { try? JSONDecoder().decode(ChallengeBaseline.self, from: $0) }
+
     var isSetUp: Bool { !exercises.isEmpty }
     var isSessionRunning: Bool { sessionID != nil }
 
@@ -35,7 +40,13 @@ final class ChallengeModel {
     func reload() {
         exercises = (try? store.exercises()) ?? []
         let all = (try? store.exercises(includeArchived: true)) ?? []
-        history = ChallengeHistory(exercises: all, sets: (try? store.sets()) ?? [], calendar: .current)
+        history = ChallengeHistory(exercises: all, sets: (try? store.sets()) ?? [], calendar: .current, baseline: baseline)
+    }
+
+    func setBaseline(_ new: ChallengeBaseline?) {
+        baseline = new
+        UserDefaults.standard.set(new.flatMap { try? JSONEncoder().encode($0) }, forKey: Self.baselineKey)
+        reload()
     }
 
     func setUp(_ items: [(name: String, unit: ExerciseUnit, target: Int)]) {

@@ -83,9 +83,13 @@ Order: status header, Sleep, Steps, Heart rate, Activities, Blood oxygen.
 26. History: current and best streak (an unfinished today doesn't break the streak), month calendar
    (green done, light partial, gray nothing, today ringed, previous/next month), tap a day for its
    sets and targets; totals for this week, month and all time; target chart per exercise.
-27. Share: the share button opens the share sheet with an image of today's numbers, the streak and the
+27. Exercises > Progress before the app: enter start date, days done, streak and best (e.g. 27 Aug,
+   33, 1, 14). History shows "🔥 2 day streak, best 14 · 34 days done of 39"; days between the start
+   and your first day in the app have a dashed ring and can't be opened; earlier days are plain.
+   Targets show "60 reps a day since <date>" until a target changes, then a chart.
+28. Share: the share button opens the share sheet with an image of today's numbers, the streak and the
    last 7 days.
-28. Timed session: Start timed session shows a timer and band heart rate; log sets; Finish session:
+29. Timed session: Start timed session shows a timer and band heart rate; log sets; Finish session:
    Health shows a Strength training workout from Pulse Bridge with that duration and heart rate.
    Lock the phone for a few minutes during the session: heart rate keeps coming (no gap in Health).
    Cancel session keeps the sets but saves nothing to Health. Live heart rate on the Heart rate card
@@ -94,46 +98,46 @@ Order: status header, Sleep, Steps, Heart rate, Activities, Blood oxygen.
 
 **Blood oxygen**
 
-29. The card shows the latest reading and today's range; detail D shows the day's readings (arrows move
+30. The card shows the latest reading and today's range; detail D shows the day's readings (arrows move
    between days, next is disabled on today), W and M one value per day; "No data" without readings.
 
 **Charts**
 
-30. In every detail chart (HR / SpO2 day, steps per hour, W/M bars, night HR, sleep W/M, resting HR
+31. In every detail chart (HR / SpO2 day, steps per hour, W/M bars, night HR, sleep W/M, resting HR
    trend), press and drag: a rule and a bubble with value and time or day follow the finger, with a
    light tick per point. Scrolling the page over a chart still works.
 
 ## Band tab
 
-31. Status "Connected", battery percentage, last sync and Health export as "N min ago".
-32. Sync (or pull down on Summary): "Last sync" updates but "Health export" does not.
+32. Status "Connected", battery percentage, last sync and Health export as "N min ago".
+33. Sync (or pull down on Summary): "Last sync" updates but "Health export" does not.
     "Export to Health now" writes what is queued without talking to the band.
-33. Forget band asks for confirmation, then shows the pairing sheet.
-34. Diagnostics: after a sync the size grows; Export log opens the share sheet with "sync started",
+34. Forget band asks for confirmation, then shows the pairing sheet.
+35. Diagnostics: after a sync the size grows; Export log opens the share sheet with "sync started",
     sent/received hex lines and "sync finished: new ..."; the serial appears only as its last 2
     digits. Clear asks for confirmation, then empties it.
-35. Battery card: "Collecting data" at first, a 30-day chart after a few connections, "About N% per
+36. Battery card: "Collecting data" at first, a 30-day chart after a few connections, "About N% per
    day" after 2 days (charging doesn't lower it).
-36. Background App Refresh off for Pulse Bridge: the Band card shows the hint to turn it on.
+37. Background App Refresh off for Pulse Bridge: the Band card shows the hint to turn it on.
 
 ## Sync and Health
 
-37. Health app: only data from after "Health data since" appears, from Pulse Bridge, at the right times.
-38. Sync twice: the second adds nothing and Health shows no duplicates.
-39. Walk out of range mid-sync: an error shows; come back and sync: it completes, nothing duplicated.
-40. Deny Heart Rate in Settings > Health > Data Access > Pulse Bridge and wait for the hourly export:
+38. Health app: only data from after "Health data since" appears, from Pulse Bridge, at the right times.
+39. Sync twice: the second adds nothing and Health shows no duplicates.
+40. Walk out of range mid-sync: an error shows; come back and sync: it completes, nothing duplicated.
+41. Deny Heart Rate in Settings > Health > Data Access > Pulse Bridge and wait for the hourly export:
     "Not allowed in Health: heartRate" shows. Allow it again: the queued samples reach Health.
-41. Background the app: the band disconnects (unless an activity is running). Reopen within the hour: it only reconnects. Reopen after
+42. Background the app: the band disconnects (unless an activity is running). Reopen within the hour: it only reconnects. Reopen after
     an hour: a sync with Health export runs by itself.
-42. Sync after more than 3 days without syncing: every type completes (multi-page read).
-43. Sync during a walk, sync again 10 minutes later: the later minutes of that block reach Health.
-44. Change the phone's time zone and sync: the band shows the new local time and no data is missing.
-45. Background sync: leave the app in the background (don't force-quit) with the band nearby for a
+43. Sync after more than 3 days without syncing: every type completes (multi-page read).
+44. Sync during a walk, sync again 10 minutes later: the later minutes of that block reach Health.
+45. Change the phone's time zone and sync: the band shows the new local time and no data is missing.
+46. Background sync: leave the app in the background (don't force-quit) with the band nearby for a
    few hours: "Background sync" on the Band card shows a time and new data is in Health (if the
    phone was unlocked at that moment). Diagnostics shows "background sync started".
-46. Band away during a background run: diagnostics shows "band not in range"; opening the app later
+47. Band away during a background run: diagnostics shows "band not in range"; opening the app later
    syncs right away.
-47. Health > Steps or Walking + Running Distance > Show All Data: a new sample shows device
+48. Health > Steps or Walking + Running Distance > Show All Data: a new sample shows device
    "Pulse One"; distance samples are one minute long.
-48. Fitness workout with the band paired in Settings > Bluetooth: heart rate shows in the workout;
+49. Fitness workout with the band paired in Settings > Bluetooth: heart rate shows in the workout;
    Pulse Bridge still syncs afterwards.
