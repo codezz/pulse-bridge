@@ -14,12 +14,32 @@ public final class RecordStore {
     }
 
     public static func container(inMemory: Bool = false) throws -> ModelContainer {
-        try ModelContainer(for: StoredRecord.self, StoredActivity.self, configurations: ModelConfiguration(isStoredInMemoryOnly: inMemory))
+        try ModelContainer(for: StoredRecord.self, StoredActivity.self, StoredBatteryReading.self, configurations: ModelConfiguration(isStoredInMemoryOnly: inMemory))
     }
 
     /// A store in a specific file (the macOS test tool keeps its own database).
     public static func container(url: URL) throws -> ModelContainer {
-        try ModelContainer(for: StoredRecord.self, StoredActivity.self, configurations: ModelConfiguration(url: url))
+        try ModelContainer(for: StoredRecord.self, StoredActivity.self, StoredBatteryReading.self, configurations: ModelConfiguration(url: url))
+    }
+
+    static let batteryInterval: TimeInterval = 15 * 60
+    static let batteryKeep: TimeInterval = 90 * 86400
+
+    /// At most one reading per 15 minutes; readings older than 90 days are dropped.
+    public func recordBattery(_ percent: Int, at date: Date) throws {
+        var latest = FetchDescriptor<StoredBatteryReading>(sortBy: [SortDescriptor(\.date, order: .reverse)])
+        latest.fetchLimit = 1
+        if let last = try context.fetch(latest).first, date.timeIntervalSince(last.date) < Self.batteryInterval { return }
+        let cutoff = date.addingTimeInterval(-Self.batteryKeep)
+        try context.delete(model: StoredBatteryReading.self, where: #Predicate { $0.date < cutoff })
+        context.insert(StoredBatteryReading(date: date, percent: percent))
+        try context.save()
+    }
+
+    public func batteryReadings(since: Date) throws -> [BatteryReading] {
+        try context.fetch(FetchDescriptor<StoredBatteryReading>(predicate: #Predicate { $0.date >= since },
+                                                                sortBy: [SortDescriptor(\.date)]))
+            .map { BatteryReading(date: $0.date, percent: $0.percent) }
     }
 
     /// The read cursor: newest stored record of a kind.
