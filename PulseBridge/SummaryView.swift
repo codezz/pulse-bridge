@@ -59,7 +59,7 @@ struct SummaryView: View {
                 case .metric(let metric, let day): MetricDetailView(metric: metric, service: model.service, day: day)
                 case .sleep: SleepDetailView(service: model.service)
                 case .activities: ActivitiesView(service: model.service)
-                case .challengeHistory: Text("History")
+                case .challengeHistory: ChallengeHistoryView(model: coordinator.challenge)
                 }
             }
             .refreshable { await coordinator.sync() }

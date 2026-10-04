@@ -229,12 +229,182 @@ struct ChallengeLogger: View {
     }
 }
 
+/// Exercises and their targets: reorder, archive, add, edit.
 struct ChallengeSettingsView: View {
     let model: ChallengeModel
-    var body: some View { Text("Settings") }
+    @State private var archiving: ExerciseInfo?
+
+    var body: some View {
+        List {
+            Section {
+                ForEach(model.exercises) { exercise in
+                    NavigationLink { ExerciseEditor(model: model, exercise: exercise) } label: {
+                        LabeledContent(exercise.name, value: targetText(exercise))
+                    }
+                    .swipeActions { Button("Archive") { archiving = exercise }.tint(.orange) }
+                }
+                .onMove { from, to in
+                    var ids = model.exercises.map(\.id)
+                    ids.move(fromOffsets: from, toOffset: to)
+                    model.reorder(ids)
+                }
+            } footer: {
+                Text("Archived exercises leave the card and the logger; their history stays.")
+            }
+        }
+        .navigationTitle("Exercises")
+        .toolbar {
+            EditButton()
+            NavigationLink { ExerciseEditor(model: model, exercise: nil) } label: { Image(systemName: "plus") }
+                .accessibilityLabel("Add exercise")
+        }
+        .confirmationDialog("Archive \(archiving?.name ?? "")?", isPresented: Binding(get: { archiving != nil }, set: { if !$0 { archiving = nil } }),
+                            titleVisibility: .visible) {
+            Button("Archive", role: .destructive) { if let archiving { model.archive(archiving.id) } }
+        }
+    }
+
+    private func targetText(_ exercise: ExerciseInfo) -> String {
+        let target = model.history.target(of: exercise, on: .now) ?? 0
+        guard let change = exercise.latestChange, change.autoStep != 0, let weekday = change.autoWeekday else {
+            return "\(target) \(exercise.unit.short)"
+        }
+        return "\(target) \(exercise.unit.short), +\(change.autoStep) \(Calendar.current.weekdaySymbols[weekday - 1])s"
+    }
+}
+
+/// Add an exercise, or change one's name, target and weekly growth.
+struct ExerciseEditor: View {
+    let model: ChallengeModel
+    let exercise: ExerciseInfo?
+    @Environment(\.dismiss) private var dismiss
+    @State private var name = ""
+    @State private var unit = ExerciseUnit.reps
+    @State private var target = 20
+    @State private var grows = false
+    @State private var step = 5
+    @State private var weekday = 2
+
+    var body: some View {
+        Form {
+            Section {
+                TextField("Name", text: $name)
+                if exercise == nil {
+                    Picker("Unit", selection: $unit) {
+                        ForEach(ExerciseUnit.allCases, id: \.self) { Text($0.title).tag($0) }
+                    }
+                }
+                Stepper(value: $target, in: 1...2000, step: 5) { Text("Daily target: \(target) \(unit.short)") }
+            }
+            Section {
+                Toggle("Grow automatically", isOn: $grows)
+                if grows {
+                    Stepper(value: $step, in: 1...50) { Text("+\(step) every week") }
+                    Picker("On", selection: $weekday) {
+                        ForEach(1...7, id: \.self) { Text(Calendar.current.weekdaySymbols[$0 - 1]).tag($0) }
+                    }
+                }
+            } footer: {
+                Text("Changes start today. Past days keep the target they had.")
+            }
+        }
+        .navigationTitle(exercise == nil ? "New exercise" : "Edit exercise")
+        .toolbar {
+            Button("Save") { save() }.disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
+        }
+        .onAppear(perform: load)
+    }
+
+    private func load() {
+        guard let exercise else { return }
+        name = exercise.name
+        unit = exercise.unit
+        target = model.history.target(of: exercise, on: .now) ?? 20
+        if let change = exercise.latestChange, change.autoStep != 0, let day = change.autoWeekday {
+            grows = true
+            step = change.autoStep
+            weekday = day
+        }
+    }
+
+    private func save() {
+        let trimmed = name.trimmingCharacters(in: .whitespaces)
+        if let exercise {
+            if trimmed != exercise.name { model.rename(exercise.id, to: trimmed) }
+            model.setTarget(exercise.id, target: target, autoStep: grows ? step : 0, autoWeekday: grows ? weekday : nil)
+        } else {
+            model.add(name: trimmed, unit: unit, target: target)
+            if grows, let added = model.exercises.last {
+                model.setTarget(added.id, target: target, autoStep: step, autoWeekday: weekday)
+            }
+        }
+        dismiss()
+    }
+}
+
+/// The image sent to the friends' group: today's numbers, the streak and the last 7 days.
+struct ChallengeShareImage: View {
+    let model: ChallengeModel
+
+    var body: some View {
+        let history = model.history
+        VStack(alignment: .leading, spacing: 14) {
+            Text("Daily challenge · \(Date.now.formatted(date: .abbreviated, time: .omitted))")
+                .font(.headline).foregroundStyle(.white)
+            ForEach(model.exercises) { exercise in
+                let total = history.total(of: exercise.id, on: .now)
+                let target = history.target(of: exercise, on: .now) ?? 0
+                HStack {
+                    Text(exercise.name).foregroundStyle(.white)
+                    Spacer()
+                    Text("\(total) / \(target)\(total >= target && target > 0 ? " ✓" : "")")
+                        .font(.title3.bold()).foregroundStyle(total >= target && target > 0 ? .green : .orange)
+                }
+            }
+            Text("🔥 \(history.streak(today: .now))-day streak").font(.subheadline.bold()).foregroundStyle(.white)
+            HStack(spacing: 8) {
+                ForEach((0..<7).reversed(), id: \.self) { back in
+                    let day = Calendar.current.date(byAdding: .day, value: -back, to: .now)!
+                    Circle().fill(statusColor(history.status(on: day))).frame(width: 18, height: 18)
+                }
+            }
+            Text("Pulse Bridge").font(.caption2).foregroundStyle(.white.opacity(0.5))
+        }
+        .padding(24)
+        .frame(width: 360)
+        .background(Color(red: 0.11, green: 0.11, blue: 0.12))
+    }
+}
+
+/// Green done, light green partial, gray nothing: shared by the share image and the history calendar.
+func statusColor(_ status: DayStatus) -> Color {
+    switch status {
+    case .done: .green
+    case .partial: .green.opacity(0.35)
+    case .none: .gray.opacity(0.25)
+    }
 }
 
 struct ChallengeShareButton: View {
     let model: ChallengeModel
-    var body: some View { EmptyView() }
+    @State private var image: Image?
+
+    var body: some View {
+        Group {
+            if let image {
+                ShareLink(item: image, preview: SharePreview("Daily challenge", image: image)) {
+                    Image(systemName: "square.and.arrow.up")
+                }
+                .accessibilityLabel("Share")
+            }
+        }
+        // Re-render after a new set or a target change.
+        .task(id: "\(model.history.sets.count)-\(model.exercises.map { $0.latestChange?.target ?? 0 })") { render() }
+    }
+
+    private func render() {
+        let renderer = ImageRenderer(content: ChallengeShareImage(model: model))
+        renderer.scale = 3
+        image = renderer.uiImage.map { Image(uiImage: $0) }
+    }
 }
