@@ -64,12 +64,27 @@ public struct ChallengeBaseline: Codable, Sendable, Equatable {
     public var daysDoneBefore: Int
     public var streakBefore: Int
     public var bestBefore: Int
+    /// Estimated reps (or seconds) per done day before the app, per exercise.
+    public var averagePerDay: [UUID: Int]
 
-    public init(startDate: Date, daysDoneBefore: Int, streakBefore: Int, bestBefore: Int) {
+    public init(startDate: Date, daysDoneBefore: Int, streakBefore: Int, bestBefore: Int, averagePerDay: [UUID: Int] = [:]) {
         self.startDate = startDate
         self.daysDoneBefore = daysDoneBefore
         self.streakBefore = streakBefore
         self.bestBefore = bestBefore
+        self.averagePerDay = averagePerDay
+    }
+
+    private enum CodingKeys: String, CodingKey { case startDate, daysDoneBefore, streakBefore, bestBefore, averagePerDay }
+
+    /// Baselines saved before averages existed have no `averagePerDay`.
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        startDate = try c.decode(Date.self, forKey: .startDate)
+        daysDoneBefore = try c.decode(Int.self, forKey: .daysDoneBefore)
+        streakBefore = try c.decode(Int.self, forKey: .streakBefore)
+        bestBefore = try c.decode(Int.self, forKey: .bestBefore)
+        averagePerDay = try c.decodeIfPresent([UUID: Int].self, forKey: .averagePerDay) ?? [:]
     }
 }
 
@@ -192,6 +207,24 @@ public struct ChallengeHistory: Sendable {
             day = calendar.date(byAdding: .day, value: 1, to: day)!
         }
         return count
+    }
+
+    /// Everything logged for an exercise plus the estimate from before the app.
+    public func allTime(of exerciseID: UUID) -> Int {
+        let logged = dayTotals[exerciseID]?.values.reduce(0, +) ?? 0
+        return logged + (baseline?.averagePerDay[exerciseID] ?? 0) * (baseline?.daysDoneBefore ?? 0)
+    }
+
+    /// All time divided by days done.
+    public func averagePerDay(of exerciseID: UUID, today: Date) -> Int {
+        let days = daysDone(today: today)
+        return days > 0 ? allTime(of: exerciseID) / days : 0
+    }
+
+    /// Share of challenge days completed (days done / day number).
+    public func successRate(today: Date) -> Double {
+        let day = challengeDay(today: today)
+        return day > 0 ? min(1, Double(daysDone(today: today)) / Double(day)) : 0
     }
 
     /// Day number of the challenge today (1 on its first day).

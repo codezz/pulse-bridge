@@ -136,6 +136,25 @@ struct ChallengeTests {
         #expect(withBaseline(gap).streak(today: day(2)) == 1)
     }
 
+    @Test func baselineAveragesAddToAllTimeAndRates() {
+        let e = exercise(push, created: 0, [change(0, 60)])
+        let baseline = ChallengeBaseline(startDate: day(-38, 0), daysDoneBefore: 33, streakBefore: 1, bestBefore: 14,
+                                         averagePerDay: [push: 50])
+        let h = ChallengeHistory(exercises: [e], sets: [SetInfo(exerciseID: push, date: day(0), count: 60)],
+                                 calendar: calendar, baseline: baseline)
+        #expect(h.allTime(of: push) == 33 * 50 + 60)
+        #expect(h.averagePerDay(of: push, today: day(0)) == (33 * 50 + 60) / 34)
+        #expect(h.successRate(today: day(0)) == 34.0 / 39.0)
+    }
+
+    /// A baseline saved before averages existed still loads.
+    @Test func oldBaselineWithoutAveragesDecodes() throws {
+        let json = #"{"startDate":0,"daysDoneBefore":3,"streakBefore":1,"bestBefore":2}"#
+        let baseline = try JSONDecoder().decode(ChallengeBaseline.self, from: Data(json.utf8))
+        #expect(baseline.averagePerDay.isEmpty)
+        #expect(baseline.daysDoneBefore == 3)
+    }
+
     @Test func noBaselineNumbers() {
         let e = exercise(push, created: 0, [change(0, 60)])
         let h = ChallengeHistory(exercises: [e], sets: [SetInfo(exerciseID: push, date: day(0), count: 60)], calendar: calendar)
