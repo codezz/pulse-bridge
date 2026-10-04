@@ -45,6 +45,12 @@ struct ZoneAlertTests {
         #expect(a.update(bpm: 140, at: t0 + 45) == .above)
     }
 
+    /// The band sends 0 while it has no skin contact: that's no reading, not "below the zone".
+    @Test func zeroIsNoReading() {
+        var a = ZoneAlert(target: 120...131)
+        #expect(feed(&a, bpm: 0, seconds: 0...30).isEmpty)
+    }
+
     @Test func buzzCounts() {
         #expect(ZoneAlert.buzzes(for: .above) == 3)
         #expect(ZoneAlert.buzzes(for: .below) == 2)

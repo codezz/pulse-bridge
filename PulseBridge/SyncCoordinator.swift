@@ -206,11 +206,18 @@ final class SyncCoordinator {
             return
         }
         let now = Date()
-        UserDefaults.standard.set(now, forKey: Self.lastAutoSyncKey)
-        await sync(toHealth: UIApplication.shared.isProtectedDataAvailable, quiet: true)
+        let toHealth = UIApplication.shared.isProtectedDataAvailable
+        // A locked run can't reach Health: not an attempt, so opening the app exports right away.
+        if toHealth { UserDefaults.standard.set(now, forKey: Self.lastAutoSyncKey) }
+        await sync(toHealth: toHealth, quiet: true)
         lastBackgroundSync = now
         UserDefaults.standard.set(now, forKey: Self.lastBackgroundSyncKey)
         if !isForeground { band.disconnect() }
+    }
+
+    func backgroundSyncExpired() {
+        diagnostics.note("background sync expired")
+        band.disconnect()
     }
 
     private func logConnection() {

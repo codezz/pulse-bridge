@@ -28,7 +28,13 @@ struct PulseBridgeApp: App {
             }
         }
         .backgroundTask(.appRefresh(BackgroundRefresh.identifier)) {
-            await coordinator.backgroundSync()
+            // iOS's time is up: drop the connection so every pending band wait fails fast and the
+            // sync ends cleanly (it is incremental, the next run continues).
+            await withTaskCancellationHandler {
+                await coordinator.backgroundSync()
+            } onCancel: {
+                Task { @MainActor in coordinator.backgroundSyncExpired() }
+            }
             BackgroundRefresh.schedule()
         }
     }

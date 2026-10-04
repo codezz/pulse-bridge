@@ -25,11 +25,16 @@ public final class RecordStore {
     static let batteryInterval: TimeInterval = 15 * 60
     static let batteryKeep: TimeInterval = 90 * 86400
 
-    /// At most one reading per 15 minutes; readings older than 90 days are dropped.
+    /// At most one reading per 15 minutes: a newer value within that time replaces the last one (the
+    /// value read right after connecting can be stale), keeping its time. Older than 90 days: dropped.
     public func recordBattery(_ percent: Int, at date: Date) throws {
         var latest = FetchDescriptor<StoredBatteryReading>(sortBy: [SortDescriptor(\.date, order: .reverse)])
         latest.fetchLimit = 1
-        if let last = try context.fetch(latest).first, date.timeIntervalSince(last.date) < Self.batteryInterval { return }
+        if let last = try context.fetch(latest).first, date.timeIntervalSince(last.date) < Self.batteryInterval {
+            last.percent = percent
+            try context.save()
+            return
+        }
         let cutoff = date.addingTimeInterval(-Self.batteryKeep)
         try context.delete(model: StoredBatteryReading.self, where: #Predicate { $0.date < cutoff })
         context.insert(StoredBatteryReading(date: date, percent: percent))

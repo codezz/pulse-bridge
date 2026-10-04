@@ -26,6 +26,8 @@ public struct ZoneAlert: Sendable, Equatable {
     }
 
     public mutating func update(bpm: Int, at date: Date) -> Direction? {
+        // 0 = no skin contact: no reading (a longer gap then counts as stale).
+        guard bpm > 0 else { return nil }
         if let lastReading, date.timeIntervalSince(lastReading) > Self.stale { reset() }
         lastReading = date
         let now: Direction? = bpm > target.upperBound ? .above : bpm < target.lowerBound ? .below : nil
