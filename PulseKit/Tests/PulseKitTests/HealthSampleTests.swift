@@ -26,8 +26,25 @@ struct HealthSampleTests {
         #expect(r.healthSamples(id: "X") == [
             HealthSample(metric: .steps, start: t0, end: t0 + 60, value: 60, syncID: "X.0"),
             HealthSample(metric: .steps, start: t0 + 60, end: t0 + 120, value: 33, syncID: "X.1"),
-            HealthSample(metric: .distance, start: t0, end: t0 + 600, value: 60, syncID: "X.d"),
+            HealthSample(metric: .distance, start: t0, end: t0 + 60, value: 39, syncID: "X.d"),
+            HealthSample(metric: .distance, start: t0 + 60, end: t0 + 120, value: 21, syncID: "X.d.1"),
         ])
+    }
+
+    @Test func distanceSplitsInProportionToSteps() {
+        #expect(HistoryRecord.splitDistance(60, over: [10, 0, 20, 30]) == [10, 0, 20, 30])
+        #expect(HistoryRecord.splitDistance(10, over: [1, 1, 1]) == [4, 3, 3])          // remainder to the first largest
+        #expect(HistoryRecord.splitDistance(7, over: [0, 0]) == [])                     // no steps: no split
+        #expect(HistoryRecord.splitDistance(100, over: [5, 50, 5]).reduce(0, +) == 100)
+    }
+
+    /// A block already in Health as one 10-minute sample ("X.d") is replaced by its first piece.
+    @Test func firstPieceKeepsTheOldID() throws {
+        let r = try record(.activity, "52 00 00 26 06 16 13 33 58 5d 00 7a 3b 06 00 3c 21 00 00 00 00 00 00 00 00")
+        let distance = r.healthSamples(id: "X").filter { $0.metric == .distance }
+        #expect(distance.map(\.syncID) == ["X.d", "X.d.1"])
+        #expect(distance.map(\.value).reduce(0, +) == 60)
+        #expect(distance.allSatisfy { $0.end.timeIntervalSince($0.start) == 60 })
     }
 
     @Test func continuousHeartRateSkipsEmptyMinutes() throws {

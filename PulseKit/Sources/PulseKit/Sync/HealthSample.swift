@@ -61,8 +61,21 @@ extension HistoryRecord {
         case let .activity(_, distanceMeters, minuteSteps):
             let steps = series(.steps, minuteSteps, id: id, lastsAMinute: true)
             guard distanceMeters > 0 else { return steps }
-            return steps + [HealthSample(metric: .distance, start: start, end: minute(minuteSteps.count),
-                                         value: Double(distanceMeters), syncID: "\(id).d")]
+            let pieces = Self.splitDistance(distanceMeters, over: minuteSteps)
+            guard !pieces.isEmpty else {
+                return steps + [HealthSample(metric: .distance, start: start, end: minute(minuteSteps.count),
+                                             value: Double(distanceMeters), syncID: "\(id).d")]
+            }
+            // The first piece keeps the old 10-minute sample's ID, so a block already in Health is
+            // replaced by it instead of being counted twice.
+            var first = true
+            let distance = pieces.enumerated().compactMap { offset, meters -> HealthSample? in
+                guard meters > 0 else { return nil }
+                defer { first = false }
+                return HealthSample(metric: .distance, start: minute(offset), end: minute(offset + 1),
+                                    value: Double(meters), syncID: first ? "\(id).d" : "\(id).d.\(offset)")
+            }
+            return steps + distance
         case let .continuousHR(minuteBPM):
             return series(.heartRate, minuteBPM, id: id, lastsAMinute: false)
         case let .spotHR(bpm):
@@ -82,6 +95,18 @@ extension HistoryRecord {
         case .dailyTotals:
             return []
         }
+    }
+
+    /// Whole meters per minute, proportional to the minute's steps, adding up to `meters` exactly
+    /// (the remainder goes to the minutes with the most steps). Empty when there are no steps.
+    static func splitDistance(_ meters: Int, over minuteSteps: [Int]) -> [Int] {
+        let total = minuteSteps.reduce(0, +)
+        guard total > 0 else { return [] }
+        var pieces = minuteSteps.map { meters * $0 / total }
+        let remainder = meters - pieces.reduce(0, +)
+        let order = minuteSteps.indices.sorted { minuteSteps[$0] != minuteSteps[$1] ? minuteSteps[$0] > minuteSteps[$1] : $0 < $1 }
+        for index in order.prefix(remainder) { pieces[index] += 1 }
+        return pieces
     }
 
     private func minute(_ offset: Int) -> Date {

@@ -28,8 +28,8 @@ struct SyncEngineTests {
         #expect(report.newRecords[.spotHR] == 1)
         #expect(report.newRecords[.spo2] == 1)
         #expect(report.failures.isEmpty)
-        #expect(report.exportedSamples == 5) // 2 step minutes + distance + HR + SpO2
-        #expect(health.saved.count == 5)
+        #expect(report.exportedSamples == 6) // 2 step minutes + 2 distance minutes + HR + SpO2
+        #expect(health.saved.count == 6)
         #expect(try store.pendingExport().isEmpty)
     }
 
@@ -38,7 +38,7 @@ struct SyncEngineTests {
         _ = try await engine.sync(over: channel, serial: "S")
         let report = try await engine.sync(over: channel, serial: "S")
         #expect(report.newRecords.values.allSatisfy { $0 == 0 })
-        #expect(health.saved.count == 5)
+        #expect(health.saved.count == 6)
     }
 
     @Test func failingKindDoesNotStopOthers() async throws {
@@ -171,7 +171,7 @@ struct SyncEngineTests {
 
         let full = try await engine.sync(over: channel, serial: "S")
         #expect(full.exportedToHealth)
-        #expect(full.exportedSamples == 5)
+        #expect(full.exportedSamples == 6)
         #expect(try store.pendingExport().isEmpty)
     }
 
@@ -181,8 +181,8 @@ struct SyncEngineTests {
         let sentBefore = channel.sent.count
         let report = await engine.exportToHealth()
         #expect(report.exportedToHealth)
-        #expect(report.exportedSamples == 5)
-        #expect(health.saved.count == 5)
+        #expect(report.exportedSamples == 6)
+        #expect(health.saved.count == 6)
         #expect(try store.pendingExport().isEmpty)
         #expect(channel.sent.count == sentBefore) // no band traffic
     }
