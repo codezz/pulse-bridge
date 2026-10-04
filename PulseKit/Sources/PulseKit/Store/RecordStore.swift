@@ -13,13 +13,17 @@ public final class RecordStore {
         self.container = container
     }
 
+    /// Every model in the app's database (the app and the Mac tool share it).
+    static let schema = Schema([StoredRecord.self, StoredActivity.self, StoredBatteryReading.self,
+                                ChallengeExercise.self, ChallengeTargetChange.self, ChallengeSet.self, ChallengeSession.self])
+
     public static func container(inMemory: Bool = false) throws -> ModelContainer {
-        try ModelContainer(for: StoredRecord.self, StoredActivity.self, StoredBatteryReading.self, configurations: ModelConfiguration(isStoredInMemoryOnly: inMemory))
+        try ModelContainer(for: schema, configurations: ModelConfiguration(isStoredInMemoryOnly: inMemory))
     }
 
     /// A store in a specific file (the macOS test tool keeps its own database).
     public static func container(url: URL) throws -> ModelContainer {
-        try ModelContainer(for: StoredRecord.self, StoredActivity.self, StoredBatteryReading.self, configurations: ModelConfiguration(url: url))
+        try ModelContainer(for: schema, configurations: ModelConfiguration(url: url))
     }
 
     static let batteryInterval: TimeInterval = 15 * 60

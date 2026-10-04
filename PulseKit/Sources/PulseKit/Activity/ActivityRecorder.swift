@@ -18,6 +18,11 @@ public struct GeoPoint: Codable, Sendable, Equatable {
 public struct HeartSample: Codable, Sendable, Equatable {
     public let date: Date
     public let bpm: Int
+
+    public init(date: Date, bpm: Int) {
+        self.date = date
+        self.bpm = bpm
+    }
 }
 
 /// One activity as it is recorded: GPS points (split into segments at each pause), heart rate,
