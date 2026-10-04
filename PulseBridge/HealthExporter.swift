@@ -5,6 +5,14 @@ import PulseKit
 @MainActor
 final class HealthExporter: HealthWriter {
     private static let batchSize = 500
+    /// Band heart rate as Health samples, for workouts (activities and challenge sessions).
+    static func heartSamples(_ heart: [HeartSample]) -> [HKSample] {
+        heart.map {
+            HKQuantitySample(type: HKQuantityType(.heartRate), quantity: HKQuantity(unit: .count().unitDivided(by: .minute()),
+                             doubleValue: Double($0.bpm)), start: $0.date, end: $0.date, device: band, metadata: nil)
+        }
+    }
+
     /// Shown as the device in Health's sample details.
     static let band = HKDevice(name: "Pulse One", manufacturer: nil, model: nil, hardwareVersion: nil,
                                firmwareVersion: nil, softwareVersion: nil, localIdentifier: nil, udiDeviceIdentifier: nil)

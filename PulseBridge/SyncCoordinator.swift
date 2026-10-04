@@ -71,7 +71,7 @@ final class SyncCoordinator {
         let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"
         diagnostics.note("app \(version) launched, iOS \(ProcessInfo.processInfo.operatingSystemVersionString)")
         challenge.onSessionChange = { [weak self] in self?.updateBandUse() }
-        challenge.log = { [weak self] in self?.diagnostics.note($0) }
+        challenge.note = { [weak self] in self?.diagnostics.note($0) }
         engine.onBandClockSet = { offset in
             // Saved right away: a sync that fails later must not leave the old offset behind.
             UserDefaults.standard.set(offset, forKey: SyncCoordinator.bandClockOffsetKey)

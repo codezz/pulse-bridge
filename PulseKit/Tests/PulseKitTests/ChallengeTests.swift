@@ -89,6 +89,25 @@ struct ChallengeTests {
         #expect(ChallengeHistory(exercises: [e], sets: [], calendar: calendar).streak(today: day(0)) == 0)
     }
 
+    @Test func progressOfADay() {
+        let e = exercise(push, [change(-10, 60)])
+        let h = ChallengeHistory(exercises: [e], sets: [SetInfo(exerciseID: push, date: day(0), count: 70)], calendar: calendar)
+        #expect(h.progress(of: e, on: day(0)) == ChallengeProgress(total: 70, target: 60))
+        #expect(h.progress(of: e, on: day(0)).isDone)
+        #expect(!h.progress(of: e, on: day(-1)).isDone)
+        #expect(!ChallengeProgress(total: 0, target: 0).isDone)     // no target yet
+    }
+
+    /// "This week" starts on Monday whatever the phone's locale says.
+    @Test func weeksStartOnMonday() {
+        var sundayFirst = calendar
+        sundayFirst.firstWeekday = 1
+        let h = ChallengeHistory(exercises: [], sets: [], calendar: sundayFirst)
+        let week = h.week(containing: day(-1))            // Sunday 4 Oct
+        #expect(week.start == utcDate(2026, 9, 28))       // Monday
+        #expect(week.end == utcDate(2026, 10, 5))
+    }
+
     @Test func periodTotals() {
         let e = exercise(push, [change(-10, 10)])
         let sets = [SetInfo(exerciseID: push, date: day(0), count: 10), SetInfo(exerciseID: push, date: day(6), count: 5),

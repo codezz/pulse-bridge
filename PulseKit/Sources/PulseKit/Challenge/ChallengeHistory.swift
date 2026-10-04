@@ -57,6 +57,21 @@ public enum DayStatus: Sendable, Equatable {
     case none, partial, done
 }
 
+/// One exercise on one day: what was done against what was asked.
+public struct ChallengeProgress: Sendable, Equatable {
+    public let total: Int
+    public let target: Int
+
+    public init(total: Int, target: Int) {
+        self.total = total
+        self.target = target
+    }
+
+    public var isDone: Bool { target > 0 && total >= target }
+    /// 0...1 and beyond, for rings and bars.
+    public var fraction: Double { target > 0 ? Double(total) / Double(target) : 0 }
+}
+
 /// The challenge's rules over stored values: targets per day, day status, streaks, totals.
 public struct ChallengeHistory: Sendable {
     public let exercises: [ExerciseInfo]
@@ -93,6 +108,17 @@ public struct ChallengeHistory: Sendable {
 
     public func total(of exerciseID: UUID, on day: Date) -> Int {
         dayTotals[exerciseID]?[calendar.startOfDay(for: day)] ?? 0
+    }
+
+    public func progress(of exercise: ExerciseInfo, on day: Date) -> ChallengeProgress {
+        ChallengeProgress(total: total(of: exercise.id, on: day), target: target(of: exercise, on: day) ?? 0)
+    }
+
+    /// The Monday-to-Monday week containing `day`, whatever the locale's first weekday.
+    public func week(containing day: Date) -> DateInterval {
+        var monday = calendar
+        monday.firstWeekday = 2
+        return monday.dateInterval(of: .weekOfYear, for: day)!
     }
 
     public func isActive(_ exercise: ExerciseInfo, on day: Date) -> Bool {

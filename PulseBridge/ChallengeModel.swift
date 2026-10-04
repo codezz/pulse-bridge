@@ -11,7 +11,9 @@ final class ChallengeModel {
     @ObservationIgnored private let exporter = ChallengeExporter()
     @ObservationIgnored private var isExporting = false
     @ObservationIgnored var onSessionChange: (() -> Void)?
-    @ObservationIgnored var log: ((String) -> Void)?
+    /// Writes a line to the diagnostics log.
+    @ObservationIgnored var note: ((String) -> Void)?
+    @ObservationIgnored private var exportAgain = false
 
     private(set) var exercises: [ExerciseInfo] = []
     private(set) var history = ChallengeHistory(exercises: [], sets: [], calendar: .current)
@@ -53,8 +55,8 @@ final class ChallengeModel {
         reload()
     }
 
-    func add(name: String, unit: ExerciseUnit, target: Int) {
-        try? store.addExercise(name: name, unit: unit, target: target, at: .now)
+    func add(name: String, unit: ExerciseUnit, target: Int, autoStep: Int = 0, autoWeekday: Int? = nil) {
+        try? store.addExercise(name: name, unit: unit, target: target, autoStep: autoStep, autoWeekday: autoWeekday, at: .now)
         reload()
     }
 
@@ -70,13 +72,14 @@ final class ChallengeModel {
     // MARK: Timed session
 
     func startSession() {
-        guard sessionID == nil, let id = try? store.startSession(at: .now) else { return }
+        let now = Date()
+        guard sessionID == nil, let id = try? store.startSession(at: now) else { return }
         sessionID = id
-        sessionStart = .now
+        sessionStart = now
         sessionHeart = []
         sessionHeartRate = nil
         onSessionChange?()
-        log?("challenge session started")
+        note?("challenge session started")
     }
 
     func addHeartRate(_ bpm: Int) {
@@ -89,7 +92,7 @@ final class ChallengeModel {
         guard let id = sessionID else { return }
         try? store.finishSession(id, at: .now, heart: sessionHeart)
         endSession()
-        log?("challenge session finished")
+        note?("challenge session finished")
         await exportPendingSessions()
     }
 
@@ -97,7 +100,7 @@ final class ChallengeModel {
         guard let id = sessionID else { return }
         try? store.cancelSession(id)
         endSession()
-        log?("challenge session cancelled")
+        note?("challenge session cancelled")
     }
 
     private func endSession() {
@@ -109,18 +112,26 @@ final class ChallengeModel {
         reload()
     }
 
-    /// One export at a time; failures stay queued for the next Health export.
+    /// One export at a time; a session finished meanwhile is picked up right after. Failures stay
+    /// queued for the next Health export.
     func exportPendingSessions() async {
-        guard !isExporting else { return }
+        guard !isExporting else { exportAgain = true; return }
         isExporting = true
         defer { isExporting = false }
+        repeat {
+            exportAgain = false
+            await exportOnce()
+        } while exportAgain
+    }
+
+    private func exportOnce() async {
         for session in (try? store.pendingSessions()) ?? [] {
             do {
                 try await exporter.export(session)
                 try? store.markSessionExported(session.id)
-                log?("challenge session exported to Health")
+                note?("challenge session exported to Health")
             } catch {
-                log?("challenge session export failed: \(error.localizedDescription)")
+                note?("challenge session export failed: \(error.localizedDescription)")
             }
         }
     }

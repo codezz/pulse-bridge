@@ -29,11 +29,7 @@ final class ActivityExporter {
             try await builder.beginCollection(at: recorder.start)
             let distance = Self.distanceSamples(recorder, type: distanceType)
             if !distance.isEmpty { try await builder.addSamples(distance) }
-            let heart: [HKSample] = recorder.heart.map {
-                HKQuantitySample(type: HKQuantityType(.heartRate), quantity: HKQuantity(unit: .count().unitDivided(by: .minute()),
-                                 doubleValue: Double($0.bpm)), start: $0.date, end: $0.date,
-                                 device: HealthExporter.band, metadata: nil)
-            }
+            let heart = HealthExporter.heartSamples(recorder.heart)
             if !heart.isEmpty { try? await builder.addSamples(heart) }
             let events = recorder.pauses.flatMap {
                 [HKWorkoutEvent(type: .pause, dateInterval: DateInterval(start: $0.start, duration: 0), metadata: nil),

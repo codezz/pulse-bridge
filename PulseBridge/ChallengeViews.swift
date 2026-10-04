@@ -6,6 +6,9 @@ extension ExerciseUnit {
     var title: String { self == .reps ? "Reps" : "Seconds" }
 }
 
+/// "Monday" for Calendar weekday 2.
+func weekdayName(_ weekday: Int) -> String { Calendar.current.weekdaySymbols[weekday - 1] }
+
 /// Summary card: one ring per exercise, the streak, and the way into logging and history.
 struct ChallengeCard: View {
     let model: ChallengeModel
@@ -49,19 +52,18 @@ struct ChallengeCard: View {
     }
 
     private func ring(_ exercise: ExerciseInfo) -> some View {
-        let total = history.total(of: exercise.id, on: .now)
-        let target = history.target(of: exercise, on: .now) ?? 0
+        let progress = history.progress(of: exercise, on: .now)
         return VStack(spacing: 6) {
-            ProgressRing(progress: target > 0 ? Double(total) / Double(target) : 0, color: .orange) {
+            ProgressRing(progress: progress.fraction, color: .orange) {
                 VStack(spacing: 0) {
-                    Text("\(total)").font(.system(size: 17, weight: .bold, design: .rounded))
-                    Text("/\(target)").font(.caption2).foregroundStyle(.secondary)
+                    Text("\(progress.total)").font(.system(size: 17, weight: .bold, design: .rounded))
+                    Text("/\(progress.target)").font(.caption2).foregroundStyle(.secondary)
                 }
             }
             Text(exercise.name).font(.caption).lineLimit(1)
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(exercise.name): \(total) of \(target) \(exercise.unit.short)")
+        .accessibilityLabel("\(exercise.name): \(progress.total) of \(progress.target) \(exercise.unit.short)")
     }
 
     @ViewBuilder private var streakLine: some View {
@@ -118,7 +120,7 @@ struct ChallengeSetupView: View {
                 ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Start") {
-                        model.setUp(validRows.map { ($0.name, $0.unit, $0.target) })
+                        model.setUp(validRows.map { ($0.name.trimmingCharacters(in: .whitespaces), $0.unit, $0.target) })
                         dismiss()
                     }
                     .disabled(validRows.isEmpty)
@@ -176,25 +178,26 @@ struct ChallengeLogger: View {
     }
 
     private func exerciseSection(_ exercise: ExerciseInfo) -> some View {
-        let total = history.total(of: exercise.id, on: .now)
-        let target = history.target(of: exercise, on: .now) ?? 0
+        let progress = history.progress(of: exercise, on: .now)
         return Section(exercise.name) {
             HStack(alignment: .firstTextBaseline) {
-                Text("\(total)").numberFont(34)
-                Text("/ \(target) \(exercise.unit.short)").foregroundStyle(.secondary)
+                Text("\(progress.total)").numberFont(34)
+                Text("/ \(progress.target) \(exercise.unit.short)").foregroundStyle(.secondary)
                 Spacer()
-                if total >= target && target > 0 {
+                if progress.isDone {
                     Image(systemName: "checkmark.circle.fill").foregroundStyle(.green).accessibilityLabel("Done")
                 }
             }
-            ProgressView(value: Double(min(total, max(target, 1))), total: Double(max(target, 1))).tint(.orange)
+            ProgressView(value: min(progress.fraction, 1)).tint(.orange)
             HStack {
                 ForEach([5, 10, 20], id: \.self) { step in
                     Button("+\(step)") { model.log(step, to: exercise.id) }
                         .buttonStyle(.bordered).tint(.orange)
                         .frame(maxWidth: .infinity)
+                        .accessibilityLabel("Add \(step) \(exercise.name)")
                 }
                 Button("Custom") { customFor = exercise }
+                    .accessibilityLabel("Custom count for \(exercise.name)")
                     .buttonStyle(.bordered)
                     .frame(maxWidth: .infinity)
             }
@@ -271,7 +274,7 @@ struct ChallengeSettingsView: View {
         guard let change = exercise.latestChange, change.autoStep != 0, let weekday = change.autoWeekday else {
             return "\(target) \(exercise.unit.short)"
         }
-        return "\(target) \(exercise.unit.short), +\(change.autoStep) \(Calendar.current.weekdaySymbols[weekday - 1])s"
+        return "\(target) \(exercise.unit.short), +\(change.autoStep) \(weekdayName(weekday))s"
     }
 }
 
@@ -303,7 +306,7 @@ struct ExerciseEditor: View {
                 if grows {
                     Stepper(value: $step, in: 1...50) { Text("+\(step) every week") }
                     Picker("On", selection: $weekday) {
-                        ForEach(1...7, id: \.self) { Text(Calendar.current.weekdaySymbols[$0 - 1]).tag($0) }
+                        ForEach(1...7, id: \.self) { Text(weekdayName($0)).tag($0) }
                     }
                 }
             } footer: {
@@ -335,10 +338,7 @@ struct ExerciseEditor: View {
             if trimmed != exercise.name { model.rename(exercise.id, to: trimmed) }
             model.setTarget(exercise.id, target: target, autoStep: grows ? step : 0, autoWeekday: grows ? weekday : nil)
         } else {
-            model.add(name: trimmed, unit: unit, target: target)
-            if grows, let added = model.exercises.last {
-                model.setTarget(added.id, target: target, autoStep: step, autoWeekday: weekday)
-            }
+            model.add(name: trimmed, unit: unit, target: target, autoStep: grows ? step : 0, autoWeekday: grows ? weekday : nil)
         }
         dismiss()
     }
@@ -354,13 +354,12 @@ struct ChallengeShareImage: View {
             Text("Daily challenge · \(Date.now.formatted(date: .abbreviated, time: .omitted))")
                 .font(.headline).foregroundStyle(.white)
             ForEach(model.exercises) { exercise in
-                let total = history.total(of: exercise.id, on: .now)
-                let target = history.target(of: exercise, on: .now) ?? 0
+                let progress = history.progress(of: exercise, on: .now)
                 HStack {
                     Text(exercise.name).foregroundStyle(.white)
                     Spacer()
-                    Text("\(total) / \(target)\(total >= target && target > 0 ? " ✓" : "")")
-                        .font(.title3.bold()).foregroundStyle(total >= target && target > 0 ? .green : .orange)
+                    Text("\(progress.total) / \(progress.target)\(progress.isDone ? " ✓" : "")")
+                        .font(.title3.bold()).foregroundStyle(progress.isDone ? .green : .orange)
                 }
             }
             Text("🔥 \(history.streak(today: .now))-day streak").font(.subheadline.bold()).foregroundStyle(.white)
@@ -398,10 +397,18 @@ struct ChallengeShareButton: View {
                     Image(systemName: "square.and.arrow.up")
                 }
                 .accessibilityLabel("Share")
+            } else {
+                // Same size while the image renders, so the buttons don't jump.
+                Image(systemName: "square.and.arrow.up").foregroundStyle(.tertiary).accessibilityHidden(true)
             }
         }
-        // Re-render after a new set or a target change.
-        .task(id: "\(model.history.sets.count)-\(model.exercises.map { $0.latestChange?.target ?? 0 })") { render() }
+        .task(id: renderKey) { render() }
+    }
+
+    /// Re-render after a set, a target or name change, or a new day.
+    private var renderKey: String {
+        let exercises = model.exercises.map { "\($0.name):\($0.latestChange?.target ?? 0)" }.joined(separator: ",")
+        return "\(model.history.sets.count)|\(exercises)|\(Calendar.current.startOfDay(for: .now).timeIntervalSince1970)"
     }
 
     private func render() {
