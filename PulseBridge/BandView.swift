@@ -36,7 +36,7 @@ struct BandView: View {
                         Button("Forget band", role: .destructive) { confirmForget = true }
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+                            .cardBackground()
                     }
                 }
                 .padding()
@@ -83,7 +83,7 @@ private struct DeviceHeader: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .cardBackground()
     }
 }
 

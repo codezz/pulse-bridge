@@ -49,15 +49,11 @@ extension InsightTopic {
         }
     }
 
-    /// Lower is better only for heart rate at rest.
-    func direction(_ comparison: WeekComparison) -> InsightDirection {
-        guard abs(comparison.change) > 0.5 else { return .neutral }
-        let up = comparison.change > 0
-        switch self {
-        case .restingHeartRate, .heartRate: return up ? .worse : .better
-        case .sleep, .steps, .hrv, .spo2: return up ? .better : .worse
-        }
-    }
+    /// Same thresholds as the highlights: small changes get a neutral arrow.
+    func direction(_ comparison: WeekComparison) -> InsightDirection { Insights.direction(self, comparison) }
+
+    /// Totals and averages still changing today compare complete days only.
+    var endsYesterday: Bool { self == .steps || self == .heartRate || self == .spo2 }
 }
 
 /// The last 35 days as per-day values and insights, for Trends and the detail screens.
@@ -79,7 +75,7 @@ final class TrendsModel {
     }
 
     func comparison(_ topic: InsightTopic) -> WeekComparison? {
-        Insights.week(series[topic] ?? [:], today: .now, calendar: .current, endingYesterday: topic == .steps)
+        Insights.week(series[topic] ?? [:], today: .now, calendar: .current, endingYesterday: topic.endsYesterday)
     }
 
     /// The last 30 days, oldest first.
@@ -106,7 +102,7 @@ struct TrendsView: View {
                     HighlightsCard(insights: model.insights, limit: 10)
                     SectionTitle("This week vs last week")
                     ForEach([InsightTopic.sleep, .steps, .restingHeartRate, .hrv, .heartRate, .spo2], id: \.self) { topic in
-                        NavigationLink(value: topic.route) { row(topic) }
+                        NavigationLink(value: topic.route()) { row(topic) }
                             .buttonStyle(.plain)
                     }
                 }

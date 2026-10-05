@@ -49,12 +49,12 @@ struct ActivitiesCard: View {
     let onStart: () -> Void
 
     var body: some View {
-        Card(title: "Activities", systemImage: "figure.walk.motion", color: .green) {
+        Card(title: "Activities", systemImage: "figure.walk.motion", color: Palette.activity) {
             NavigationLink(value: SummaryRoute.activities) {
                 VStack(alignment: .leading, spacing: 8) {
                     if let latest = workouts.first {
                         HStack(spacing: 12) {
-                            Image(systemName: latest.info.activity.systemImage).font(.title2).foregroundStyle(.green)
+                            Image(systemName: latest.info.activity.systemImage).font(.title2).foregroundStyle(Palette.activity)
                             VStack(alignment: .leading, spacing: 2) {
                                 Text("\(latest.info.activity.title) · \(latest.durationText)").font(.headline)
                                 Text("\(latest.start.formatted(date: .abbreviated, time: .shortened)) · \(latest.info.steps.formatted()) steps · \(latest.distanceText)")
@@ -75,7 +75,7 @@ struct ActivitiesCard: View {
             Button("Start", systemImage: "play.fill", action: onStart)
                 .font(.caption.bold())
                 .buttonStyle(.borderedProminent)
-                .tint(.green)
+                .tint(Palette.activity)
                 .controlSize(.small)
         }
     }

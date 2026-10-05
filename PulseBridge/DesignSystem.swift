@@ -14,6 +14,13 @@ enum Palette {
     static let band = Color.gray
 }
 
+extension View {
+    /// The rounded background every card and tile shares.
+    func cardBackground(cornerRadius: CGFloat = 20) -> some View {
+        background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+    }
+}
+
 /// Shared card chrome, Health style: a coloured symbol and title, an optional caption (e.g. the
 /// time of the latest value) and control on the right, then the content.
 struct Card<Content: View, Accessory: View>: View {
@@ -53,7 +60,7 @@ struct Card<Content: View, Accessory: View>: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
-        .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .cardBackground()
     }
 }
 
@@ -94,7 +101,7 @@ struct MetricTile: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(14)
-        .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .cardBackground(cornerRadius: 18)
         .accessibilityElement(children: .combine)
     }
 }
@@ -127,6 +134,8 @@ struct ActivityRings: View {
         let id: String
         let progress: Double
         let color: Color
+        /// What VoiceOver says for it, e.g. "score 82" or "8,240 steps".
+        var spoken: String
     }
 
     let rings: [Ring]
@@ -159,27 +168,23 @@ struct ActivityRings: View {
         .onAppear { withAnimation(.easeOut(duration: 0.9)) { shown = true } }
         .animation(.easeOut(duration: 0.6), value: rings.map(\.progress))
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(rings.map { "\($0.id) \(Int(($0.progress * 100).rounded())) percent" }.joined(separator: ", "))
+        .accessibilityLabel(rings.map { "\($0.id) \($0.spoken)" }.joined(separator: ", "))
+        .accessibilityHidden(rings.isEmpty)
     }
 }
 
 /// Large bold section header, like Health's "Highlights".
 struct SectionTitle: View {
     let title: String
-    var action: (String, () -> Void)?
 
-    init(_ title: String, action: (String, () -> Void)? = nil) {
+    init(_ title: String) {
         self.title = title
-        self.action = action
     }
 
     var body: some View {
-        HStack(alignment: .firstTextBaseline) {
-            Text(title).font(.title2.bold())
-            Spacer()
-            if let action { Button(action.0, action: action.1).font(.subheadline) }
-        }
-        .padding(.top, 8)
+        Text(title).font(.title2.bold())
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.top, 8)
     }
 }
 

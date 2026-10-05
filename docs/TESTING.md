@@ -112,7 +112,7 @@ order set in Edit Today (default: Highlights, Sleep, Heart rate, Vitals, Daily c
 
 31. Before setup the Challenge tab and the Today card offer "Set up challenge"; setup is pre-filled with Push-ups 60 and Squats 60
    (reps). Start: the tab shows a ring per exercise at 0/60 and "Start a streak today".
-32. In the tab (or Log on the Today card, which opens it): +5 / +10 / +20 and Custom add sets; the ring and the big number update with a light tap
+32. In the tab (or Log sets on the Today card, which opens it): +5 / +10 / +20 and Custom add sets; the ring and the big number update with a light tap
    haptic; Undo last removes the latest set of that exercise today (disabled when there is none).
    Reaching both targets: a success haptic and "Done for today" on the card.
 33. Exercises (gear): change a target; the card uses it today, the calendar shows earlier days with the old
@@ -122,7 +122,7 @@ order set in Edit Today (default: Highlights, Sleep, Heart rate, Vitals, Daily c
    (green done, light partial, gray nothing, today ringed, previous/next month), tap a day for its
    sets and targets; a card per exercise with totals and the last 14 days against the target.
 35. Exercises > Progress before the app: enter start date, days done, streak and best (e.g. 27 Aug,
-   33, 1, 14). the tab shows "🔥 2 day streak, best 14 · 34 days done of 39"; days between the start
+   33, 1, 14). The tab shows "🔥 2 day streak, best 14 · 34 days done of 39"; days between the start
    and your first day in the app have a dashed ring and can't be opened; earlier days are plain.
    With an average per day entered (e.g. 50), each exercise's all-time total includes 33 x 50.
    Top row: streak (best), days done (of day number), % of days hit. Each exercise has a card:
@@ -141,7 +141,7 @@ order set in Edit Today (default: Highlights, Sleep, Heart rate, Vitals, Daily c
 
 38. Top: "Pulse One" with a green dot and "Connected", battery ring. Sync card: last sync, Health
    export and background sync as "N min ago". Forget band is the last button.
-39. Sync (or pull down on Summary): "Last sync" updates but "Health export" does not.
+39. Sync (or pull down on Today): "Last sync" updates but "Health export" does not.
     "Export to Health now" writes what is queued without talking to the band.
 40. Forget band asks for confirmation, then shows the pairing sheet.
 41. Diagnostics: after a sync the size grows; Export log opens the share sheet with "sync started",

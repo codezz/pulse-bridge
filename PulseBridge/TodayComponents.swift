@@ -6,29 +6,42 @@ struct DayRings {
     var sleep: Double
     var steps: Double
     var challenge: Double?
+    var sleepScore: Int?
+    var stepCount: Int
 
     @MainActor
     static func of(_ day: Date, metrics: DailyMetrics?, challenge: ChallengeModel, liveSteps: Int? = nil) -> DayRings {
-        let sleep = Double(metrics?.sleepScore(on: day)?.value ?? 0) / 100
-        let steps = Double(max(liveSteps ?? 0, metrics?.stepsTotal(on: day) ?? 0)) / Double(stepGoal)
+        let score = metrics?.sleepScore(on: day)?.value
+        let count = max(liveSteps ?? 0, metrics?.stepsTotal(on: day) ?? 0)
         let active = challenge.history.exercises.filter { challenge.history.isActive($0, on: day) }
         let progress = active.map { min(1, challenge.history.progress(of: $0, on: day).fraction) }
-        return DayRings(sleep: sleep, steps: steps,
-                        challenge: progress.isEmpty ? nil : progress.reduce(0, +) / Double(progress.count))
+        return DayRings(sleep: Double(score ?? 0) / 100, steps: Double(count) / Double(stepGoal),
+                        challenge: progress.isEmpty ? nil : progress.reduce(0, +) / Double(progress.count),
+                        sleepScore: score, stepCount: count)
     }
 
     var rings: [ActivityRings.Ring] {
-        var result = [ActivityRings.Ring(id: "Sleep", progress: sleep, color: Palette.sleep),
-                      ActivityRings.Ring(id: "Steps", progress: steps, color: Palette.steps)]
-        if let challenge { result.append(ActivityRings.Ring(id: "Challenge", progress: challenge, color: Palette.challenge)) }
+        var result = [ActivityRings.Ring(id: "Sleep", progress: sleep, color: Palette.sleep,
+                                         spoken: sleepScore.map { "score \($0)" } ?? "no data"),
+                      ActivityRings.Ring(id: "Steps", progress: steps, color: Palette.steps, spoken: "\(stepCount) steps")]
+        if let challenge {
+            result.append(ActivityRings.Ring(id: "Challenge", progress: challenge, color: Palette.challenge,
+                                             spoken: challenge >= 1 ? "done" : "\(Int((challenge * 100).rounded())) percent"))
+        }
         return result
     }
+
+    /// For VoiceOver on the day strip.
+    var spoken: String { rings.map { "\($0.id) \($0.spoken)" }.joined(separator: ", ") }
 }
 
 /// The selected day's week (Monday first) with tiny rings per day.
 struct DayStrip: View {
     @Binding var selected: Date
-    let rings: (Date) -> DayRings
+    /// Rings for a day; the live step count is passed for today.
+    let rings: (Date, Int?) -> DayRings
+    /// Read only by today's cell, so live updates redraw that cell alone.
+    let liveSteps: () -> Int?
 
     private static var calendar: Calendar {
         var c = Calendar.current
@@ -52,7 +65,8 @@ struct DayStrip: View {
             Button { shift(-7) } label: { Image(systemName: "chevron.left") }
                 .accessibilityLabel("Previous week")
             ForEach(days, id: \.self) { day in
-                dayButton(day)
+                DayCell(day: day, selected: $selected, today: today, rings: rings,
+                        liveSteps: Self.calendar.isDateInToday(day) ? liveSteps : { nil })
             }
             Button { shift(7) } label: { Image(systemName: "chevron.right") }
                 .disabled(days.contains(today))
@@ -62,29 +76,41 @@ struct DayStrip: View {
         .font(.caption.bold())
     }
 
-    private func dayButton(_ day: Date) -> some View {
-        let isSelected = Self.calendar.isDate(day, inSameDayAs: selected)
+    private func shift(_ days: Int) {
+        let moved = Self.calendar.date(byAdding: .day, value: days, to: selected)!
+        selected = min(moved, today)
+    }
+}
+
+private struct DayCell: View {
+    let day: Date
+    @Binding var selected: Date
+    let today: Date
+    let rings: (Date, Int?) -> DayRings
+    let liveSteps: () -> Int?
+
+    var body: some View {
+        let calendar = Calendar.current
+        let isSelected = calendar.isDate(day, inSameDayAs: selected)
         let future = day > today
-        return Button { selected = day } label: {
+        let values = future ? nil : rings(day, liveSteps())
+        Button { selected = day } label: {
             VStack(spacing: 4) {
                 Text(day.formatted(.dateTime.weekday(.narrow))).foregroundStyle(.secondary)
-                ActivityRings(rings: future ? [] : rings(day).rings, size: 30)
+                ActivityRings(rings: values?.rings ?? [], size: 30)
                     .opacity(future ? 0.2 : 1)
-                Text("\(Self.calendar.component(.day, from: day))")
-                    .foregroundStyle(Self.calendar.isDateInToday(day) ? Color.accentColor : .primary)
+                Text("\(calendar.component(.day, from: day))")
+                    .foregroundStyle(calendar.isDateInToday(day) ? Color.accentColor : .primary)
             }
             .padding(.vertical, 6)
             .frame(maxWidth: .infinity)
             .background(isSelected ? Color(.tertiarySystemFill) : .clear, in: RoundedRectangle(cornerRadius: 12))
         }
         .disabled(future)
+        .accessibilityElement(children: .ignore)
         .accessibilityLabel(day.formatted(date: .complete, time: .omitted))
-        .accessibilityAddTraits(isSelected ? .isSelected : [])
-    }
-
-    private func shift(_ days: Int) {
-        let moved = Self.calendar.date(byAdding: .day, value: days, to: selected)!
-        selected = min(moved, today)
+        .accessibilityValue(values?.spoken ?? "")
+        .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)
     }
 }
 
@@ -107,7 +133,7 @@ struct TodayHero: View {
             ActivityRings(rings: values.rings, size: 118)
             VStack(alignment: .leading, spacing: 10) {
                 row("Sleep", Palette.sleep, sleepText)
-                row("Steps", Palette.steps, "\(Int(values.steps * Double(stepGoal)).formatted()) / \(stepGoal.formatted())")
+                row("Steps", Palette.steps, "\(values.stepCount.formatted()) / \(stepGoal.formatted())")
                 if values.challenge != nil {
                     row("Challenge", Palette.challenge, challengeText)
                 }
@@ -115,7 +141,7 @@ struct TodayHero: View {
             Spacer(minLength: 0)
         }
         .padding()
-        .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .cardBackground()
         .celebrates(isToday && values.steps >= 1, context: context)
         .celebrates(isToday && challenge.history.status(on: day) == .done, context: context)
     }
@@ -134,7 +160,7 @@ struct TodayHero: View {
     }
 
     private var challengeText: String {
-        challenge.exercises.filter { challenge.history.isActive($0, on: day) }
+        challenge.history.exercises.filter { challenge.history.isActive($0, on: day) }
             .map { let p = challenge.history.progress(of: $0, on: day); return "\(p.total)/\(p.target)" }
             .joined(separator: " · ")
     }
@@ -163,14 +189,15 @@ extension InsightTopic {
         }
     }
 
-    var route: SummaryRoute {
+    /// The detail screen for this topic, on `day` (today when nil).
+    func route(day: Date? = nil) -> SummaryRoute {
         switch self {
-        case .sleep: .sleep
-        case .steps: .metric(.steps)
-        case .restingHeartRate: .metric(.restingHeartRate)
-        case .hrv: .metric(.hrv)
-        case .heartRate: .metric(.heartRate)
-        case .spo2: .metric(.spo2)
+        case .sleep: .sleep(day: day)
+        case .steps: .metric(.steps, day: day)
+        case .restingHeartRate: .metric(.restingHeartRate, day: day)
+        case .hrv: .metric(.hrv, day: day)
+        case .heartRate: .metric(.heartRate, day: day)
+        case .spo2: .metric(.spo2, day: day)
         }
     }
 }
@@ -197,6 +224,8 @@ extension InsightDirection {
 struct HighlightsCard: View {
     let insights: [Insight]
     var limit = 3
+    /// The day the insights are about; links open that day.
+    var day: Date?
 
     var body: some View {
         Card(title: "Highlights", systemImage: "sparkles", color: .yellow) {
@@ -205,7 +234,7 @@ struct HighlightsCard: View {
                     .font(.subheadline).foregroundStyle(.secondary)
             }
             ForEach(insights.prefix(limit)) { insight in
-                NavigationLink(value: insight.topic.route) {
+                NavigationLink(value: insight.topic.route(day: day)) {
                     HStack(alignment: .top, spacing: 10) {
                         Image(systemName: insight.topic.systemImage).foregroundStyle(insight.topic.color).frame(width: 22)
                         Text(insight.text).font(.subheadline).multilineTextAlignment(.leading)
@@ -283,6 +312,9 @@ enum TodaySection: String, CaseIterable, Identifiable {
 @MainActor
 @Observable
 final class TodayLayout {
+    /// One per app, so the Today view's init doesn't re-read UserDefaults every time.
+    static let shared = TodayLayout()
+
     private static let orderKey = "todayOrder", hiddenKey = "todayHidden"
 
     private(set) var order: [TodaySection]

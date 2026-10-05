@@ -147,7 +147,6 @@ private struct ActivityLiveView: View {
     let session: ActivitySession
     let coordinator: SyncCoordinator
     @State private var confirmFinish = false
-    /// Kept outside the 1 s timeline so the shown page survives each tick.
     @State private var page = 0
 
     private var recorder: ActivityRecorder { session.recorder }
@@ -162,16 +161,15 @@ private struct ActivityLiveView: View {
                 }
             }
             .font(.headline).foregroundStyle(Palette.activity)
-            // Swipe between the main numbers, heart rate and splits; the controls stay put.
-            TimelineView(.periodic(from: .now, by: 1)) { context in
-                TabView(selection: $page) {
-                    mainPage(at: context.date).tag(0)
-                    heartRate(at: context.date).padding().tag(1)
-                    splitsPage.tag(2)
-                }
-                .tabViewStyle(.page(indexDisplayMode: .always))
-                .indexViewStyle(.page(backgroundDisplayMode: .always))
+            // Swipe between the main numbers, heart rate and splits; the controls stay put. Each page
+            // ticks on its own, so the pager itself isn't rebuilt every second.
+            TabView(selection: $page) {
+                TimelineView(.periodic(from: .now, by: 1)) { mainPage(at: $0.date) }.tag(0)
+                TimelineView(.periodic(from: .now, by: 1)) { heartRate(at: $0.date).padding() }.tag(1)
+                splitsPage.tag(2)
             }
+            .tabViewStyle(.page(indexDisplayMode: .always))
+            .indexViewStyle(.page(backgroundDisplayMode: .always))
             if session.locationDenied {
                 Text("Allow location in Settings to record distance and the route.").font(.caption).foregroundStyle(.orange)
             } else if (session.gpsAccuracy ?? 99) > ActivityRecorder.maxAccuracy {

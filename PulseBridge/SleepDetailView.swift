@@ -5,7 +5,12 @@ import SwiftUI
 struct SleepDetailView: View {
     let service: SummaryService
     @State private var span: DaySpan = .day
-    @State private var day = Calendar.current.startOfDay(for: .now)
+    @State private var day: Date
+
+    init(service: SummaryService, day: Date? = nil) {
+        self.service = service
+        _day = State(initialValue: Calendar.current.startOfDay(for: day ?? .now))
+    }
     @State private var metrics: DailyMetrics?
     @State private var error: String?
     @State private var showScoreInfo = false

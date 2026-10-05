@@ -14,8 +14,7 @@ struct ChallengeCard: View {
     let model: ChallengeModel
     /// The day shown; past days are read-only.
     var day = Date.now
-    let onLog: () -> Void
-    /// Opens the Challenge tab.
+    /// Opens the Challenge tab (logging, history).
     let onOpen: () -> Void
     @State private var showSetup = false
 
@@ -26,7 +25,7 @@ struct ChallengeCard: View {
         Card(title: "Daily challenge", systemImage: "figure.strengthtraining.traditional", color: Palette.challenge) {
             if model.isSetUp {
                 HStack(spacing: 18) {
-                    ForEach(model.exercises.filter { history.isActive($0, on: day) }) { exercise in
+                    ForEach(history.exercises.filter { history.isActive($0, on: day) }) { exercise in
                         ring(exercise)
                     }
                     Spacer(minLength: 0)
@@ -42,7 +41,7 @@ struct ChallengeCard: View {
                     .font(.subheadline).foregroundStyle(.secondary)
                 Button("Set up challenge") { showSetup = true }
                     .buttonStyle(.borderedProminent)
-                    .tint(.orange)
+                    .tint(Palette.challenge)
             }
         }
         .sheet(isPresented: $showSetup) { ChallengeSetupView(model: model) }
@@ -58,15 +57,11 @@ struct ChallengeCard: View {
 
     private var buttons: some View {
         HStack {
-            Button(action: onLog) {
-                Label("Log", systemImage: "plus").frame(maxWidth: .infinity)
+            Button(action: onOpen) {
+                Label("Log sets", systemImage: "plus").frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
-            .tint(.orange)
-            Button(action: onOpen) {
-                Label("History", systemImage: "calendar").frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.bordered)
+            .tint(Palette.challenge)
             ChallengeShareButton(model: model)
                 .buttonStyle(.bordered)
         }
@@ -75,7 +70,7 @@ struct ChallengeCard: View {
     private func ring(_ exercise: ExerciseInfo) -> some View {
         let progress = history.progress(of: exercise, on: day)
         return VStack(spacing: 6) {
-            ProgressRing(progress: progress.fraction, color: .orange) {
+            ProgressRing(progress: progress.fraction, color: Palette.challenge) {
                 VStack(spacing: 0) {
                     Text("\(progress.total)").font(.system(size: 17, weight: .bold, design: .rounded))
                     Text("/\(progress.target)").font(.caption2).foregroundStyle(.secondary)
@@ -207,7 +202,7 @@ struct ChallengeLogSections: View {
             HStack {
                 ForEach([5, 10, 20], id: \.self) { step in
                     Button("+\(step)") { model.log(step, to: exercise.id) }
-                        .buttonStyle(.bordered).tint(.orange)
+                        .buttonStyle(.bordered).tint(Palette.challenge)
                         .frame(maxWidth: .infinity)
                         .accessibilityLabel("Add \(step) \(exercise.name)")
                 }
@@ -233,7 +228,7 @@ struct ChallengeLogSections: View {
                     }
                 }
                 Button("Finish session") { Task { await model.finishSession() } }
-                    .buttonStyle(.borderedProminent).tint(.orange)
+                    .buttonStyle(.borderedProminent).tint(Palette.challenge)
                 Button("Cancel session", role: .destructive) { model.cancelSession() }
             } else {
                 Button("Start timed session", systemImage: "timer") { model.startSession() }
@@ -261,7 +256,7 @@ struct ChallengeSettingsView: View {
                     NavigationLink { ExerciseEditor(model: model, exercise: exercise) } label: {
                         LabeledContent(exercise.name, value: targetText(exercise))
                     }
-                    .swipeActions { Button("Archive") { archiving = exercise }.tint(.orange) }
+                    .swipeActions { Button("Archive") { archiving = exercise }.tint(Palette.challenge) }
                 }
                 .onMove { from, to in
                     var ids = model.exercises.map(\.id)

@@ -12,7 +12,7 @@ struct ChallengeTab: View {
                 ChallengeHistoryView(model: model, coordinator: coordinator)
             } else {
                 ScrollView {
-                    ChallengeCard(model: model, onLog: {}, onOpen: {}).padding()
+                    ChallengeCard(model: model, onOpen: {}).padding()
                 }
                 .background(Color(.systemGroupedBackground))
                 .navigationTitle("Challenge")

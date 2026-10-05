@@ -94,7 +94,7 @@ struct ChallengeHistoryView: View {
                 .background(Circle().fill(kind == .tracked ? statusColor(history.status(on: day)) : .clear))
                 .overlay(Circle().strokeBorder(style: StrokeStyle(lineWidth: 1, dash: [3, 3]))
                     .foregroundStyle(kind == .beforeTracking ? Color.secondary : .clear))
-                .overlay(Circle().stroke(isToday ? Color.orange : .clear, lineWidth: 2))
+                .overlay(Circle().stroke(isToday ? Palette.challenge : .clear, lineWidth: 2))
         }
         .buttonStyle(.plain)
         .disabled(kind != .tracked)
@@ -162,7 +162,7 @@ private struct ExerciseTotalsCard: View {
             Chart {
                 ForEach(days) { day in
                     BarMark(x: .value("Day", day.day, unit: .day), y: .value(exercise.unit.short, day.total))
-                        .foregroundStyle(day.target.map { day.total >= $0 } ?? false ? Color.orange : Color.orange.opacity(0.4))
+                        .foregroundStyle(day.target.map { day.total >= $0 } ?? false ? Palette.challenge : Palette.challenge.opacity(0.4))
                 }
                 ForEach(days.filter { $0.target != nil }) { day in
                     LineMark(x: .value("Day", day.day, unit: .day), y: .value("Target", day.target ?? 0))
@@ -190,7 +190,7 @@ private struct ExerciseTotalsCard: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 6)
-        .background(Color.orange.opacity(0.12), in: RoundedRectangle(cornerRadius: 8))
+        .background(Palette.challenge.opacity(0.12), in: RoundedRectangle(cornerRadius: 8))
         .accessibilityElement(children: .combine)
     }
 }
