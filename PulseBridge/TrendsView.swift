@@ -2,28 +2,11 @@ import PulseKit
 import SwiftUI
 
 extension Metric {
-    var insightTopic: InsightTopic? {
-        switch self {
-        case .heartRate: .heartRate
-        case .restingHeartRate: .restingHeartRate
-        case .hrv: .hrv
-        case .spo2: .spo2
-        case .steps: .steps
-        }
-    }
+    var insightTopic: InsightTopic? { InsightTopic.allCases.first { $0.metric == self } }
 }
 
 extension InsightTopic {
-    var title: String {
-        switch self {
-        case .sleep: "Time asleep"
-        case .steps: Metric.steps.title
-        case .restingHeartRate: Metric.restingHeartRate.title
-        case .hrv: Metric.hrv.title
-        case .heartRate: Metric.heartRate.title
-        case .spo2: Metric.spo2.title
-        }
-    }
+    var title: String { metric?.title ?? "Time asleep" }
 
     func format(_ value: Double) -> String {
         switch self {
@@ -32,6 +15,7 @@ extension InsightTopic {
         case .restingHeartRate, .heartRate: "\(Int(value.rounded())) bpm"
         case .hrv: "\(Int(value.rounded())) ms"
         case .spo2: "\(Int(value.rounded()))%"
+        case .temperature: String(format: "%.1f °C", value)
         }
     }
 
@@ -46,6 +30,7 @@ extension InsightTopic {
         case .restingHeartRate, .heartRate: return "\(sign)\(Int(abs(comparison.change).rounded())) bpm"
         case .hrv: return "\(sign)\(Int(abs(comparison.change).rounded())) ms"
         case .spo2: return "\(sign)\(Int(abs(comparison.change).rounded()))%"
+        case .temperature: return String(format: "%@%.1f °C", sign, abs(comparison.change))
         }
     }
 
@@ -101,7 +86,7 @@ struct TrendsView: View {
                 VStack(spacing: 16) {
                     HighlightsCard(insights: model.insights, limit: 10)
                     SectionTitle("This week vs last week")
-                    ForEach([InsightTopic.sleep, .steps, .restingHeartRate, .hrv, .heartRate, .spo2], id: \.self) { topic in
+                    ForEach([InsightTopic.sleep, .steps, .restingHeartRate, .hrv, .temperature, .heartRate, .spo2], id: \.self) { topic in
                         NavigationLink(value: topic.route()) { row(topic) }
                             .buttonStyle(.plain)
                     }

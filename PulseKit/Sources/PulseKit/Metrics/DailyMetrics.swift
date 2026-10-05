@@ -1,7 +1,7 @@
 import Foundation
 
 public enum Metric: String, CaseIterable, Sendable, Hashable {
-    case heartRate, restingHeartRate, hrv, spo2, steps
+    case heartRate, restingHeartRate, hrv, spo2, steps, temperature
 }
 
 public struct DayRange: Sendable, Equatable {
@@ -104,8 +104,17 @@ public struct DailyMetrics: Sendable {
         return DayRange(pool.map(\.value)).map { Int($0.average.rounded()) }
     }
 
+    /// Average temperature while asleep that night (D-1 18:00 to D 12:00); without sleep data, the
+    /// whole night window.
+    public func nightTemperature(on day: Date) -> Double? {
+        let asleep = asleepReadings(readings.temperature, night: day)
+        let pool = asleep.isEmpty ? inside(readings.temperature, nightInterval(of: day)) : asleep
+        return DayRange(pool.map(\.value))?.average
+    }
+
     public func value(_ metric: Metric, on day: Date) -> DayRange? {
         switch metric {
+        case .temperature: nightTemperature(on: day).map { DayRange([$0])! }
         case .heartRate, .spo2: DayRange(readings(metric, on: day).map(\.value))
         case .restingHeartRate: restingHeartRate(on: day).map { DayRange([Double($0)])! }
         case .hrv: hrv(on: day).map { DayRange([Double($0)])! }
@@ -119,6 +128,7 @@ public struct DailyMetrics: Sendable {
         switch metric {
         case .heartRate: inside(readings.heartRate, dayInterval(of: day))
         case .hrv: inside(readings.hrv, nightInterval(of: day))
+        case .temperature: inside(readings.temperature, nightInterval(of: day))
         case .spo2: inside(readings.spo2, dayInterval(of: day))
         case .steps: stepsByHour(on: day)
         case .restingHeartRate: []
@@ -208,6 +218,7 @@ public struct DailyMetrics: Sendable {
         case .heartRate, .restingHeartRate: return inside(readings.heartRate, interval)
         case .hrv: return inside(readings.hrv, interval)
         case .spo2: return inside(readings.spo2, interval)
+        case .temperature: return inside(readings.temperature, interval)
         case .steps: return inside(readings.steps, interval)
         }
     }

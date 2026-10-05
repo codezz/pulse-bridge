@@ -115,6 +115,11 @@ func run() async throws {
             let c = SleepScore.Contributor.allCases.map { "\($0.rawValue)=\(value.score.contributors[$0]!)" }.joined(separator: " ")
             print("\(value.day.formatted(.dateTime.day().month())): score \(value.score.value) (\(value.score.label))  \(time(n.fellAsleep))-\(time(n.wokeUp))  asleep \(n.asleep / 60)h\(String(format: "%02d", n.asleep % 60)) eff \(Int(n.efficiency * 100))% lat \(n.latency) wake-ups \(n.awakenings)")
             print("        \(c)")
+            let wakeUps = SleepAnalysis.estimatedWakeUps(n, heartRate: metrics.readings(.heartRate, during: n))
+            print("        estimated wake-ups \(wakeUps.count): " + wakeUps.map { "\(time($0.date)) \($0.bpm) \($0.reason)" }.joined(separator: ", "))
+            if let temperature = metrics.nightTemperature(on: value.day) {
+                print("        night temperature \(String(format: "%.2f", temperature)) °C")
+            }
         }
         return
     }

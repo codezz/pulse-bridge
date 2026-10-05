@@ -54,6 +54,7 @@ extension Metric {
         case .hrv: "HRV"
         case .spo2: "Blood oxygen"
         case .steps: "Steps"
+        case .temperature: "Temperature"
         }
     }
 
@@ -63,6 +64,7 @@ extension Metric {
         case .hrv: "ms"
         case .spo2: "%"
         case .steps: "steps"
+        case .temperature: "°C"
         }
     }
 
@@ -73,6 +75,7 @@ extension Metric {
         case .hrv: "waveform.path.ecg"
         case .spo2: "lungs.fill"
         case .steps: "figure.walk"
+        case .temperature: "thermometer.medium"
         }
     }
 
@@ -83,10 +86,12 @@ extension Metric {
         case .hrv: Palette.hrv
         case .spo2: Palette.oxygen
         case .steps: Palette.steps
+        case .temperature: Palette.temperature
         }
     }
 
     func format(_ value: Double?) -> String {
-        value.map { Int($0.rounded()).formatted() } ?? "-"
+        guard let value else { return "-" }
+        return self == .temperature ? String(format: "%.1f", value) : Int(value.rounded()).formatted()
     }
 }

@@ -15,6 +15,8 @@ public struct Readings: Sendable {
     public private(set) var heartRate: [Reading] = []
     public private(set) var hrv: [Reading] = []
     public private(set) var spo2: [Reading] = []
+    /// °C every 10 minutes; values outside 30-40 (band off the wrist, in the sun) are dropped.
+    public private(set) var temperature: [Reading] = []
     /// Steps per minute (from the 10-minute activity blocks).
     public private(set) var steps: [Reading] = []
     /// Meters per 10-minute activity block, at the block start.
@@ -38,6 +40,8 @@ public struct Readings: Sendable {
                 hrv.append(Reading(date: record.start, value: Double(ms)))
             case let .spo2(percent) where percent > 0:
                 spo2.append(Reading(date: record.start, value: Double(percent)))
+            case let .temperature(celsius) where (30...40).contains(celsius):
+                temperature.append(Reading(date: record.start, value: celsius))
             case let .activity(_, distanceMeters, minuteSteps):
                 for (offset, count) in minuteSteps.enumerated() where count > 0 {
                     steps.append(Reading(date: minute(offset), value: Double(count)))
@@ -60,6 +64,7 @@ public struct Readings: Sendable {
         heartRate.sort { $0.date < $1.date }
         hrv.sort { $0.date < $1.date }
         spo2.sort { $0.date < $1.date }
+        temperature.sort { $0.date < $1.date }
         steps.sort { $0.date < $1.date }
         distance.sort { $0.date < $1.date }
         workouts.sort { $0.start < $1.start }

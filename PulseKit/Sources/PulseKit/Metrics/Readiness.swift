@@ -2,7 +2,7 @@ import Foundation
 
 public struct ReadinessContributor: Sendable, Equatable, Identifiable {
     public enum Kind: String, CaseIterable, Sendable {
-        case hrv, restingHeartRate, sleep, activity
+        case hrv, restingHeartRate, sleep, activity, temperature
     }
 
     public let kind: Kind
@@ -28,7 +28,8 @@ public enum ReadinessResult: Sendable, Equatable {
 
 /// Morning readiness from last night against the user's own baseline (see the design spec).
 public enum Readiness {
-    static let weights: [ReadinessContributor.Kind: Double] = [.hrv: 0.4, .restingHeartRate: 0.3, .sleep: 0.2, .activity: 0.1]
+    static let weights: [ReadinessContributor.Kind: Double] = [.hrv: 0.35, .restingHeartRate: 0.25, .sleep: 0.2,
+                                                               .activity: 0.1, .temperature: 0.1]
     static let baselineNights = 5
     static let baselineDays = 30
 
@@ -52,12 +53,19 @@ public enum Readiness {
             contributors.append(ReadinessContributor(kind: .sleep, score: min(100, max(0, sleepScore)), detail: "Sleep score \(sleepScore)"))
         }
         if let activity = activityBalance(series[.steps], day, calendar) { contributors.append(activity) }
+        let temperature = lastAndBaseline(series[.temperature], day, calendar)
+        if let (last, usual) = temperature.values {
+            // A warmer night lowers readiness: 100 up to +0.2 °C, 0 at +1.0 °C. Cooler doesn't count against it.
+            contributors.append(ReadinessContributor(kind: .temperature, score: scale(last - usual, zeroAt: 1.0, fullAt: 0.2),
+                                                     detail: String(format: "%+.1f °C vs usual", last - usual)))
+        }
 
         let total = contributors.reduce(0) { $0 + weights[$1.kind]! }
         let value = contributors.reduce(0) { $0 + Double($1.score) * weights[$1.kind]! } / total
         let score = Int(value.rounded())
         return .score(ReadinessScore(value: score, contributors: contributors,
-                                     reason: reason(contributors, score, hrv: hrv.values, resting: resting.values)))
+                                     reason: reason(contributors, score, hrv: hrv.values, resting: resting.values,
+                                                    temperature: temperature.values)))
     }
 
     // MARK: Contributors
@@ -92,7 +100,7 @@ public enum Readiness {
     }
 
     private static func reason(_ contributors: [ReadinessContributor], _ score: Int,
-                               hrv: (Double, Double)?, resting: (Double, Double)?) -> String {
+                               hrv: (Double, Double)?, resting: (Double, Double)?, temperature: (Double, Double)?) -> String {
         guard let weakest = contributors.min(by: { $0.score < $1.score }), weakest.score < 70 else {
             return score >= 85 ? "You're recovered" : "Steady"
         }
@@ -103,6 +111,8 @@ public enum Readiness {
         case .restingHeartRate:
             let above = resting.map { Int(($0.0 - $0.1).rounded()) } ?? 0
             return "Resting heart rate \(above) above your usual"
+        case .temperature:
+            return String(format: "Temperature %.1f °C above your usual", temperature.map { $0.0 - $0.1 } ?? 0)
         case .sleep: return "Short or restless sleep"
         case .activity: return "Big activity day yesterday"
         }

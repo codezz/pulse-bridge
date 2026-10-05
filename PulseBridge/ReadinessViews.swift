@@ -9,6 +9,7 @@ extension ReadinessContributor.Kind {
         case .restingHeartRate: "Resting heart rate"
         case .sleep: "Sleep"
         case .activity: "Activity balance"
+        case .temperature: "Body temperature"
         }
     }
 
@@ -18,6 +19,7 @@ extension ReadinessContributor.Kind {
         case .restingHeartRate: Metric.restingHeartRate.systemImage
         case .sleep: "moon.zzz.fill"
         case .activity: "figure.walk"
+        case .temperature: Metric.temperature.systemImage
         }
     }
 }
@@ -123,7 +125,7 @@ struct ReadinessDetailView: View {
                     }
                 }
                 Section {
-                    Text("Readiness compares last night with your own baseline (average of up to 30 earlier nights): HRV 40%, resting heart rate 30%, sleep score 20%, and yesterday's steps against your usual 10%. It needs 5 earlier nights to start.")
+                    Text("Readiness compares last night with your own baseline (average of up to 30 earlier nights): HRV 35%, resting heart rate 25%, sleep score 20%, yesterday's steps against your usual 10%, and night temperature 10% (warmer than usual lowers it). It needs 5 earlier nights to start.")
                         .font(.footnote).foregroundStyle(.secondary)
                 }
             }

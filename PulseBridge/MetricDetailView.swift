@@ -75,7 +75,7 @@ struct MetricDetailView: View {
     private var averageLabel: String {
         guard range == .day else { return "Daily average" }
         switch metric {
-        case .hrv: return "Night average (asleep)"
+        case .hrv, .temperature: return "Night average (asleep)"
         case .restingHeartRate: return "Night"
         case .heartRate, .spo2: return "Average"
         case .steps: return "Total"
@@ -140,7 +140,7 @@ struct MetricDetailView: View {
         switch metric {
         case .heartRate, .spo2:
             "\(metric.format(value.range.min))-\(metric.format(value.range.max)) \(metric.unit)"
-        case .restingHeartRate, .hrv, .steps:
+        case .restingHeartRate, .hrv, .steps, .temperature:
             "\(metric.format(value.range.average)) \(metric.unit)"
         }
     }

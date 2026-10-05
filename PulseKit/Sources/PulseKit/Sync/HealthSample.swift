@@ -39,7 +39,9 @@ public struct HealthSample: Sendable, Equatable {
 
 extension HistoryKind {
     /// Daily totals duplicate the activity detail, so they stay on the phone.
-    public var exportsToHealth: Bool { self != .dailyTotals }
+    /// Daily totals duplicate the activity detail; temperature has no fitting Health type (Health's
+    /// body temperature is core temperature, and its wrist type is Apple's own).
+    public var exportsToHealth: Bool { self != .dailyTotals && self != .temperature }
 }
 
 extension HistoryRecord {
@@ -93,7 +95,7 @@ extension HistoryRecord {
                                       value: info.calories, syncID: id)
             sample.workout = info
             return [sample]
-        case .dailyTotals:
+        case .dailyTotals, .temperature:
             return []
         }
     }

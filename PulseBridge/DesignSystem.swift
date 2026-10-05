@@ -12,6 +12,7 @@ enum Palette {
     static let challenge = Color.orange
     static let activity = Color.mint
     static let band = Color.gray
+    static let temperature = Color(red: 1.0, green: 0.42, blue: 0.29)
 }
 
 extension View {

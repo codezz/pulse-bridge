@@ -299,6 +299,7 @@ extension HistoryKind {
         case .sleep: "Sleep"
         case .dailyTotals: "Daily totals (stored only)"
         case .workout: "Activities"
+        case .temperature: "Temperature"
         }
     }
 }

@@ -21,8 +21,11 @@ phone and writes it to **Apple Health**. No account, no cloud, no third-party se
   at any past day, highlights from your data ("resting heart rate 3 below your recent average"),
   an Oura-style sleep card (score, stages, night vitals), live heart rate with zones and
   measurements, and vitals tiles with sparklines. Sections can be reordered and hidden.
-- **Readiness:** a morning score from last night's HRV and resting heart rate against your own
-  baseline, your sleep score and yesterday's activity, with the main reason in one line.
+- **Readiness:** a morning score from last night's HRV, resting heart rate and body temperature
+  against your own baseline, your sleep score and yesterday's activity, with the main reason in
+  one line.
+- **Temperature and wake-ups:** the band's body temperature every 10 minutes (night average vs your
+  usual), and estimated wake-ups from heart-rate rises the band's sleep stages explain.
 - **Live Activity:** time, distance, pace and heart rate zone on the Lock Screen and in the Dynamic
   Island during a run, walk or ride, and the timer and reps during a timed challenge session.
 - **Trends:** this week against last week for every metric, with highlights; detail screens with

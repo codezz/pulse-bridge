@@ -7,9 +7,18 @@ public enum Frame {
     public static func make(_ bytes: [UInt8]) -> Data {
         precondition(bytes.count <= length - 1, "payload longer than 15 bytes")
         precondition(!Opcode.forbidden.contains(bytes.first ?? 0), "refusing to build a destructive command")
+        precondition(!isDelete(bytes), "refusing to build a delete command")
         var body = bytes + [UInt8](repeating: 0, count: length - 1 - bytes.count)
         body.append(checksum(body))
         return Data(body)
+    }
+
+    /// Mode 99 deletes: every history read, the alarm read `57` (JStyle deleteAllClock) and the
+    /// temperature reads. Never built, whatever calls `make`.
+    static let deleteCapable: Set<UInt8> = Set(HistoryKind.allCases.map(\.rawValue)).union([0x57, 0x60, 0x62, 0x65])
+
+    static func isDelete(_ bytes: [UInt8]) -> Bool {
+        bytes.count > 1 && bytes[1] == 0x99 && deleteCapable.contains(bytes[0])
     }
 
     public static func checksum<S: Sequence>(_ bytes: S) -> UInt8 where S.Element == UInt8 {

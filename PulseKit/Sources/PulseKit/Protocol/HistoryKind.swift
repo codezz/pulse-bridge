@@ -7,6 +7,8 @@ public enum HistoryKind: UInt8, CaseIterable, Sendable {
     case spotHR = 0x55
     case hrv = 0x56
     case spo2 = 0x66
+    /// Body temperature every 10 minutes (the SDK's "axillary temperature"; `62` is not supported).
+    case temperature = 0x65
     /// Workouts: walks the band detects by itself, or sessions started on the band or phone.
     case workout = 0x5C
 
@@ -19,6 +21,7 @@ public enum HistoryKind: UInt8, CaseIterable, Sendable {
         case .spotHR, .spo2: 10
         case .hrv: 15
         case .workout: 25
+        case .temperature: 11
         }
     }
 
@@ -28,7 +31,7 @@ public enum HistoryKind: UInt8, CaseIterable, Sendable {
     /// Order from the spec: Health-relevant data first. Daily totals (`51`) aren't read: the
     /// 10-minute activity records hold the same steps and distance for longer, and nothing uses the
     /// band's calorie estimate.
-    public static let syncOrder: [HistoryKind] = [.activity, .continuousHR, .spotHR, .hrv, .spo2, .sleep, .workout]
+    public static let syncOrder: [HistoryKind] = [.activity, .continuousHR, .spotHR, .hrv, .spo2, .sleep, .workout, .temperature]
 }
 
 public enum HistoryMode: UInt8, Sendable {

@@ -53,6 +53,12 @@ struct InsightsTests {
         #expect(insights == [Insight(topic: .steps, text: "Steps up 10% on the week before", direction: .better)])
     }
 
+    @Test func warmerNightIsAHighlight() {
+        let insights = make(.temperature, [36.9] + Array(repeating: 36.4, count: 6))
+        #expect(insights == [Insight(topic: .temperature, text: "Night temperature 0.5 °C above your usual", direction: .worse)])
+        #expect(make(.temperature, [36.6] + Array(repeating: 36.4, count: 6)).isEmpty)     // 0.2 °C
+    }
+
     @Test func shortWeeksSayNothing() {
         // only 3 nights in the last week
         #expect(make(.sleep, [450, 450, 450, nil, nil, nil, nil] + Array(repeating: 420, count: 7)).isEmpty)

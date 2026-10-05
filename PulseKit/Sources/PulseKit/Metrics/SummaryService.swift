@@ -3,7 +3,7 @@ import Foundation
 /// Loads stored records for a range of days. Keeps no state: every load reads the store.
 @MainActor
 public struct SummaryService {
-    static let kinds: [HistoryKind] = [.spotHR, .continuousHR, .hrv, .spo2, .sleep, .activity, .workout]
+    static let kinds: [HistoryKind] = [.spotHR, .continuousHR, .hrv, .spo2, .sleep, .activity, .workout, .temperature]
     /// Sleep chunks are up to 2 h long, so a chunk starting this much before the first night still counts.
     static let lookBack: TimeInterval = 3 * 3600
 

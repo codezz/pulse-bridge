@@ -15,6 +15,8 @@ struct SleepDetailView: View {
     @State private var error: String?
     @State private var showScoreInfo = false
     @State private var insight: Insight?
+    /// Last night's temperature and the usual of the nights before (needs 5).
+    @State private var temperature: (last: Double, usual: Double)?
 
     var body: some View {
         List {
@@ -90,6 +92,16 @@ struct SleepDetailView: View {
             LabeledContent("Efficiency", value: "\(Int((night.efficiency * 100).rounded()))%")
             LabeledContent("Time to fall asleep", value: "\(night.latency) min")
             LabeledContent("Awakenings", value: "\(night.awakenings)")
+            let wakeUps = SleepAnalysis.estimatedWakeUps(night, heartRate: metrics.readings(.heartRate, during: night))
+            VStack(alignment: .leading, spacing: 4) {
+                LabeledContent("Wake-ups (estimated)", value: "\(wakeUps.count)")
+                ForEach(wakeUps) { wakeUp in
+                    Text("\(wakeUp.date.formatted(date: .omitted, time: .shortened)) · \(wakeUp.bpm) bpm, \(wakeUp.reason.text)")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+                Text("From heart-rate rises the band's stages explain; the band itself rarely marks waking in the night.")
+                    .font(.caption2).foregroundStyle(.tertiary)
+            }
         }
         Section("Night vitals") {
             let heart = metrics.readings(.heartRate, during: night)
@@ -97,8 +109,14 @@ struct SleepDetailView: View {
             if heart.isEmpty {
                 Text("No heart-rate readings during the night").foregroundStyle(.secondary)
             } else {
+                let wakeUps = SleepAnalysis.estimatedWakeUps(night, heartRate: heart)
                 Chart {
                     ForEach(heart, id: \.date) { LineMark(x: .value("Time", $0.date), y: .value("bpm", $0.value)) }
+                    ForEach(wakeUps) { wakeUp in
+                        PointMark(x: .value("Time", wakeUp.date), y: .value("bpm", wakeUp.bpm))
+                            .symbol(.triangle)
+                            .foregroundStyle(.orange)
+                    }
                     if let lowest {
                         PointMark(x: .value("Time", lowest.date), y: .value("bpm", lowest.value))
                             .annotation(position: .bottom) { Text("\(Int(lowest.value))").font(.caption2) }
@@ -111,6 +129,9 @@ struct SleepDetailView: View {
             }
             NavigationLink(value: SummaryRoute.metric(.restingHeartRate, day: day)) {
                 LabeledContent("Resting heart rate", value: metrics.restingHeartRate(on: day).map { "\($0) bpm" } ?? "-")
+            }
+            NavigationLink(value: SummaryRoute.metric(.temperature, day: day)) {
+                LabeledContent("Temperature", value: temperatureText(metrics.nightTemperature(on: day)))
             }
             let hrv = metrics.readings(.hrv, during: night)
             if !hrv.isEmpty {
@@ -203,10 +224,20 @@ struct SleepDetailView: View {
         return (values.map { ($0 - mean) * ($0 - mean) }.reduce(0, +) / Double(values.count)).squareRoot()
     }
 
+    /// "36.4 °C · +0.3 vs usual"
+    private func temperatureText(_ night: Double?) -> String {
+        guard let night else { return "-" }
+        guard let temperature else { return String(format: "%.1f °C", night) }
+        return String(format: "%.1f °C · %+.1f vs usual", night, temperature.last - temperature.usual)
+    }
+
     private func load() {
         do {
             metrics = try service.load(days: span.days, endingOn: day)
-            insight = topicInsight(.sleep, service: service, day: day)
+            // One longer load for the insight and the temperature baseline.
+            let series = (try? service.load(days: SummaryModel.loadedDays, endingOn: day))?.insightSeries() ?? [:]
+            insight = Insights.make(series, today: day, calendar: .current).first { $0.topic == .sleep }
+            temperature = Insights.usual(series[.temperature], today: day, calendar: .current)
             error = nil
         } catch {
             self.error = "Couldn't load data: \(error.localizedDescription)"
@@ -230,6 +261,17 @@ private struct ScoreInfo: View {
             }
             .navigationTitle("Sleep score")
             .toolbar { Button("Done") { dismiss() } }
+        }
+    }
+}
+
+extension EstimatedWakeUp.Reason {
+    var text: String {
+        switch self {
+        case .outOfREM: "coming out of REM"
+        case .awake: "the band marked awake"
+        case .outOfDeepSleep: "out of deep sleep"
+        case .highHeartRate: "well above the night's typical heart rate"
         }
     }
 }

@@ -167,38 +167,25 @@ struct TodayHero: View {
 }
 
 extension InsightTopic {
-    var systemImage: String {
+    /// The metric behind the topic; sleep has its own screen.
+    var metric: Metric? {
         switch self {
-        case .sleep: "moon.zzz.fill"
-        case .steps: Metric.steps.systemImage
-        case .restingHeartRate: Metric.restingHeartRate.systemImage
-        case .hrv: Metric.hrv.systemImage
-        case .heartRate: Metric.heartRate.systemImage
-        case .spo2: Metric.spo2.systemImage
+        case .sleep: nil
+        case .steps: .steps
+        case .restingHeartRate: .restingHeartRate
+        case .hrv: .hrv
+        case .heartRate: .heartRate
+        case .spo2: .spo2
+        case .temperature: .temperature
         }
     }
 
-    var color: Color {
-        switch self {
-        case .sleep: Palette.sleep
-        case .steps: Metric.steps.color
-        case .restingHeartRate: Metric.restingHeartRate.color
-        case .hrv: Metric.hrv.color
-        case .heartRate: Metric.heartRate.color
-        case .spo2: Metric.spo2.color
-        }
-    }
+    var systemImage: String { metric?.systemImage ?? "moon.zzz.fill" }
+    var color: Color { metric?.color ?? Palette.sleep }
 
     /// The detail screen for this topic, on `day` (today when nil).
     func route(day: Date? = nil) -> SummaryRoute {
-        switch self {
-        case .sleep: .sleep(day: day)
-        case .steps: .metric(.steps, day: day)
-        case .restingHeartRate: .metric(.restingHeartRate, day: day)
-        case .hrv: .metric(.hrv, day: day)
-        case .heartRate: .metric(.heartRate, day: day)
-        case .spo2: .metric(.spo2, day: day)
-        }
+        metric.map { .metric($0, day: day) } ?? .sleep(day: day)
     }
 }
 
@@ -269,6 +256,8 @@ struct VitalsGrid: View {
                  sparkline: (metrics?.readings(.spo2, on: day) ?? []).map(\.value))
             tile(.steps, value: steps.formatted(), caption: "of \(stepGoal.formatted())",
                  sparkline: (metrics?.stepsByHour(on: day) ?? []).map(\.value))
+            tile(.temperature, value: metrics?.nightTemperature(on: day).map { Metric.temperature.format($0) }, caption: "Last night",
+                 sparkline: nightly(.temperature))
         }
     }
 

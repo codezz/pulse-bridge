@@ -1,7 +1,7 @@
 import Foundation
 
 public enum InsightTopic: String, CaseIterable, Sendable {
-    case sleep, steps, restingHeartRate, hrv, heartRate, spo2
+    case sleep, steps, restingHeartRate, hrv, heartRate, spo2, temperature
 }
 
 public enum InsightDirection: Sendable, Equatable {
@@ -43,7 +43,8 @@ public enum Insights {
         [restingHeartRate(series[.restingHeartRate], today, calendar),
          sleep(series[.sleep], today, calendar),
          hrv(series[.hrv], today, calendar),
-         steps(series[.steps], today, calendar)].compactMap { $0 }
+         steps(series[.steps], today, calendar),
+         temperature(series[.temperature], today, calendar)].compactMap { $0 }
     }
 
     /// Average of the last 7 days against the 7 before; `endingYesterday` for totals still growing today.
@@ -64,11 +65,13 @@ public enum Insights {
         case .sleep: meaningful = abs(change) >= 15
         case .restingHeartRate, .heartRate: meaningful = abs(change) >= 2
         case .spo2: meaningful = abs(change) >= 1
+        case .temperature: meaningful = abs(change) >= 0.3
         case .steps, .hrv: meaningful = comparison.last > 0 && abs(change / comparison.last) >= 0.10
         }
         guard meaningful else { return .neutral }
         switch topic {
         case .restingHeartRate, .heartRate: return change < 0 ? .better : .worse
+        case .temperature: return change > 0 ? .worse : .neutral
         case .sleep, .steps, .hrv, .spo2: return change > 0 ? .better : .worse
         }
     }
@@ -92,6 +95,16 @@ public enum Insights {
                        direction: percent > 0 ? .better : .worse)
     }
 
+    /// A warmer night than usual is an early sign of illness, overtraining or a heavy evening.
+    private static func temperature(_ series: [Date: Double]?, _ today: Date, _ calendar: Calendar) -> Insight? {
+        guard let (last, usual) = lastAgainstUsual(series, today, calendar) else { return nil }
+        let diff = ((last - usual) * 10).rounded() / 10
+        guard abs(diff) >= 0.3 else { return nil }
+        return Insight(topic: .temperature,
+                       text: "Night temperature \(String(format: "%.1f", abs(diff))) °C \(diff > 0 ? "above" : "below") your usual",
+                       direction: diff > 0 ? .worse : .neutral)
+    }
+
     private static func sleep(_ series: [Date: Double]?, _ today: Date, _ calendar: Calendar) -> Insight? {
         guard let series, let week = week(series, today: today, calendar: calendar) else { return nil }
         let minutes = Int(week.change.rounded())
@@ -109,6 +122,12 @@ public enum Insights {
     }
 
     // MARK: Helpers
+
+    /// Today's value and the average of the earlier days (needs at least 5 of them), for screens
+    /// that show "vs your usual".
+    public static func usual(_ series: [Date: Double]?, today: Date, calendar: Calendar) -> (last: Double, usual: Double)? {
+        lastAgainstUsual(series, today, calendar).map { (last: $0.0, usual: $0.1) }
+    }
 
     /// Today's value and the average of the earlier days (needs at least 5 of them).
     private static func lastAgainstUsual(_ series: [Date: Double]?, _ today: Date, _ calendar: Calendar) -> (Double, Double)? {
@@ -139,6 +158,7 @@ extension DailyMetrics {
             if let hrv = hrv(on: day) { result[.hrv, default: [:]][day] = Double(hrv) }
             if let hr = value(.heartRate, on: day) { result[.heartRate, default: [:]][day] = hr.average }
             if let spo2 = value(.spo2, on: day) { result[.spo2, default: [:]][day] = spo2.average }
+            if let temperature = nightTemperature(on: day) { result[.temperature, default: [:]][day] = temperature }
         }
         return result
     }

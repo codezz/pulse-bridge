@@ -64,12 +64,14 @@ Responses use the same opcode in byte 0. Long responses are streamed as concaten
 | `55` | static HR | 10 B/rec: `55 idx(2) date(3) time(3) bpm` (`00` = failed) | high |
 | `56` | HRV | 15 B/rec: `56 idx(2) date(3) time(3) hrv ? hr stress sys dia` | medium (values plausible against the SDK parser) |
 | `66` | SpO2 | 10 B/rec: `66 idx(2) date(3) time(3) spo2` (e.g. `62` = 98%) | high |
+| `65` | temperature | 11 B/rec: `65 idx(2) date(3) time(3) temp×10 u16 LE`, every 10 min (e.g. `66 01` = 35.8 °C; SDK "axillary temperature"; `62` answers `62 ff`) | high (verified 2026-10-05) |
 | `60` | (SpO2 alt) | `60 ff`: not supported / empty | |
 | `62` | temperature | `62 ff`: not supported | |
 | `16` | button / photo-mode events from band | `16 07 01`, `16 08 00`, `16 09 02` | medium (SDK) |
 
-**Never send:** `12` (factory reset), `2E` (MCU reset), `61` (clear all data), and history mode
-`99` (delete). `Frame.make` and the probe refuse them.
+**Never send:** `12` (factory reset), `2E` (MCU reset), `61` (clear all data), and mode `99` on any
+history read, on `57` (deletes all alarms) or on `65` (deletes temperature history). `Frame.make` and
+the probe refuse them.
 
 ## Apple Health mapping
 
@@ -226,3 +228,15 @@ rate from the standard `2A37` stream.
   first 15 s), b8-9 changing (probably part of a float, e.g. calories), b10 = elapsed seconds
   (LE). Steps stayed 0 while sitting still.
 - A 41 s workout started from the phone was not added to the workout history (`5C`).
+
+## More commands probed (2026-10-05)
+
+- **Alarms:** `57 00` reads them (`57 ff` = none). `23` sets the whole list (SDK `setClockData`: 39-byte
+  records `23 count n enable type hh mm weekmask len text(30)` + `23 ff`); a first write was not stored
+  (read back `57 ff`). Not used yet. `57 99` deletes all alarms: never sent.
+- **3-axis accelerometer:** `49 01` / `49 00` (SDK `RealTimeThreeAxisSensorData`): no answer on this
+  firmware. Raw wrist movement is not available; sleep stages are the band's only movement-derived data.
+- **Raw PPG:** `39` (SDK `GetPpgRawDataWithStatus`): not tried (optical data, not movement).
+- `16 08 00` / `16 09 01` notifications arrive while moving the wrist (button / gesture events).
+- Night measurement density (measured): about 50 SpO2, 40 HRV and 100-125 spot heart rate readings
+  between 22:00 and 07:00.

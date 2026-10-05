@@ -8,6 +8,7 @@ public enum BandReading: Sendable, Equatable {
     case hrv(ms: Int, heartRate: Int, stress: Int, systolic: Int, diastolic: Int)
     case spo2(percent: Int)
     case workout(WorkoutInfo)
+    case temperature(celsius: Double)
 
     init(kind: HistoryKind, bytes b: [UInt8]) {
         switch kind {
@@ -18,6 +19,8 @@ public enum BandReading: Sendable, Equatable {
             self = .activity(steps: littleEndian(b, at: 9, count: 2),
                              distanceMeters: littleEndian(b, at: 13, count: 2) * 10,
                              minuteSteps: b[15..<25].map(Int.init))
+        case .temperature:
+            self = .temperature(celsius: Double(littleEndian(b, at: 9, count: 2)) / 10)
         case .sleep:
             let count = min(Int(b[9]), kind.recordSize - 10)
             self = .sleep(minuteStages: b[10..<10 + count].map(Int.init))

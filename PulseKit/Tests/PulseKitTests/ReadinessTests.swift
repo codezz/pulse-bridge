@@ -45,8 +45,8 @@ struct ReadinessTests {
         let byKind = Dictionary(uniqueKeysWithValues: s.contributors.map { ($0.kind, $0.score) })
         #expect(byKind[.hrv] == 50)
         #expect(byKind[.restingHeartRate] == 50)
-        // weights 40/30/20 rescaled to 9/9: (50*40 + 50*30 + 80*20) / 90 = 56.67
-        #expect(s.value == 57)
+        // weights 35/25/20 rescaled over 80: (50*35 + 50*25 + 80*20) / 80 = 57.5
+        #expect(s.value == 58)
         #expect(s.reason == "HRV 10% below your usual")
     }
 
@@ -70,6 +70,16 @@ struct ReadinessTests {
         let r = Readiness.compute([.hrv: series([nil] + Array(repeating: 42, count: 8))],
                                   sleepScore: 90, today: today, calendar: calendar)
         #expect(r == .calibrating(nightsNeeded: 0))
+    }
+
+    @Test func warmNightLowersReadiness() throws {
+        // +0.6 °C: halfway between +0.2 (100) and +1.0 (0)
+        let r = Readiness.compute([.hrv: series([42] + Array(repeating: 40, count: 6)),
+                                   .temperature: series([37.0] + Array(repeating: 36.4, count: 6))],
+                                  sleepScore: 90, today: today, calendar: calendar)
+        let s = try #require(score(r))
+        #expect(s.contributors.first { $0.kind == .temperature }?.score == 50)
+        #expect(s.reason == "Temperature 0.6 °C above your usual")
     }
 
     @Test func restingHeartRateReason() throws {
