@@ -47,6 +47,22 @@ final class SyncCoordinator {
     /// A finished activity waiting for Save or Discard.
     private(set) var finishedActivity: ActivitySession?
     @ObservationIgnored private var zoneAlert: ZoneAlert?
+    @ObservationIgnored private let liveActivity = LiveActivityController()
+
+    /// A timed challenge session gets a Live Activity with its timer, heart rate and reps.
+    private func updateSessionLiveActivity() {
+        guard activity == nil else { return }    // a running activity owns the Live Activity
+        if let start = challenge.sessionStart {
+            liveActivity.start(kind: .challenge, title: "Daily challenge") { [weak self] in
+                let now = Date()
+                return PulseActivityAttributes.ContentState(
+                    timerStart: start, elapsed: now.timeIntervalSince(start), distanceMeters: nil, paceSecondsPerKm: nil,
+                    heartRate: self?.challenge.sessionHeartRate, zone: nil, status: self?.challenge.repsToday)
+            }
+        } else {
+            liveActivity.end(dismissNow: true)
+        }
+    }
     @ObservationIgnored private var isExportingActivities = false
     @ObservationIgnored private let exporter = ActivityExporter()
     @ObservationIgnored private var syncAfterActivity = false
@@ -71,7 +87,11 @@ final class SyncCoordinator {
         let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"
         diagnostics.note("app \(version) launched, iOS \(ProcessInfo.processInfo.operatingSystemVersionString)")
         MemoryWatch.start { [diagnostics] in diagnostics.note($0) }
-        challenge.onSessionChange = { [weak self] in self?.updateBandUse() }
+        challenge.onSessionChange = { [weak self] in
+            self?.updateBandUse()
+            self?.updateSessionLiveActivity()
+        }
+        liveActivity.endStale()
         challenge.note = { [weak self] in self?.diagnostics.note($0) }
         engine.onBandClockSet = { offset in
             // Saved right away: a sync that fails later must not leave the old offset behind.
@@ -382,6 +402,7 @@ final class SyncCoordinator {
         diagnostics.note("activity started: \(type.rawValue), target zone \(targetZone.map(String.init) ?? "free"), alerts \(alerts ? "on" : "off")")
         updateBandUse()
         session.start()
+        liveActivity.start(kind: PulseActivityAttributes.Kind(type), title: type.title) { session.liveActivityState() }
         // The band has no screen: 3 buzzes confirm the start.
         await buzz(times: 3)
     }
@@ -414,6 +435,7 @@ final class SyncCoordinator {
         session.finish()
         activity = nil
         finishedActivity = session
+        liveActivity.end(final: session.liveActivityState())
         updateBandUse()
         zoneAlert = nil
         diagnostics.note("activity finished: \(Int(session.recorder.distance)) m")

@@ -28,6 +28,11 @@ final class ChallengeModel {
         .flatMap { try? JSONDecoder().decode(ChallengeBaseline.self, from: $0) }
 
     var isSetUp: Bool { !exercises.isEmpty }
+
+    /// "Push-ups 40 · Squats 60" for today (Live Activity).
+    var repsToday: String {
+        exercises.map { "\($0.name) \(history.total(of: $0.id, on: .now))" }.joined(separator: " · ")
+    }
     var isSessionRunning: Bool { sessionID != nil }
 
     init(store: ChallengeStore) {
