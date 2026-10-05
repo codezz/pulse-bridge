@@ -7,9 +7,10 @@ import PulseKit
 @MainActor
 @Observable
 final class SummaryModel {
-    /// Days loaded, ending on the selected week's last day (or today): covers the day strip,
-    /// 14-night sparklines and the two weeks insights compare.
-    static let loadedDays = 35
+    /// Days loaded, ending on the selected week's last day (or today): covers the day strip, the
+    /// readiness chart's 14 days with their full 30-night baseline (and up to 6 days of the week
+    /// after the selected day), sparklines and the two weeks insights compare.
+    static let loadedDays = 50
 
     let service: SummaryService
     private(set) var metrics: DailyMetrics?

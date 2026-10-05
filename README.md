@@ -76,7 +76,9 @@ open PulseBridge.xcodeproj                              # pick your iPhone and p
 ```
 
 If the bundle ID `ro.codez.pulsebridge` isn't available in your account, set your own
-`PRODUCT_BUNDLE_IDENTIFIER` in `Config/Local.xcconfig`.
+`APP_BUNDLE_ID` in `Config/Local.xcconfig`; the widget extension (Live Activities) becomes
+`<APP_BUNDLE_ID>.widgets`. An older `Local.xcconfig` that sets `PRODUCT_BUNDLE_IDENTIFIER`
+directly: rename that line to `APP_BUNDLE_ID`, or the extension won't match the app.
 
 `PulseBridge.xcodeproj` is generated from `project.yml` and not checked in: run `xcodegen generate`
 again after pulling or after changing `project.yml`.

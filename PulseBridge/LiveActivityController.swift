@@ -9,6 +9,8 @@ final class LiveActivityController {
     static let updateInterval: TimeInterval = 5
 
     private var activity: Activity<PulseActivityAttributes>?
+    /// The last ended one, still showing its final numbers, until dismissed (Discard).
+    private var finished: Activity<PulseActivityAttributes>?
     private var ticker: Task<Void, Never>?
     private var lastPush = Date.distantPast
     private var lastPaused = false
@@ -52,8 +54,16 @@ final class LiveActivityController {
         ticker = nil
         guard let activity else { return }
         self.activity = nil
+        finished = dismissNow ? nil : activity
         let policy: ActivityUIDismissalPolicy = dismissNow ? .immediate : .after(.now.addingTimeInterval(15 * 60))
         Task { await activity.end(state.map { ActivityContent(state: $0, staleDate: nil) }, dismissalPolicy: policy) }
+    }
+
+    /// Discarding the finished activity: take its numbers off the Lock Screen now.
+    func dismissFinished() {
+        guard let finished else { return }
+        self.finished = nil
+        Task { await finished.end(nil, dismissalPolicy: .immediate) }
     }
 }
 
@@ -82,7 +92,8 @@ extension ActivitySession {
             }
         }
         return PulseActivityAttributes.ContentState(
-            timerStart: recorder.state == .paused ? nil : now.addingTimeInterval(-elapsed),
+            // Only a running activity's clock ticks on the Lock Screen (paused or finished: frozen).
+            timerStart: recorder.state == .recording ? now.addingTimeInterval(-elapsed) : nil,
             elapsed: elapsed, distanceMeters: recorder.distance, paceSecondsPerKm: recorder.currentPace(at: now),
             heartRate: bpm, zone: zone, status: status)
     }

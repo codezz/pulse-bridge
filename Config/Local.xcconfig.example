@@ -3,3 +3,4 @@ DEVELOPMENT_TEAM = YOURTEAMID
 // A bundle ID you own, if ro.codez.pulsebridge is taken in your account (the widget extension
 // becomes <id>.widgets):
 // APP_BUNDLE_ID = com.example.pulsebridge
+// (Older copies set PRODUCT_BUNDLE_IDENTIFIER here: rename it to APP_BUNDLE_ID.)
