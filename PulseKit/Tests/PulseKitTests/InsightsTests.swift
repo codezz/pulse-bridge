@@ -53,6 +53,31 @@ struct InsightsTests {
         #expect(insights == [Insight(topic: .steps, text: "Steps up 10% on the week before", direction: .better)])
     }
 
+    @Test func shortWeeksSayNothing() {
+        // only 3 nights in the last week
+        #expect(make(.sleep, [450, 450, 450, nil, nil, nil, nil] + Array(repeating: 420, count: 7)).isEmpty)
+        // only 3 complete days in the last week (today is ignored)
+        let steps: [Double?] = [500, 11_000, 11_000, 11_000, nil, nil, nil, nil] + Array(repeating: 10_000, count: 7)
+        #expect(make(.steps, steps).isEmpty)
+    }
+
+    @Test func stepsWithAnEmptyEarlierWeekSayNothing() {
+        let values: [Double?] = [500] + Array(repeating: 11_000, count: 7) + Array(repeating: 0, count: 7)
+        #expect(make(.steps, values).isEmpty)
+    }
+
+    /// Trends arrows use the same thresholds as the highlights: small changes are neutral.
+    @Test func trendDirectionUsesTopicThresholds() {
+        #expect(Insights.direction(.steps, WeekComparison(this: 10_030, last: 10_000)) == .neutral)
+        #expect(Insights.direction(.steps, WeekComparison(this: 11_500, last: 10_000)) == .better)
+        #expect(Insights.direction(.restingHeartRate, WeekComparison(this: 61, last: 60)) == .neutral)
+        #expect(Insights.direction(.restingHeartRate, WeekComparison(this: 57, last: 60)) == .better)
+        #expect(Insights.direction(.sleep, WeekComparison(this: 410, last: 420)) == .neutral)
+        #expect(Insights.direction(.sleep, WeekComparison(this: 395, last: 420)) == .worse)
+        #expect(Insights.direction(.hrv, WeekComparison(this: 46, last: 40)) == .better)
+        #expect(Insights.direction(.spo2, WeekComparison(this: 96.5, last: 97)) == .neutral)
+    }
+
     @Test func weekComparisonNeedsFourDaysEach() {
         let full = series(Array(repeating: 60, count: 7) + Array(repeating: 62, count: 7))
         #expect(Insights.week(full, today: today, calendar: calendar) == WeekComparison(this: 60, last: 62))

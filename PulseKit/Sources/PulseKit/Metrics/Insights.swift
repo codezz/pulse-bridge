@@ -55,6 +55,24 @@ public enum Insights {
         return WeekComparison(this: average(this), last: average(last))
     }
 
+    /// Arrow for a week-over-week change, with the same thresholds as the highlights (smaller is
+    /// neutral). Lower is better only for heart rate.
+    public static func direction(_ topic: InsightTopic, _ comparison: WeekComparison) -> InsightDirection {
+        let change = comparison.change
+        let meaningful: Bool
+        switch topic {
+        case .sleep: meaningful = abs(change) >= 15
+        case .restingHeartRate, .heartRate: meaningful = abs(change) >= 2
+        case .spo2: meaningful = abs(change) >= 1
+        case .steps, .hrv: meaningful = comparison.last > 0 && abs(change / comparison.last) >= 0.10
+        }
+        guard meaningful else { return .neutral }
+        switch topic {
+        case .restingHeartRate, .heartRate: return change < 0 ? .better : .worse
+        case .sleep, .steps, .hrv, .spo2: return change > 0 ? .better : .worse
+        }
+    }
+
     // MARK: Rules
 
     private static func restingHeartRate(_ series: [Date: Double]?, _ today: Date, _ calendar: Calendar) -> Insight? {
