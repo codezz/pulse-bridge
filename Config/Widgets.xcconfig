@@ -1,0 +1,4 @@
+// Signing for the widget extension (Live Activities): the app's team and bundle id + ".widgets".
+#include "Signing.xcconfig"
+
+PRODUCT_BUNDLE_IDENTIFIER = $(APP_BUNDLE_ID).widgets

@@ -7,6 +7,8 @@ settings:
   base:
     SWIFT_VERSION: "6.0"
     CODE_SIGN_STYLE: Automatic
+    MARKETING_VERSION: 0.1.0
+    CURRENT_PROJECT_VERSION: 1
 packages:
   PulseKit:
     path: PulseKit
@@ -14,8 +16,9 @@ targets:
   PulseBridge:
     type: application
     platform: iOS
-    sources: [PulseBridge]
+    sources: [PulseBridge, Shared]
     dependencies:
+      - target: PulseBridgeWidgets
       - package: PulseKit
         product: PulseKit
       - package: PulseKit
@@ -27,8 +30,6 @@ targets:
     settings:
       base:
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
-        MARKETING_VERSION: 0.1.0
-        CURRENT_PROJECT_VERSION: 1
         TARGETED_DEVICE_FAMILY: "1"
     entitlements:
       path: PulseBridge/PulseBridge.entitlements
@@ -39,6 +40,7 @@ targets:
       path: PulseBridge/Info.plist
       properties:
         CFBundleDisplayName: Pulse Bridge
+        NSSupportsLiveActivities: true
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         UILaunchScreen:
@@ -54,3 +56,21 @@ targets:
         NSLocationWhenInUseUsageDescription: Pulse Bridge records your route, distance and pace while an activity you started is running.
         UIBackgroundModes: [location, bluetooth-central, fetch]
         BGTaskSchedulerPermittedIdentifiers: [ro.codez.pulsebridge.sync]
+  PulseBridgeWidgets:
+    type: app-extension
+    platform: iOS
+    sources: [PulseBridgeWidgets, Shared]
+    configFiles:
+      Debug: Config/Widgets.xcconfig
+      Release: Config/Widgets.xcconfig
+    settings:
+      base:
+        TARGETED_DEVICE_FAMILY: "1"
+    info:
+      path: PulseBridgeWidgets/Info.plist
+      properties:
+        CFBundleDisplayName: Pulse Bridge
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension

@@ -1,6 +1,9 @@
 // Signing and bundle ID for your own build.
 // Copy Local.xcconfig.example to Local.xcconfig (gitignored) and set your Apple Team ID there.
 DEVELOPMENT_TEAM =
-PRODUCT_BUNDLE_IDENTIFIER = ro.codez.pulsebridge
+// The app's bundle id; the widget extension uses this plus ".widgets". Override APP_BUNDLE_ID in
+// Local.xcconfig if ro.codez.pulsebridge is taken in your account.
+APP_BUNDLE_ID = ro.codez.pulsebridge
+PRODUCT_BUNDLE_IDENTIFIER = $(APP_BUNDLE_ID)
 
 #include? "Local.xcconfig"

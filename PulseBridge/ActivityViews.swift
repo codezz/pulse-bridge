@@ -4,17 +4,6 @@ import MapKit
 import PulseKit
 import SwiftUI
 
-func zoneColor(_ zone: Int) -> Color {
-    switch zone {
-    case 1: .blue
-    case 2: .green
-    case 3: .yellow
-    case 4: .orange
-    case 5: .red
-    default: .gray
-    }
-}
-
 func zoneName(_ zone: Int) -> String {
     switch zone {
     case 1: "very easy"

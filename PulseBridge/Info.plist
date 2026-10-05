@@ -32,6 +32,8 @@
 	<string>Pulse Bridge writes steps, distance, heart rate, HRV, blood oxygen, sleep and workouts from your band to Apple Health.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Pulse Bridge records your route, distance and pace while an activity you started is running.</string>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
