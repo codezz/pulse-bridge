@@ -57,6 +57,8 @@ struct RootView: View {
         .onChange(of: coordinator.lastSync) { summary.reload() }
         // "Today" and "last night" move at midnight and while the app was closed.
         .onChange(of: scenePhase) { _, phase in if phase == .active { summary.reload() } }
+        // Memory per screen, to find what grows (diagnostics log).
+        .onChange(of: tab) { _, new in coordinator.diagnostics.note("tab \(new), memory \(MemoryWatch.footprintMB() ?? -1) MB") }
         .onReceive(NotificationCenter.default.publisher(for: .NSCalendarDayChanged)) { _ in summary.reload() }
     }
 }

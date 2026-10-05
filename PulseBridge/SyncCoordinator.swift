@@ -70,6 +70,7 @@ final class SyncCoordinator {
         liveChannel = RecordingChannel(band, log: diagnostics, skip: { $0.first == Opcode.realTimeActivity }, logQuiet: false)
         let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"
         diagnostics.note("app \(version) launched, iOS \(ProcessInfo.processInfo.operatingSystemVersionString)")
+        MemoryWatch.start { [diagnostics] in diagnostics.note($0) }
         challenge.onSessionChange = { [weak self] in self?.updateBandUse() }
         challenge.note = { [weak self] in self?.diagnostics.note($0) }
         engine.onBandClockSet = { offset in

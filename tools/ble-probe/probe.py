@@ -42,6 +42,8 @@ CMD_CHAR = "0000fff6-0000-1000-8000-00805f9b34fb"
 DANGEROUS = {0x12, 0x2E, 0x61}
 # History reads whose second byte 0x99 (or 0x09 for workouts) deletes that history.
 HISTORY_OPCODES = {0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x5C, 0x60, 0x62, 0x66}
+# Alarm read `57` with 0x99 deletes every alarm on the band (JStyle SDK deleteAllClock).
+CLEAR_ALL_OPCODES = {0x57}
 
 
 def is_dangerous(uuid: str, data: bytes) -> bool:
@@ -49,6 +51,8 @@ def is_dangerous(uuid: str, data: bytes) -> bool:
     if uuid.lower() != CMD_CHAR or not data:
         return False
     if data[0] in DANGEROUS:
+        return True
+    if data[0] in CLEAR_ALL_OPCODES and len(data) > 1 and data[1] == 0x99:
         return True
     return data[0] in HISTORY_OPCODES and len(data) > 1 and data[1] in (0x99, 0x09)
 
