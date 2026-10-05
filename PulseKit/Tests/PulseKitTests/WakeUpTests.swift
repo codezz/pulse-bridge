@@ -81,6 +81,17 @@ struct WakeUpTests {
         #expect(SleepAnalysis.estimatedWakeUps(n, heartRate: baseline(plus: [(at(3, 7), 79)])).isEmpty)
     }
 
+    /// With an even number of readings the median is the average of the middle two (65 here), so a
+    /// 76 bpm reading is a rise (65 + 10); the upper middle value (70) would have missed it.
+    @Test func evenCountMedianAveragesTheMiddle() {
+        let n = night([(23, 0, .core), (3, 0, .awake), (3, 20, .core)])
+        // 24 readings at 60 and 23 at 70, every 10 min, plus the 76 at 03:05: 48 readings, middle 60 and 70.
+        var heart: [Reading] = (0..<47).map { Reading(date: t0 + Double($0) * 600 + 60, value: $0 % 2 == 0 ? 60 : 70) }
+        heart.append(Reading(date: at(3, 5), value: 76))
+        let sortedHeart = heart.sorted { $0.date < $1.date }
+        #expect(SleepAnalysis.estimatedWakeUps(n, heartRate: sortedHeart).map(\.bpm) == [76])
+    }
+
     @Test func tooFewReadingsSayNothing() {
         #expect(SleepAnalysis.estimatedWakeUps(night, heartRate: Array(heart.prefix(5))).isEmpty)
     }

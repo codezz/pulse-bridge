@@ -24,6 +24,19 @@ struct TemperatureTests {
         #expect(Readings(records: [ok, hot]).temperature.map(\.value) == [35.8])
     }
 
+    /// Without sleep data the night temperature still shows (whole night window), but it stays out of
+    /// the per-night series that baselines, highlights and readiness use: evening and morning wrist
+    /// readings would pull the usual down.
+    @Test func nightsWithoutSleepStayOutOfTheBaseline() throws {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = utc
+        let record = try #require(HistoryRecord(kind: .temperature, raw: bytes("65 70 03 26 02 02 02 10 00 66 01"), timeZone: utc))
+        let day = utcDate(2026, 2, 2)
+        let metrics = DailyMetrics(readings: Readings(records: [record]), days: [day], calendar: calendar)
+        #expect(metrics.nightTemperature(on: day) == 35.8)
+        #expect(metrics.insightSeries()[.temperature] == nil)
+    }
+
     /// Deleting history (mode 99) can't be built for any history opcode, alarms or temperature.
     @Test func deleteModesCantBeBuilt() async {
         await #expect(processExitsWith: .failure) { _ = Frame.make([0x65, 0x99]) }

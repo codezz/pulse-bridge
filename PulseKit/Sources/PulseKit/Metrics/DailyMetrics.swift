@@ -90,25 +90,26 @@ public struct DailyMetrics: Sendable {
                             end: calendar.date(bySettingHour: 12, minute: 0, second: 0, of: start)!)
     }
 
-    public func restingHeartRate(on day: Date) -> Int? {
+    /// `asleepOnly`: no daytime fallback (baselines compare nights with nights).
+    public func restingHeartRate(on day: Date, asleepOnly: Bool = false) -> Int? {
         let asleep = asleepReadings(readings.heartRate, night: day)
-        let pool = asleep.count >= 3 ? asleep : inside(readings.heartRate, dayInterval(of: day))
+        let pool = asleep.count >= 3 || asleepOnly ? asleep : inside(readings.heartRate, dayInterval(of: day))
         guard pool.count >= 3 else { return nil }
         let lowest = pool.map(\.value).sorted().prefix(Swift.max(3, pool.count / 10))
         return Int((lowest.reduce(0, +) / Double(lowest.count)).rounded())
     }
 
-    public func hrv(on day: Date) -> Int? {
+    public func hrv(on day: Date, asleepOnly: Bool = false) -> Int? {
         let asleep = asleepReadings(readings.hrv, night: day)
-        let pool = asleep.isEmpty ? inside(readings.hrv, dayInterval(of: day)) : asleep
+        let pool = asleep.isEmpty && !asleepOnly ? inside(readings.hrv, dayInterval(of: day)) : asleep
         return DayRange(pool.map(\.value)).map { Int($0.average.rounded()) }
     }
 
     /// Average temperature while asleep that night (D-1 18:00 to D 12:00); without sleep data, the
     /// whole night window.
-    public func nightTemperature(on day: Date) -> Double? {
+    public func nightTemperature(on day: Date, asleepOnly: Bool = false) -> Double? {
         let asleep = asleepReadings(readings.temperature, night: day)
-        let pool = asleep.isEmpty ? inside(readings.temperature, nightInterval(of: day)) : asleep
+        let pool = asleep.isEmpty && !asleepOnly ? inside(readings.temperature, nightInterval(of: day)) : asleep
         return DayRange(pool.map(\.value))?.average
     }
 

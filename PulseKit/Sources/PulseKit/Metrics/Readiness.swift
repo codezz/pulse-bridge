@@ -30,8 +30,7 @@ public enum ReadinessResult: Sendable, Equatable {
 public enum Readiness {
     static let weights: [ReadinessContributor.Kind: Double] = [.hrv: 0.35, .restingHeartRate: 0.25, .sleep: 0.2,
                                                                .activity: 0.1, .temperature: 0.1]
-    static let baselineNights = 5
-    static let baselineDays = 30
+    static let baselineNights = Insights.minimumNights
 
     public static func compute(_ series: [InsightTopic: [Date: Double]], sleepScore: Int?, today: Date, calendar: Calendar) -> ReadinessResult {
         let day = calendar.startOfDay(for: today)
@@ -57,7 +56,7 @@ public enum Readiness {
         if let (last, usual) = temperature.values {
             // A warmer night lowers readiness: 100 up to +0.2 °C, 0 at +1.0 °C. Cooler doesn't count against it.
             contributors.append(ReadinessContributor(kind: .temperature, score: scale(last - usual, zeroAt: 1.0, fullAt: 0.2),
-                                                     detail: String(format: "%+.1f °C vs usual", last - usual)))
+                                                     detail: "\(Insights.signedCelsius(last - usual)) °C vs usual"))
         }
 
         let total = contributors.reduce(0) { $0 + weights[$1.kind]! }
@@ -70,13 +69,12 @@ public enum Readiness {
 
     // MARK: Contributors
 
-    /// Last night's value and the average of up to 30 earlier nights (needs 5).
+    /// Last night's value and the usual (the same baseline as the highlights); a zero usual can't be
+    /// compared and counts as no baseline.
     private static func lastAndBaseline(_ series: [Date: Double]?, _ day: Date, _ calendar: Calendar) -> (values: (Double, Double)?, earlier: Int) {
-        guard let series else { return (nil, 0) }
-        let from = calendar.date(byAdding: .day, value: -baselineDays, to: day)!
-        let earlier = series.filter { $0.key < day && $0.key >= from }.map(\.value)
-        guard let last = series[day], earlier.count >= baselineNights else { return (nil, earlier.count) }
-        return ((last, earlier.reduce(0, +) / Double(earlier.count)), earlier.count)
+        let baseline = Insights.baseline(series, today: day, calendar: calendar)
+        guard let last = baseline.last, let usual = baseline.usual, usual != 0 else { return (nil, baseline.earlier) }
+        return ((last, usual), baseline.earlier)
     }
 
     /// Yesterday's steps against the 14 days before it: a big day lowers readiness a little.
@@ -112,7 +110,8 @@ public enum Readiness {
             let above = resting.map { Int(($0.0 - $0.1).rounded()) } ?? 0
             return "Resting heart rate \(above) above your usual"
         case .temperature:
-            return String(format: "Temperature %.1f °C above your usual", temperature.map { $0.0 - $0.1 } ?? 0)
+            let above = (temperature.map { $0.0 - $0.1 } ?? 0).formatted(.number.precision(.fractionLength(1)))
+            return "Temperature \(above) °C above your usual"
         case .sleep: return "Short or restless sleep"
         case .activity: return "Big activity day yesterday"
         }

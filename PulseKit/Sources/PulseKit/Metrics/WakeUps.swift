@@ -41,7 +41,8 @@ extension SleepAnalysis {
         let during = heartRate.filter { $0.date >= night.fellAsleep && $0.date <= night.wokeUp }
         guard during.count >= minimumReadings else { return [] }
         let sorted = during.map(\.value).sorted()
-        let median = sorted[sorted.count / 2]
+        let mid = sorted.count / 2
+        let median = sorted.count.isMultiple(of: 2) ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid]
         let from = night.fellAsleep.addingTimeInterval(edgeMinutes), to = night.wokeUp.addingTimeInterval(-edgeMinutes)
 
         var result: [EstimatedWakeUp] = []

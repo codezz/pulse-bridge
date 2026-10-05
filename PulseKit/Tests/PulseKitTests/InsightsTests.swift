@@ -55,8 +55,31 @@ struct InsightsTests {
 
     @Test func warmerNightIsAHighlight() {
         let insights = make(.temperature, [36.9] + Array(repeating: 36.4, count: 6))
-        #expect(insights == [Insight(topic: .temperature, text: "Night temperature 0.5 °C above your usual", direction: .worse)])
+        let half = 0.5.formatted(.number.precision(.fractionLength(1)))     // the text follows the locale
+        #expect(insights == [Insight(topic: .temperature, text: "Night temperature \(half) °C above your usual", direction: .worse)])
         #expect(make(.temperature, [36.6] + Array(repeating: 36.4, count: 6)).isEmpty)     // 0.2 °C
+    }
+
+    /// The 0.3 °C threshold is checked before rounding: +0.25 rounds to 0.3 but isn't enough.
+    @Test func temperatureThresholdUsesTheRawDifference() {
+        #expect(make(.temperature, [36.65] + Array(repeating: 36.4, count: 6)).isEmpty)
+    }
+
+    /// "Usual" is the last 30 nights, the same window readiness uses.
+    @Test func usualIsTheLast30Nights() throws {
+        var values = series([36.6] + Array(repeating: 36.4, count: 6))
+        for back in 40...44 { values[day(-back)] = 37.4 }
+        let usual = try #require(Insights.usual(values, today: today, calendar: calendar))
+        #expect(abs(usual.usual - 36.4) < 0.001)
+    }
+
+    @Test func celsiusDifferencesNeverShowMinusZero() {
+        let english = Locale(identifier: "en_US")
+        #expect(Insights.signedCelsius(0.04, locale: english) == "0.0")
+        #expect(Insights.signedCelsius(-0.04, locale: english) == "0.0")
+        #expect(Insights.signedCelsius(0.26, locale: english) == "+0.3")
+        #expect(Insights.signedCelsius(-0.34, locale: english) == "-0.3")
+        #expect(Insights.signedCelsius(0.26, locale: Locale(identifier: "ro_RO")) == "+0,3")
     }
 
     @Test func shortWeeksSayNothing() {

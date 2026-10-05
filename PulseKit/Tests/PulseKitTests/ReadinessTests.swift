@@ -79,7 +79,13 @@ struct ReadinessTests {
                                   sleepScore: 90, today: today, calendar: calendar)
         let s = try #require(score(r))
         #expect(s.contributors.first { $0.kind == .temperature }?.score == 50)
-        #expect(s.reason == "Temperature 0.6 °C above your usual")
+        #expect(s.reason == "Temperature \(0.6.formatted(.number.precision(.fractionLength(1)))) °C above your usual")
+    }
+
+    /// A zero baseline (no real HRV values) can't produce a ratio: HRV is left out.
+    @Test func zeroBaselineIsLeftOut() {
+        let r = Readiness.compute([.hrv: series([42] + Array(repeating: 0, count: 6))], sleepScore: 90, today: today, calendar: calendar)
+        #expect(r == .calibrating(nightsNeeded: 0))
     }
 
     @Test func restingHeartRateReason() throws {
