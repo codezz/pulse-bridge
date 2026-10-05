@@ -444,6 +444,8 @@ final class SyncCoordinator {
     /// Save stores the activity and writes it to Health right away; Discard drops it.
     func closeFinishedActivity(save: Bool) async {
         if !save { liveActivity.dismissFinished() }
+        // A challenge session still running gets its Live Activity back.
+        defer { updateSessionLiveActivity() }
         guard let session = finishedActivity else { return }
         finishedActivity = nil
         if save {

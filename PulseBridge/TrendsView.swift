@@ -15,7 +15,7 @@ extension InsightTopic {
         case .restingHeartRate, .heartRate: "\(Int(value.rounded())) bpm"
         case .hrv: "\(Int(value.rounded())) ms"
         case .spo2: "\(Int(value.rounded()))%"
-        case .temperature: String(format: "%.1f °C", value)
+        case .temperature: "\(Metric.temperature.format(value)) °C"
         }
     }
 
@@ -30,7 +30,7 @@ extension InsightTopic {
         case .restingHeartRate, .heartRate: return "\(sign)\(Int(abs(comparison.change).rounded())) bpm"
         case .hrv: return "\(sign)\(Int(abs(comparison.change).rounded())) ms"
         case .spo2: return "\(sign)\(Int(abs(comparison.change).rounded()))%"
-        case .temperature: return String(format: "%@%.1f °C", sign, abs(comparison.change))
+        case .temperature: return "\(Insights.signedCelsius(comparison.change)) °C"
         }
     }
 

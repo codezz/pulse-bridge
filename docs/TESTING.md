@@ -20,12 +20,12 @@ order set in Edit Today (default: Highlights, Sleep, Heart rate, Vitals, Daily c
 
 4. Readiness (near the top of Today): after 5+ nights with the band, a score ring, label, the main
    reason ("HRV 10% below your usual", "You're recovered") and bars for HRV, resting heart rate,
-   sleep and activity; with fewer nights "Calibrating: N more nights". Tapping opens the detail with
+   sleep, activity and temperature; with fewer nights "Calibrating: N more nights". Tapping opens the detail with
    each contributor's value against your usual and the last 14 days. A past day shows that day.
 
 **Temperature and wake-ups**
 
-5. Vitals has a Temperature tile (last night's average, 14-night sparkline). Sleep detail D: Night
+5. Vitals: Resting HR, HRV, Blood oxygen and Temperature tiles (Temperature: last night's average, 14-night sparkline), Steps full width under them; temperature W/M is a line with points. Sleep detail D: Night
    vitals shows "36.4 °C · +0.3 vs usual" (the "vs usual" part after 5 nights), Timing shows
    "Wake-ups (estimated)" with times and reasons, and orange triangles mark them on the night's
    heart-rate chart. Trends has a Temperature row; a night 0.3 °C or more above usual is a

@@ -29,12 +29,14 @@ final class LiveActivityController {
         let first = state()
         activity = try? Activity.request(attributes: PulseActivityAttributes(kind: kind, title: title),
                                          content: ActivityContent(state: first, staleDate: nil))
+        guard activity != nil else { return }      // not allowed or failed: nothing to update
         lastPush = .now
         lastPaused = first.timerStart == nil
         ticker = Task { [weak self] in
             while !Task.isCancelled {
                 try? await Task.sleep(for: .seconds(1))
-                self?.tick(state())
+                guard !Task.isCancelled, let self else { return }
+                self.tick(state())
             }
         }
     }

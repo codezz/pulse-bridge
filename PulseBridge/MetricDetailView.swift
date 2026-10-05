@@ -119,6 +119,10 @@ struct MetricDetailView: View {
                                 yStart: .value("Min", value.range.min), yEnd: .value("Max", value.range.max))
                             .opacity(0.35)
                         PointMark(x: .value("Day", value.day, unit: unit), y: .value("Average", value.range.average))
+                    } else if metric == .temperature {
+                        // A line, not bars: bars from an arbitrary baseline exaggerate 0.1 °C changes.
+                        LineMark(x: .value("Day", value.day, unit: unit), y: .value(metric.unit, value.range.average))
+                        PointMark(x: .value("Day", value.day, unit: unit), y: .value(metric.unit, value.range.average))
                     } else {
                         BarMark(x: .value("Day", value.day, unit: unit), y: .value(metric.unit, value.range.average))
                     }

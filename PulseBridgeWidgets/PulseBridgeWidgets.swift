@@ -32,7 +32,12 @@ struct PulseLiveActivity: Widget {
                     }
                 }
             } compactLeading: {
-                Image(systemName: context.attributes.kind.systemImage).foregroundStyle(.mint)
+                // Heart rate when there is one, else the activity symbol; the time is on the right.
+                if context.state.heartRate != nil {
+                    HeartRateText(state: context.state).font(.caption.bold()).labelStyle(.titleAndIcon)
+                } else {
+                    Image(systemName: context.attributes.kind.systemImage).foregroundStyle(.mint)
+                }
             } compactTrailing: {
                 ElapsedText(state: context.state).monospacedDigit().frame(maxWidth: 56)
             } minimal: {

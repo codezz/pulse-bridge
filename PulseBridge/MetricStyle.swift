@@ -92,6 +92,6 @@ extension Metric {
 
     func format(_ value: Double?) -> String {
         guard let value else { return "-" }
-        return self == .temperature ? String(format: "%.1f", value) : Int(value.rounded()).formatted()
+        return self == .temperature ? value.formatted(.number.precision(.fractionLength(1))) : Int(value.rounded()).formatted()
     }
 }

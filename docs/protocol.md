@@ -70,8 +70,8 @@ Responses use the same opcode in byte 0. Long responses are streamed as concaten
 | `16` | button / photo-mode events from band | `16 07 01`, `16 08 00`, `16 09 02` | medium (SDK) |
 
 **Never send:** `12` (factory reset), `2E` (MCU reset), `61` (clear all data), and mode `99` on any
-history read, on `57` (deletes all alarms) or on `65` (deletes temperature history). `Frame.make` and
-the probe refuse them.
+history read (including `60`, `62` and the temperature read `65`) or on `57` (deletes all alarms),
+and mode `09` on history reads (workouts `5C` delete with it). `Frame.make` and the probe refuse them.
 
 ## Apple Health mapping
 
@@ -182,8 +182,9 @@ records when full. Records exist only for time the band was worn.
 | Spot HR | ~1,790 | 18 KB | ~30 per day (more on some days) | ~2 months or less |
 | HRV | ~610 | 9 KB | ~9 per day | ~2 months |
 | SpO2 | ~3,580 | 35 KB | ~40 per day | ~3 months |
+| Temperature (`65`) | ~2,560 | 28 KB | 144 per day (every 10 min) | ~18 days of wear |
 
-About 210 KB in total. The app never deletes anything on the band (`99` and `61` are never sent),
+About 240 KB in total (temperature counted 2026-10-05). The app never deletes anything on the band (`99` and `61` are never sent),
 so the band recycles its own oldest records; the phone keeps every record it has synced.
 
 ## Workouts (`5C`), read 2026-10-03

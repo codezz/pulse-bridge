@@ -49,6 +49,8 @@ struct SleepDetailView: View {
     // MARK: D
 
     @ViewBuilder private func nightSections(_ night: SleepNight, score: SleepScore, metrics: DailyMetrics) -> some View {
+        // Once per night, for the Timing list and the chart markers.
+        let wakeUps = SleepAnalysis.estimatedWakeUps(night, heartRate: metrics.readings(.heartRate, during: night))
         Section("Sleep score (estimate)") {
             HStack(spacing: 16) {
                 ScoreRing(score: score.value, size: 80)
@@ -92,7 +94,6 @@ struct SleepDetailView: View {
             LabeledContent("Efficiency", value: "\(Int((night.efficiency * 100).rounded()))%")
             LabeledContent("Time to fall asleep", value: "\(night.latency) min")
             LabeledContent("Awakenings", value: "\(night.awakenings)")
-            let wakeUps = SleepAnalysis.estimatedWakeUps(night, heartRate: metrics.readings(.heartRate, during: night))
             VStack(alignment: .leading, spacing: 4) {
                 LabeledContent("Wake-ups (estimated)", value: "\(wakeUps.count)")
                 ForEach(wakeUps) { wakeUp in
@@ -109,13 +110,13 @@ struct SleepDetailView: View {
             if heart.isEmpty {
                 Text("No heart-rate readings during the night").foregroundStyle(.secondary)
             } else {
-                let wakeUps = SleepAnalysis.estimatedWakeUps(night, heartRate: heart)
                 Chart {
                     ForEach(heart, id: \.date) { LineMark(x: .value("Time", $0.date), y: .value("bpm", $0.value)) }
                     ForEach(wakeUps) { wakeUp in
                         PointMark(x: .value("Time", wakeUp.date), y: .value("bpm", wakeUp.bpm))
                             .symbol(.triangle)
                             .foregroundStyle(.orange)
+                            .accessibilityLabel("Estimated wake-up \(wakeUp.date.formatted(date: .omitted, time: .shortened)), \(wakeUp.bpm) bpm")
                     }
                     if let lowest {
                         PointMark(x: .value("Time", lowest.date), y: .value("bpm", lowest.value))
@@ -227,8 +228,9 @@ struct SleepDetailView: View {
     /// "36.4 °C · +0.3 vs usual"
     private func temperatureText(_ night: Double?) -> String {
         guard let night else { return "-" }
-        guard let temperature else { return String(format: "%.1f °C", night) }
-        return String(format: "%.1f °C · %+.1f vs usual", night, temperature.last - temperature.usual)
+        let value = "\(Metric.temperature.format(night)) °C"
+        guard let temperature else { return value }
+        return "\(value) · \(Insights.signedCelsius(temperature.last - temperature.usual)) vs usual"
     }
 
     private func load() {

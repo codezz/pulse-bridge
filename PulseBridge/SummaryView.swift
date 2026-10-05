@@ -82,7 +82,7 @@ struct SummaryView: View {
     @ViewBuilder private func sectionView(_ section: TodaySection) -> some View {
         switch section {
         case .readiness:
-            ReadinessCard(result: model.readiness) { showReadiness = true }
+            ReadinessCard(result: model.readiness, isToday: model.isToday) { showReadiness = true }
         case .highlights:
             HighlightsCard(insights: model.insights, day: model.isToday ? nil : day)
         case .sleep:

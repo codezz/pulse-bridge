@@ -27,6 +27,7 @@ extension ReadinessContributor.Kind {
 /// Today's readiness: score ring, label, the main reason and the contributors.
 struct ReadinessCard: View {
     let result: ReadinessResult?
+    var isToday = true
     let onOpen: () -> Void
 
     var body: some View {
@@ -46,7 +47,7 @@ struct ReadinessCard: View {
                 case .calibrating(let nights):
                     Text(nights > 0
                          ? "Calibrating: \(nights) more \(nights == 1 ? "night" : "nights") with the band to learn your baseline."
-                         : "No HRV or resting heart rate from last night yet. Sync after waking up.")
+                         : isToday ? "Not enough data from last night yet. Sync after waking up." : "Not enough data for this night.")
                         .font(.subheadline).foregroundStyle(.secondary)
                 case nil:
                     Text("-").foregroundStyle(.secondary)

@@ -236,8 +236,8 @@ struct HighlightsCard: View {
     }
 }
 
-/// Resting HR, HRV, blood oxygen and steps as tiles. Reads the live step count itself, so only this
-/// grid redraws on live updates.
+/// Resting HR, HRV, blood oxygen and temperature as tiles, steps full width under them. Reads the
+/// live step count itself, so only this grid redraws on live updates.
 struct VitalsGrid: View {
     let day: Date
     let metrics: DailyMetrics?
@@ -247,17 +247,19 @@ struct VitalsGrid: View {
     private let columns = [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)]
 
     var body: some View {
-        LazyVGrid(columns: columns, spacing: 12) {
-            tile(.restingHeartRate, value: metrics?.restingHeartRate(on: day).map(String.init), caption: "Last night",
-                 sparkline: nightly(.restingHeartRate))
-            tile(.hrv, value: metrics?.hrv(on: day).map(String.init), caption: "Last night", sparkline: nightly(.hrv))
-            tile(.spo2, value: metrics?.readings(.spo2, on: day).last.map { Metric.spo2.format($0.value) },
-                 caption: metrics?.readings(.spo2, on: day).last.map { $0.date.formatted(date: .omitted, time: .shortened) },
-                 sparkline: (metrics?.readings(.spo2, on: day) ?? []).map(\.value))
+        VStack(spacing: 12) {
+            LazyVGrid(columns: columns, spacing: 12) {
+                tile(.restingHeartRate, value: metrics?.restingHeartRate(on: day).map(String.init), caption: "Last night",
+                     sparkline: nightly(.restingHeartRate))
+                tile(.hrv, value: metrics?.hrv(on: day).map(String.init), caption: "Last night", sparkline: nightly(.hrv))
+                tile(.spo2, value: metrics?.readings(.spo2, on: day).last.map { Metric.spo2.format($0.value) },
+                     caption: metrics?.readings(.spo2, on: day).last.map { $0.date.formatted(date: .omitted, time: .shortened) },
+                     sparkline: (metrics?.readings(.spo2, on: day) ?? []).map(\.value))
+                tile(.temperature, value: metrics?.nightTemperature(on: day).map { Metric.temperature.format($0) },
+                     caption: "Last night", sparkline: nightly(.temperature))
+            }
             tile(.steps, value: steps.formatted(), caption: "of \(stepGoal.formatted())",
                  sparkline: (metrics?.stepsByHour(on: day) ?? []).map(\.value))
-            tile(.temperature, value: metrics?.nightTemperature(on: day).map { Metric.temperature.format($0) }, caption: "Last night",
-                 sparkline: nightly(.temperature))
         }
     }
 
