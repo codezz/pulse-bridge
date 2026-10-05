@@ -27,9 +27,11 @@ public struct SleepNight: Sendable, Equatable {
     /// Awake stretches of at least 5 minutes between falling asleep and waking up (NSF's measure).
     public let longAwakenings: Int
     public let segments: [Segment]
+    /// Stretches the band didn't record (filled as awake for the totals, not band-detected waking).
+    public let gaps: [DateInterval]
 
     public init(inBedStart: Date, inBedEnd: Date, fellAsleep: Date, wokeUp: Date, minutes: [SleepStage: Int],
-                awakeAfterOnset: Int, awakenings: Int, longAwakenings: Int = 0, segments: [Segment]) {
+                awakeAfterOnset: Int, awakenings: Int, longAwakenings: Int = 0, segments: [Segment], gaps: [DateInterval] = []) {
         self.inBedStart = inBedStart
         self.inBedEnd = inBedEnd
         self.fellAsleep = fellAsleep
@@ -39,6 +41,7 @@ public struct SleepNight: Sendable, Equatable {
         self.awakenings = awakenings
         self.longAwakenings = longAwakenings
         self.segments = segments
+        self.gaps = gaps
     }
 
     public var inBed: Int { Int(inBedEnd.timeIntervalSince(inBedStart) / 60) }
@@ -108,7 +111,15 @@ public enum SleepAnalysis {
         return SleepNight(inBedStart: first.date, inBedEnd: last.date.addingTimeInterval(60),
                           fellAsleep: session[onset].date, wokeUp: session[lastAsleep].date.addingTimeInterval(60),
                           minutes: minutes, awakeAfterOnset: awakeAfterOnset, awakenings: awakenings,
-                          longAwakenings: longAwakenings, segments: segments)
+                          longAwakenings: longAwakenings, segments: segments, gaps: gaps(in: rawSession))
+    }
+
+    /// Where the recorded minutes skip ahead (what `fillingGaps` fills).
+    static func gaps(in session: [SleepMinute]) -> [DateInterval] {
+        zip(session, session.dropFirst()).compactMap { a, b in
+            let end = a.date.addingTimeInterval(60)
+            return b.date > end ? DateInterval(start: end, end: b.date) : nil
+        }
     }
 
     /// Minutes missing inside a session count as awake, so stage minutes always add up to time in bed.

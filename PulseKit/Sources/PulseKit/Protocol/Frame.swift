@@ -14,11 +14,14 @@ public enum Frame {
     }
 
     /// Mode 99 deletes: every history read, the alarm read `57` (JStyle deleteAllClock) and the
-    /// temperature reads. Never built, whatever calls `make`.
-    static let deleteCapable: Set<UInt8> = Set(HistoryKind.allCases.map(\.rawValue)).union([0x57, 0x60, 0x62, 0x65])
+    /// temperature reads. Workouts (`5C`) also delete with 09, so history reads refuse 09 too (as the
+    /// probe does). Never built, whatever calls `make`.
+    static let historyOpcodes: Set<UInt8> = Set(HistoryKind.allCases.map(\.rawValue)).union([0x60, 0x62])
+    static let deleteCapable: Set<UInt8> = historyOpcodes.union([0x57])
 
     static func isDelete(_ bytes: [UInt8]) -> Bool {
-        bytes.count > 1 && bytes[1] == 0x99 && deleteCapable.contains(bytes[0])
+        guard bytes.count > 1 else { return false }
+        return (bytes[1] == 0x99 && deleteCapable.contains(bytes[0])) || (bytes[1] == 0x09 && historyOpcodes.contains(bytes[0]))
     }
 
     public static func checksum<S: Sequence>(_ bytes: S) -> UInt8 where S.Element == UInt8 {

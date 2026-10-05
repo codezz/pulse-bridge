@@ -18,6 +18,9 @@ public struct HistoryReader {
     /// The band can pause about 3 s inside a page and takes up to about 2.5 s to start one.
     public var packetTimeout: Duration = .seconds(5)
     public var endMarkerGrace: Duration = .milliseconds(300)
+    /// A band that never sends an end marker (or restarts on "next") can't keep a sync reading
+    /// forever: after this many pages the read ends with what it has.
+    public var maxPages = 100
 
     /// Auto-updating so a long-running app follows the phone across time zones.
     public init(timeZone: TimeZone = .autoupdatingCurrent) {
@@ -30,7 +33,7 @@ public struct HistoryReader {
         var result = HistoryResult()
         var assembler = ResponseAssembler(kind: kind)
         var mode = HistoryMode.newest
-        while true {
+        for _ in 0..<maxPages {
             assembler.startPage()
             try await channel.send(Command.history(kind, mode: mode))
             while assembler.packetCount < Self.packetsPerPage {
@@ -62,6 +65,7 @@ public struct HistoryReader {
             }
             mode = .next
         }
+        return result
     }
 
     /// Swallows the rest of a page we stopped reading, so it can't leak into the next command.

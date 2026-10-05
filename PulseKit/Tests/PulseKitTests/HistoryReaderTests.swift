@@ -27,6 +27,18 @@ struct HistoryReaderTests {
         FakeChannel { frame in pages[HistoryMode(rawValue: frame[1])!] ?? [] }
     }
 
+    /// A band that answers every "next page" with a full page again (never an end marker) must not
+    /// keep the first sync reading forever.
+    @Test func stopsAfterThePageLimit() async throws {
+        var reader = HistoryReader(timeZone: utc)
+        reader.maxPages = 3
+        let page = (0..<HistoryReader.packetsPerPage).map { spotHR(minute: $0 % 60) }
+        let ch = FakeChannel { _ in page }
+        let result = try await reader.read(.spotHR, newerThan: nil, over: ch)
+        #expect(ch.sent.count == 3)
+        #expect(result.records.count == 3 * HistoryReader.packetsPerPage)
+    }
+
     @Test func readsUntilEndMarker() async throws {
         let ch = channel([.newest: [spotHR(minute: 30) + spotHR(minute: 20) + bytes("55 ff")]])
         let result = try await reader.read(.spotHR, newerThan: nil, over: ch)

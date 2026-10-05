@@ -31,6 +31,15 @@ struct TemperatureTests {
         await #expect(processExitsWith: .failure) { _ = Frame.make([0x53, 0x99]) }
     }
 
+
+    /// Frame.make refuses whatever this flags (its precondition); `5C 09` deletes workouts.
+    @Test func deleteDetection() {
+        #expect(Frame.isDelete([0x5C, 0x09]))
+        #expect(Frame.isDelete([0x65, 0x99]))
+        #expect(!Frame.isDelete([0x09, 0x01]))
+        #expect(!Frame.isDelete([0x52, 0x02]))
+    }
+
     @Test func readsAreStillAllowed() {
         #expect(Frame.make([0x65, 0x00]).count == 16)
         #expect(Frame.make([0x57, 0x00]).count == 16)
