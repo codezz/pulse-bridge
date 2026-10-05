@@ -14,6 +14,9 @@ final class SummaryModel {
     let service: SummaryService
     private(set) var metrics: DailyMetrics?
     private(set) var insights: [Insight] = []
+    /// Per-day values of the loaded window (insights, readiness).
+    private(set) var series: [InsightTopic: [Date: Double]] = [:]
+    private(set) var readiness: ReadinessResult?
     private(set) var error: String?
     /// Start of the day shown on Today. Change it with `select(_:)`.
     private(set) var selectedDay = Calendar.current.startOfDay(for: .now)
@@ -38,6 +41,12 @@ final class SummaryModel {
         load(force: false)
     }
 
+    /// Readiness on a day of the loaded window (the detail chart asks for the last 14).
+    func readiness(on day: Date) -> ReadinessResult? {
+        guard let metrics else { return nil }
+        return Readiness.compute(series, sleepScore: metrics.sleepScore(on: day)?.value, today: day, calendar: .current)
+    }
+
     /// Fresh data (after a sync, on returning to the app, at midnight).
     func reload() {
         let today = Calendar.current.startOfDay(for: .now)
@@ -54,7 +63,9 @@ final class SummaryModel {
                 metrics = try service.load(days: Self.loadedDays, endingOn: end)
                 loadedEnd = end
             }
-            insights = metrics.map { Insights.make($0.insightSeries(), today: selectedDay, calendar: calendar) } ?? []
+            series = metrics?.insightSeries() ?? [:]
+            insights = Insights.make(series, today: selectedDay, calendar: calendar)
+            readiness = readiness(on: selectedDay)
             error = nil
         } catch {
             self.error = error.localizedDescription

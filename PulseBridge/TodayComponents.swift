@@ -293,11 +293,12 @@ struct VitalsGrid: View {
 
 /// Sections below the hero, in the user's order; hidden ones are skipped.
 enum TodaySection: String, CaseIterable, Identifiable {
-    case highlights, sleep, heartRate, vitals, challenge, activities
+    case readiness, highlights, sleep, heartRate, vitals, challenge, activities
     var id: String { rawValue }
 
     var title: String {
         switch self {
+        case .readiness: "Readiness"
         case .highlights: "Highlights"
         case .sleep: "Sleep"
         case .heartRate: "Heart rate"
@@ -308,7 +309,7 @@ enum TodaySection: String, CaseIterable, Identifiable {
     }
 }
 
-/// The Today layout, saved on this device. Unknown stored ids are dropped; new sections go last.
+/// The Today layout, saved on this device. Unknown stored ids are dropped; new sections go to their default place.
 @MainActor
 @Observable
 final class TodayLayout {
@@ -322,7 +323,12 @@ final class TodayLayout {
 
     init() {
         let stored = (UserDefaults.standard.stringArray(forKey: Self.orderKey) ?? []).compactMap(TodaySection.init(rawValue:))
-        order = stored + TodaySection.allCases.filter { !stored.contains($0) }
+        // Sections added in an update go to their default place (e.g. Readiness near the top).
+        var order = stored
+        for (index, section) in TodaySection.allCases.enumerated() where !order.contains(section) {
+            order.insert(section, at: min(index, order.count))
+        }
+        self.order = order
         hidden = Set((UserDefaults.standard.stringArray(forKey: Self.hiddenKey) ?? []).compactMap(TodaySection.init(rawValue:)))
     }
 

@@ -29,6 +29,7 @@ struct SummaryView: View {
     let onShowChallenge: () -> Void
     @State private var showStart = false
     @State private var showEdit = false
+    @State private var showReadiness = false
     private let layout = TodayLayout.shared
 
     private var day: Date { model.selectedDay }
@@ -74,11 +75,14 @@ struct SummaryView: View {
                 .presentationDetents([.medium, .large])
             }
             .sheet(isPresented: $showEdit) { EditTodayView(layout: layout) }
+            .sheet(isPresented: $showReadiness) { ReadinessDetailView(model: model) }
         }
     }
 
     @ViewBuilder private func sectionView(_ section: TodaySection) -> some View {
         switch section {
+        case .readiness:
+            ReadinessCard(result: model.readiness) { showReadiness = true }
         case .highlights:
             HighlightsCard(insights: model.insights, day: model.isToday ? nil : day)
         case .sleep:
