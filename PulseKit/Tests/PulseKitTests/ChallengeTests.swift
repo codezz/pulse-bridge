@@ -101,6 +101,18 @@ struct ChallengeTests {
         #expect(!ChallengeProgress(total: 0, target: 0).isDone)     // no target yet
     }
 
+    /// The day's ring: each active exercise counts at most 100%, archived ones not at all.
+    @Test func dayFractionAveragesCappedProgress() {
+        let es = [exercise(push, [change(-10, 60)]), exercise(squat, archived: 1, [change(-10, 60)])]
+        let sets = [SetInfo(exerciseID: push, date: day(0), count: 90), SetInfo(exerciseID: squat, date: day(0), count: 30),
+                    SetInfo(exerciseID: push, date: day(1), count: 30)]
+        let h = ChallengeHistory(exercises: es, sets: sets, calendar: calendar)
+        #expect(h.dayFraction(on: day(0)) == 0.75)
+        #expect(h.dayFraction(on: day(1)) == 0.5)
+        #expect(h.dayFraction(on: day(-1)) == 0)
+        #expect(h.dayFraction(on: day(-40)) == nil)      // before any exercise existed
+    }
+
     /// "This week" starts on Monday whatever the phone's locale says.
     @Test func weeksStartOnMonday() {
         var sundayFirst = calendar

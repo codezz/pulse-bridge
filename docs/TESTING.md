@@ -129,29 +129,34 @@ order set in Edit Today (default: Highlights, Sleep, Heart rate, Vitals, Daily c
 ## Challenge tab
 
 33. Before setup the Challenge tab and the Today card offer "Set up challenge"; setup is pre-filled with Push-ups 60 and Squats 60
-   (reps). Start: the tab shows a ring per exercise at 0/60 and "Start a streak today".
-34. In the tab (or Log sets on the Today card, which opens it): +5 / +10 / +20 and Custom add sets; the ring and the big number update with a light tap
-   haptic; Undo last removes the latest set of that exercise today (disabled when there is none).
-   Reaching both targets: a success haptic and "Done for today" on the card.
+   (reps). Start: the tab shows a row per exercise at 0/60.
+34. In the tab (or Log sets on the Today card, which opens it), the Today card has a stats line
+   (streak and best, days done of day number, % hit) and one row per exercise: a small ring,
+   "40/60 reps", +5 / +10 / +20 and a ⋯ menu (Custom amount, Undo last set). Each set gives a light
+   tap haptic and a "+10 Push-ups · Undo" banner at the bottom for 4 seconds. A finished exercise
+   turns green and keeps only the ⋯ menu (with Add 5 / 10 / 20). Finishing both: a sparkle burst
+   and a success haptic. With the largest text sizes the stats and buttons wrap to extra lines, never
+   cut off.
 35. Exercises (gear): change a target; the card uses it today, the calendar shows earlier days with the old
    target. Turn on "+5 every Monday": the target grows from next Monday, not today. Add an exercise
    (reps or seconds); archive one (confirmation): it leaves the card and logger, its history stays.
-36. Below the logging: current and best streak (an unfinished today doesn't break the streak), month calendar
-   (green done, light partial, gray nothing, today ringed, previous/next month), tap a day for its
-   sets and targets; a card per exercise with totals and the last 14 days against the target.
+36. Calendar card: this week as small rings (how much of the targets was done, green when done,
+   today's number in orange); "Show month" expands to the month with arrows, "Show week" folds it.
+   Tap a day for its sets and targets. Totals card: one row per exercise (this week, last 7 days as
+   bars, all-time total); tapping opens the last 14 days against the dashed target line and All time
+   / Week / Month / Avg/day.
 37. Exercises > Progress before the app: enter start date, days done, streak and best (e.g. 27 Aug,
-   33, 1, 14). The tab shows "🔥 2 day streak, best 14 · 34 days done of 39"; days between the start
+   33, 1, 14). The stats line shows "2 best 14 · 34 of 39 days"; days between the start
    and your first day in the app have a dashed ring and can't be opened; earlier days are plain.
    With an average per day entered (e.g. 50), each exercise's all-time total includes 33 x 50.
-   Top row: streak (best), days done (of day number), % of days hit. Each exercise has a card:
-   all-time total, bars for the last 14 days (full color when the target was hit) with the target as
-   a dashed line, and Week / Month / Avg/day.
+   The stats line shows streak (best), days done (of day number) and % of days hit.
 38. Share: the share button opens the share sheet with an image of today's numbers, the streak and the
    last 7 days.
-39. Timed session: Start timed session shows a timer and band heart rate; log sets; Finish session:
+39. Timed session: Start timed session (its note says "No band: no heart rate" when not connected)
+   pins a bar at the bottom with the timer and band heart rate; log sets; Finish:
    Health shows a Strength training workout from Pulse Bridge with that duration and heart rate.
    Lock the phone for a few minutes during the session: heart rate keeps coming (no gap in Health).
-   Cancel session keeps the sets but saves nothing to Health. Live heart rate on the Heart rate card
+   Cancel session (in the bar's ⋯ menu) keeps the sets but saves nothing to Health. Live heart rate on the Heart rate card
    keeps running when a session ends. Kill the app mid-session and reopen: the session is saved up
    to its last set and reaches Health with the next sync.
 

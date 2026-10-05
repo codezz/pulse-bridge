@@ -2,35 +2,26 @@ import Charts
 import PulseKit
 import SwiftUI
 
-/// The Challenge tab's screen: today's logging and session, then streaks, the month calendar and
-/// a card per exercise.
+/// The Challenge tab's screen, compact: today's card (streak line, a row per exercise, session
+/// start), the calendar (this week, or the month) and a totals row per exercise. A running session
+/// and the undo banner sit pinned at the bottom.
 struct ChallengeHistoryView: View {
     let model: ChallengeModel
     let coordinator: SyncCoordinator
-    @State private var month = Calendar.current.dateInterval(of: .month, for: .now)!.start
     @State private var selectedDay: Date?
-    @ScaledMetric(relativeTo: .caption) private var cellSize: CGFloat = 32
-
-    private var history: ChallengeHistory { model.history }
-    private var calendar: Calendar { .current }
+    @State private var lastSet: LoggedSet?
 
     var body: some View {
-        List {
-            ChallengeLogSections(model: model, coordinator: coordinator)
-            Section {
-                HStack(alignment: .top) {
-                    let streak = history.streak(today: .now)
-                    let best = history.bestStreak(today: .now)
-                    stat("🔥 \(streak)", "day streak", note: best > streak ? "best \(best)" : nil)
-                    stat("\(history.daysDone(today: .now))", "days done", note: "of \(history.challengeDay(today: .now))")
-                    stat("\(Int((history.successRate(today: .now) * 100).rounded()))%", "days hit")
-                }
+        ScrollView {
+            VStack(spacing: 16) {
+                ChallengeTodayCard(model: model, coordinator: coordinator, lastSet: $lastSet)
+                ChallengeCalendarCard(history: model.history, selectedDay: $selectedDay)
+                ChallengeTotalsCard(history: model.history, exercises: model.exercises)
             }
-            Section { monthGrid } header: { monthHeader }
-            ForEach(model.exercises) { exercise in
-                Section { ExerciseTotalsCard(history: history, exercise: exercise) }
-            }
+            .padding()
         }
+        .background(Color(.systemGroupedBackground))
+        .safeAreaInset(edge: .bottom) { bottomBar }
         .navigationTitle("Challenge")
         .toolbar {
             ChallengeShareButton(model: model)
@@ -40,28 +31,71 @@ struct ChallengeHistoryView: View {
         .sheet(item: Binding(get: { selectedDay.map(DayItem.init) }, set: { selectedDay = $0?.day })) { item in
             DaySheet(model: model, day: item.day).presentationDetents([.medium])
         }
-    }
-
-    private func stat(_ value: String, _ label: String, note: String? = nil) -> some View {
-        VStack(spacing: 2) {
-            Text(value).numberFont(28).lineLimit(1).minimumScaleFactor(0.6)
-            Text(label).font(.caption).foregroundStyle(.secondary)
-            if let note { Text(note).font(.caption2).foregroundStyle(.tertiary) }
+        .task(id: lastSet?.id) {
+            guard lastSet != nil else { return }
+            try? await Task.sleep(for: .seconds(4))
+            withAnimation { lastSet = nil }
         }
-        .frame(maxWidth: .infinity)
-        .accessibilityElement(children: .combine)
     }
 
-    private var monthHeader: some View {
-        HStack {
-            Button { shiftMonth(-1) } label: { Image(systemName: "chevron.left") }
-                .accessibilityLabel("Previous month")
-            Spacer()
-            Text(month.formatted(.dateTime.month(.wide).year())).font(.headline).textCase(nil)
-            Spacer()
-            Button { shiftMonth(1) } label: { Image(systemName: "chevron.right") }
-                .accessibilityLabel("Next month")
-                .disabled(calendar.isDate(month, equalTo: .now, toGranularity: .month))
+    private var bottomBar: some View {
+        VStack(spacing: 8) {
+            if let set = lastSet {
+                UndoBanner(set: set) {
+                    model.undo(set.exercise.id)
+                    withAnimation { lastSet = nil }
+                }
+                .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+            if let start = model.sessionStart {
+                ChallengeSessionBar(model: model, start: start)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+        }
+        .padding(.horizontal)
+        .padding(.bottom, 8)
+        .animation(.snappy, value: lastSet?.id)
+        .animation(.snappy, value: model.sessionStart)
+    }
+}
+
+/// Small rings per day (how much of that day's targets was done): this week, or the whole month.
+/// Days before the app (with a baseline) have a dashed ring; tapping a tracked day opens its sets.
+private struct ChallengeCalendarCard: View {
+    let history: ChallengeHistory
+    @Binding var selectedDay: Date?
+    @State private var showsMonth = false
+    @State private var month = Calendar.current.dateInterval(of: .month, for: .now)!.start
+    @ScaledMetric(relativeTo: .caption) private var scaledCell: CGFloat = 32
+    /// Grows with the text size, but stays inside a seventh of the card.
+    private var cellSize: CGFloat { min(scaledCell, 40) }
+
+    private var calendar: Calendar { .current }
+
+    var body: some View {
+        Card(title: showsMonth ? month.formatted(.dateTime.month(.wide).year()) : "This week",
+             systemImage: "calendar", color: Palette.challenge) {
+            grid
+            Button {
+                withAnimation(.snappy) { showsMonth.toggle() }
+            } label: {
+                Label(showsMonth ? "Show week" : "Show month", systemImage: showsMonth ? "chevron.up" : "chevron.down")
+                    .font(.caption.bold())
+                    .frame(maxWidth: .infinity)
+            }
+            .tint(Palette.challenge)
+        } accessory: {
+            if showsMonth {
+                HStack(spacing: 16) {
+                    Button { shiftMonth(-1) } label: { Image(systemName: "chevron.left") }
+                        .accessibilityLabel("Previous month")
+                    Button { shiftMonth(1) } label: { Image(systemName: "chevron.right") }
+                        .accessibilityLabel("Next month")
+                        .disabled(calendar.isDate(month, equalTo: .now, toGranularity: .month))
+                }
+                .font(.subheadline.bold())
+                .tint(Palette.challenge)
+            }
         }
     }
 
@@ -69,32 +103,45 @@ struct ChallengeHistoryView: View {
         month = calendar.date(byAdding: .month, value: by, to: month)!
     }
 
-    /// Weeks start on Monday; leading blanks align the first day.
-    private var monthGrid: some View {
-        let days = calendar.range(of: .day, in: .month, for: month)!.map { calendar.date(byAdding: .day, value: $0 - 1, to: month)! }
-        let blanks = (calendar.component(.weekday, from: month) + 5) % 7
+    /// Monday first; the month gets leading blanks to align its first day.
+    private var grid: some View {
+        let days: [Date]
+        let blanks: Int
+        if showsMonth {
+            days = calendar.range(of: .day, in: .month, for: month)!.map { calendar.date(byAdding: .day, value: $0 - 1, to: month)! }
+            blanks = (calendar.component(.weekday, from: month) + 5) % 7
+        } else {
+            let monday = history.week(containing: .now).start
+            days = (0..<7).map { calendar.date(byAdding: .day, value: $0, to: monday)! }
+            blanks = 0
+        }
         let symbols = ["M", "T", "W", "T", "F", "S", "S"]
         return LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 8) {
             ForEach(Array(symbols.enumerated()), id: \.offset) { Text($0.element).font(.caption2).foregroundStyle(.secondary) }
             ForEach(0..<blanks, id: \.self) { _ in Color.clear.frame(height: cellSize) }
-            ForEach(days, id: \.self) { day in
-                dayCell(day)
-            }
+            ForEach(days, id: \.self) { dayCell($0) }
         }
-        .padding(.vertical, 4)
     }
 
     @ViewBuilder private func dayCell(_ day: Date) -> some View {
-        let isToday = calendar.isDateInToday(day)
         let kind = cellKind(day)
+        let isToday = calendar.isDateInToday(day)
         Button { selectedDay = day } label: {
-            Text("\(calendar.component(.day, from: day))")
-                .font(.caption.bold())
-                .frame(width: cellSize, height: cellSize)
-                .background(Circle().fill(kind == .tracked ? statusColor(history.status(on: day)) : .clear))
-                .overlay(Circle().strokeBorder(style: StrokeStyle(lineWidth: 1, dash: [3, 3]))
-                    .foregroundStyle(kind == .beforeTracking ? Color.secondary : .clear))
-                .overlay(Circle().stroke(isToday ? Palette.challenge : .clear, lineWidth: 2))
+            ZStack {
+                switch kind {
+                case .tracked:
+                    ProgressRing(progress: history.dayFraction(on: day) ?? 0,
+                                 color: history.status(on: day) == .done ? .green : Palette.challenge, size: cellSize) { EmptyView() }
+                case .beforeTracking:
+                    Circle().strokeBorder(style: StrokeStyle(lineWidth: 1, dash: [3, 3])).foregroundStyle(.secondary)
+                case .outside:
+                    EmptyView()
+                }
+                Text("\(calendar.component(.day, from: day))")
+                    .font(.caption2.weight(isToday ? .heavy : .semibold))
+                    .foregroundStyle(isToday ? Palette.challenge : kind == .outside ? .secondary : .primary)
+            }
+            .frame(width: cellSize, height: cellSize)
         }
         .buttonStyle(.plain)
         .disabled(kind != .tracked)
@@ -103,8 +150,6 @@ struct ChallengeHistoryView: View {
 
     private enum CellKind { case tracked, beforeTracking, outside }
 
-    /// Tracked days get a status circle; days before the app (with a baseline) a dashed ring; days
-    /// before the challenge or in the future nothing.
     private func cellKind(_ day: Date) -> CellKind {
         if day > .now { return .outside }
         if history.isBeforeTracking(day) { return .beforeTracking }
@@ -113,57 +158,54 @@ struct ChallengeHistoryView: View {
 
     private func cellLabel(_ day: Date, _ kind: CellKind) -> String {
         switch kind {
-        case .tracked: statusText(history.status(on: day))
+        case .tracked:
+            switch history.status(on: day) {
+            case .done: "done"
+            case .partial: "partial"
+            case .none: "nothing logged"
+            }
         case .beforeTracking: "before the app"
         case .outside: "not part of the challenge"
         }
     }
-
-    private func statusText(_ status: DayStatus) -> String {
-        switch status {
-        case .done: "done"
-        case .partial: "partial"
-        case .none: "nothing logged"
-        }
-    }
 }
 
-/// One exercise: all-time total, the last 14 days against the daily target, and week / month / average.
-private struct ExerciseTotalsCard: View {
-    let history: ChallengeHistory
-    let exercise: ExerciseInfo
-
-    private var calendar: Calendar { .current }
-
-    private struct Day: Identifiable {
+/// The last `count` days of one exercise against its daily target, oldest first, from the first
+/// tracked day on.
+private struct ExerciseDays {
+    struct Day: Identifiable {
         let day: Date
         let total: Int
         let target: Int?
         var id: Date { day }
+        var hit: Bool { target.map { total >= $0 } ?? false }
     }
 
-    private var days: [Day] {
+    static func last(_ count: Int, of exercise: ExerciseInfo, in history: ChallengeHistory) -> [Day] {
+        let calendar = Calendar.current
         let today = calendar.startOfDay(for: .now)
-        return (0..<14).reversed().compactMap { back in
+        return (0..<count).reversed().compactMap { back in
             let day = calendar.date(byAdding: .day, value: -back, to: today)!
             guard day >= history.firstTrackedDay else { return nil }
             return Day(day: day, total: history.total(of: exercise.id, on: day), target: history.target(of: exercise, on: day))
         }
     }
+}
+
+/// Bars per day, full colour when the target was hit, optionally with the target as a dashed line.
+private struct ExerciseBars: View {
+    let days: [ExerciseDays.Day]
+    let unit: String
+    var showsTarget = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack(alignment: .firstTextBaseline) {
-                Text(exercise.name).font(.headline)
-                Spacer()
-                Text(history.allTime(of: exercise.id).formatted()).numberFont(28)
-                Text("all time").font(.caption).foregroundStyle(.secondary)
+        Chart {
+            ForEach(days) { day in
+                BarMark(x: .value("Day", day.day, unit: .day), y: .value(unit, day.total))
+                    .foregroundStyle(day.hit ? Palette.challenge : Palette.challenge.opacity(0.4))
+                    .clipShape(RoundedRectangle(cornerRadius: 3))
             }
-            Chart {
-                ForEach(days) { day in
-                    BarMark(x: .value("Day", day.day, unit: .day), y: .value(exercise.unit.short, day.total))
-                        .foregroundStyle(day.target.map { day.total >= $0 } ?? false ? Palette.challenge : Palette.challenge.opacity(0.4))
-                }
+            if showsTarget {
                 ForEach(days.filter { $0.target != nil }) { day in
                     LineMark(x: .value("Day", day.day, unit: .day), y: .value("Target", day.target ?? 0))
                         .interpolationMethod(.stepCenter)
@@ -171,26 +213,88 @@ private struct ExerciseTotalsCard: View {
                         .foregroundStyle(.secondary)
                 }
             }
-            .chartXAxis { AxisMarks(values: .stride(by: .day, count: 7)) { AxisValueLabel(format: .dateTime.day().month(.abbreviated)) } }
-            .frame(height: 90)
-            .accessibilityLabel("\(exercise.name), last 14 days against the daily target")
-            HStack(spacing: 8) {
-                chip("Week", history.total(of: exercise.id, in: history.week(containing: .now)))
-                chip("Month", history.total(of: exercise.id, in: calendar.dateInterval(of: .month, for: .now)!))
-                chip("Avg/day", history.averagePerDay(of: exercise.id, today: .now))
+        }
+    }
+}
+
+/// One row per exercise: all-time total, the last 7 days and this week; tap for the details.
+private struct ChallengeTotalsCard: View {
+    let history: ChallengeHistory
+    let exercises: [ExerciseInfo]
+
+    var body: some View {
+        Card(title: "Totals", systemImage: "sum", color: Palette.challenge) {
+            ForEach(Array(exercises.enumerated()), id: \.element.id) { index, exercise in
+                if index > 0 { Divider() }
+                NavigationLink { ExerciseTotalsView(history: history, exercise: exercise) } label: { row(exercise) }
+                    .buttonStyle(.plain)
             }
         }
-        .padding(.vertical, 4)
     }
 
-    private func chip(_ title: String, _ value: Int) -> some View {
+    private func row(_ exercise: ExerciseInfo) -> some View {
+        let week = history.total(of: exercise.id, in: history.week(containing: .now))
+        return HStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 0) {
+                Text(exercise.name).font(.subheadline.bold()).lineLimit(1)
+                Text("\(week.formatted()) this week").font(.caption).foregroundStyle(.secondary)
+            }
+            Spacer(minLength: 4)
+            ExerciseBars(days: ExerciseDays.last(7, of: exercise, in: history), unit: exercise.unit.short)
+                .chartXAxis(.hidden).chartYAxis(.hidden)
+                .frame(width: 70, height: 28)
+            VStack(alignment: .trailing, spacing: 0) {
+                Text(history.allTime(of: exercise.id).formatted()).numberFont(20)
+                Text("all time").font(.caption2).foregroundStyle(.secondary)
+            }
+            Image(systemName: "chevron.right").font(.caption.bold()).foregroundStyle(.tertiary)
+        }
+        .contentShape(Rectangle())
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(exercise.name): \(history.allTime(of: exercise.id)) all time, \(week) this week")
+        .accessibilityAddTraits(.isButton)
+    }
+}
+
+/// One exercise: all-time total, the last 14 days against the daily target, and week / month / average.
+private struct ExerciseTotalsView: View {
+    let history: ChallengeHistory
+    let exercise: ExerciseInfo
+
+    private var calendar: Calendar { .current }
+
+    var body: some View {
+        let days = ExerciseDays.last(14, of: exercise, in: history)
+        ScrollView {
+            VStack(spacing: 16) {
+                Card(title: "Last 14 days", systemImage: "chart.bar.fill", color: Palette.challenge) {
+                    ExerciseBars(days: days, unit: exercise.unit.short, showsTarget: true)
+                        .chartXAxis { AxisMarks(values: .stride(by: .day, count: 7)) { AxisValueLabel(format: .dateTime.day().month(.abbreviated)) } }
+                        .frame(height: 180)
+                        .accessibilityLabel("\(exercise.name), last 14 days against the daily target")
+                    Text("Full colour: target reached. Dashed line: the daily target.").font(.caption).foregroundStyle(.secondary)
+                }
+                HStack(spacing: 8) {
+                    tile("All time", history.allTime(of: exercise.id))
+                    tile("Week", history.total(of: exercise.id, in: history.week(containing: .now)))
+                    tile("Month", history.total(of: exercise.id, in: calendar.dateInterval(of: .month, for: .now)!))
+                    tile("Avg/day", history.averagePerDay(of: exercise.id, today: .now))
+                }
+            }
+            .padding()
+        }
+        .background(Color(.systemGroupedBackground))
+        .navigationTitle(exercise.name)
+    }
+
+    private func tile(_ title: String, _ value: Int) -> some View {
         VStack(spacing: 2) {
-            Text(value.formatted()).font(.subheadline.bold())
+            Text(value.formatted()).font(.headline).monospacedDigit().lineLimit(1).minimumScaleFactor(0.6)
             Text(title).font(.caption2).foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 6)
-        .background(Palette.challenge.opacity(0.12), in: RoundedRectangle(cornerRadius: 8))
+        .padding(.vertical, 10)
+        .cardBackground(cornerRadius: 14)
         .accessibilityElement(children: .combine)
     }
 }

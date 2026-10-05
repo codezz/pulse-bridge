@@ -150,11 +150,18 @@ struct ChallengeSetupView: View {
     }
 }
 
-/// Today's sets per exercise (ring, quick buttons, undo) and the timed session, as List sections.
-/// Sessions go to Health as Strength training workouts.
-struct ChallengeLogSections: View {
+/// A set just logged, for the undo banner.
+struct LoggedSet: Equatable {
+    let id = UUID()
+    let exercise: ExerciseInfo
+    let count: Int
+}
+
+/// Today in one card: the streak line, one compact row per exercise and the session start.
+struct ChallengeTodayCard: View {
     let model: ChallengeModel
     let coordinator: SyncCoordinator
+    @Binding var lastSet: LoggedSet?
     @State private var customFor: ExerciseInfo?
     @State private var customText = ""
 
@@ -162,85 +169,229 @@ struct ChallengeLogSections: View {
     private var totalToday: Int { model.exercises.reduce(0) { $0 + history.total(of: $1.id, on: .now) } }
 
     var body: some View {
-        ForEach(model.exercises) { exercise in
-            exerciseSection(exercise)
-        }
-        // On the session section only: modifiers on a group of List sections would repeat per section.
-        sessionSection
-            .alert("Log \(customFor?.name ?? "")", isPresented: Binding(get: { customFor != nil }, set: { if !$0 { customFor = nil } })) {
-                TextField("Count", text: $customText).keyboardType(.numberPad)
-                Button("Log") {
-                    if let exercise = customFor, let count = Int(customText), ChallengeStore.countRange.contains(count) {
-                        model.log(count, to: exercise.id)
-                    }
-                    customText = ""
-                }
-                Button("Cancel", role: .cancel) { customText = "" }
+        Card(title: "Today", systemImage: "figure.strengthtraining.traditional", color: Palette.challenge) {
+            ChallengeStatsLine(history: history)
+            ForEach(model.exercises) { exercise in
+                Divider()
+                ExerciseLogRow(model: model, exercise: exercise, log: { log($0, exercise) },
+                               custom: { customFor = exercise }, undo: { undo(exercise) })
             }
-            .sensoryFeedback(.impact(weight: .light), trigger: totalToday)
-            .sensoryFeedback(.success, trigger: history.status(on: .now) == .done) { _, done in done }
+            if !model.isSessionRunning {
+                Divider()
+                sessionRow
+            }
+        }
+        .celebrates(history.status(on: .now) == .done, context: Calendar.current.startOfDay(for: .now))
+        .sensoryFeedback(.impact(weight: .light), trigger: totalToday)
+        .alert("Log \(customFor?.name ?? "")", isPresented: Binding(get: { customFor != nil }, set: { if !$0 { customFor = nil } })) {
+            TextField("Count", text: $customText).keyboardType(.numberPad)
+            Button("Log") {
+                if let exercise = customFor, let count = Int(customText), ChallengeStore.countRange.contains(count) {
+                    log(count, exercise)
+                }
+                customText = ""
+            }
+            Button("Cancel", role: .cancel) { customText = "" }
+        }
     }
 
-    private func exerciseSection(_ exercise: ExerciseInfo) -> some View {
-        let progress = history.progress(of: exercise, on: .now)
-        return Section(exercise.name) {
-            HStack(spacing: 16) {
-                ProgressRing(progress: progress.fraction, color: Palette.challenge, size: 72) {
-                    Image(systemName: progress.isDone ? "checkmark" : "figure.strengthtraining.traditional")
-                        .font(.title3.bold()).foregroundStyle(progress.isDone ? .green : Palette.challenge)
+    private var sessionRow: some View {
+        Button { model.startSession() } label: {
+            ViewThatFits(in: .horizontal) {
+                HStack {
+                    sessionTitle
+                    Spacer()
+                    sessionNote
                 }
                 VStack(alignment: .leading, spacing: 2) {
-                    HStack(alignment: .firstTextBaseline, spacing: 4) {
-                        Text("\(progress.total)").numberFont(34)
-                        Text("/ \(progress.target) \(exercise.unit.short)").foregroundStyle(.secondary)
-                    }
-                    Text(progress.isDone ? "Done for today" : "\(max(0, progress.target - progress.total)) to go")
-                        .font(.caption).foregroundStyle(progress.isDone ? .green : .secondary)
+                    sessionTitle
+                    sessionNote
                 }
             }
-            .accessibilityElement(children: .combine)
-            HStack {
-                ForEach([5, 10, 20], id: \.self) { step in
-                    Button("+\(step)") { model.log(step, to: exercise.id) }
-                        .buttonStyle(.bordered).tint(Palette.challenge)
-                        .frame(maxWidth: .infinity)
-                        .accessibilityLabel("Add \(step) \(exercise.name)")
-                }
-                Button("Custom") { customFor = exercise }
-                    .accessibilityLabel("Custom count for \(exercise.name)")
-                    .buttonStyle(.bordered)
-                    .frame(maxWidth: .infinity)
-            }
-            Button("Undo last", systemImage: "arrow.uturn.backward") { model.undo(exercise.id) }
-                .disabled(!model.canUndo(exercise.id))
+        }
+        .tint(Palette.challenge)
+        .accessibilityHint("Times your sets and saves a Strength training workout with band heart rate to Apple Health.")
+    }
+
+    private var sessionTitle: some View {
+        Label("Start timed session", systemImage: "timer").font(.subheadline.bold()).fixedSize()
+    }
+
+    private var sessionNote: some View {
+        Text(coordinator.band.state == .connected ? "Saved to Health" : "No band: no heart rate")
+            .font(.caption).foregroundStyle(Color(.secondaryLabel)).fixedSize()
+    }
+
+    private func log(_ count: Int, _ exercise: ExerciseInfo) {
+        model.log(count, to: exercise.id)
+        lastSet = LoggedSet(exercise: exercise, count: count)
+    }
+
+    private func undo(_ exercise: ExerciseInfo) {
+        model.undo(exercise.id)
+        lastSet = nil
+    }
+}
+
+/// "🔥 2 best 14 · 34/39 days · 87% hit" in one line.
+struct ChallengeStatsLine: View {
+    let history: ChallengeHistory
+
+    var body: some View {
+        let streak = history.streak(today: .now)
+        let best = history.bestStreak(today: .now)
+        let done = history.daysDone(today: .now)
+        let day = history.challengeDay(today: .now)
+        let rate = Int((history.successRate(today: .now) * 100).rounded())
+        let stats = Group {
+            stat("flame.fill", "\(streak)", best > streak ? "best \(best)" : "day streak")
+                .accessibilityLabel("\(streak) day streak, best \(max(best, streak))")
+            stat("calendar", "\(done)", "of \(day) days")
+                .accessibilityLabel("\(done) of \(day) days done")
+            stat("target", "\(rate)%", "hit")
+                .accessibilityLabel("\(rate) percent of days hit")
+        }
+        // One line when it fits, otherwise one stat per line (large text).
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 14) { stats }
+            VStack(alignment: .leading, spacing: 4) { stats }
         }
     }
 
-    @ViewBuilder private var sessionSection: some View {
-        Section {
-            if let start = model.sessionStart {
-                TimelineView(.periodic(from: .now, by: 1)) { context in
-                    HStack {
-                        Text(clockText(context.date.timeIntervalSince(start))).numberFont(34).monospacedDigit()
-                        Spacer()
-                        Label(model.sessionHeartRate.map { "\($0) bpm" } ?? "-", systemImage: "heart.fill")
-                            .foregroundStyle(.red)
-                    }
-                }
-                Button("Finish session") { Task { await model.finishSession() } }
-                    .buttonStyle(.borderedProminent).tint(Palette.challenge)
-                Button("Cancel session", role: .destructive) { model.cancelSession() }
-            } else {
-                Button("Start timed session", systemImage: "timer") { model.startSession() }
+    private func stat(_ symbol: String, _ value: String, _ note: String) -> some View {
+        HStack(spacing: 4) {
+            Image(systemName: symbol).foregroundStyle(Palette.challenge).font(.caption)
+            Text(value).font(.subheadline.bold()).monospacedDigit()
+            Text(note).font(.caption).foregroundStyle(.secondary)
+        }
+        .fixedSize()
+        .accessibilityElement(children: .ignore)
+    }
+}
+
+/// One exercise on one line: a small ring, "40/60 reps", +5 / +10 / +20 and a menu with a custom
+/// count and undo. Done exercises keep the menu only (with the quick amounts in it). Falls back to two
+/// lines when the text is large.
+private struct ExerciseLogRow: View {
+    let model: ChallengeModel
+    let exercise: ExerciseInfo
+    let log: (Int) -> Void
+    let custom: () -> Void
+    let undo: () -> Void
+
+    private static let steps = [5, 10, 20]
+    private var progress: ChallengeProgress { model.history.progress(of: exercise, on: .now) }
+
+    var body: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 10) {
+                summary
+                Spacer(minLength: 4)
+                controls
             }
-        } header: {
-            Text("Session")
-        } footer: {
-            if model.sessionStart == nil {
-                Text("Times your sets and saves a Strength training workout with band heart rate to Apple Health."
-                     + (coordinator.band.state == .connected ? "" : " Band not connected: no heart rate."))
+            VStack(alignment: .leading, spacing: 8) {
+                summary
+                HStack {
+                    controls
+                    Spacer(minLength: 0)
+                }
             }
         }
+    }
+
+    private var summary: some View {
+        HStack(spacing: 10) {
+            ProgressRing(progress: progress.fraction, color: progress.isDone ? .green : Palette.challenge, size: 36) {
+                if progress.isDone { Image(systemName: "checkmark").font(.caption.bold()).foregroundStyle(.green) }
+            }
+            VStack(alignment: .leading, spacing: 0) {
+                Text(exercise.name).font(.subheadline.bold()).lineLimit(1)
+                Text("\(progress.total)/\(progress.target) \(exercise.unit.short)")
+                    .font(.caption).monospacedDigit()
+                    .foregroundStyle(progress.isDone ? .green : .secondary)
+            }
+            .fixedSize()
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(exercise.name): \(progress.total) of \(progress.target) \(exercise.unit.short)"
+                            + (progress.isDone ? ", done" : ", \(progress.target - progress.total) to go"))
+    }
+
+    private var controls: some View {
+        HStack(spacing: 6) {
+            if !progress.isDone {
+                ForEach(Self.steps, id: \.self) { step in
+                    Button("+\(step)") { log(step) }
+                        .buttonStyle(.bordered).buttonBorderShape(.capsule).controlSize(.small)
+                        .tint(Palette.challenge)
+                        .accessibilityLabel("Add \(step) \(exercise.name)")
+                }
+            }
+            Menu {
+                if progress.isDone {
+                    ForEach(Self.steps, id: \.self) { step in
+                        Button("Add \(step)") { log(step) }
+                    }
+                }
+                Button("Custom amount", systemImage: "number", action: custom)
+                Button("Undo last set", systemImage: "arrow.uturn.backward", action: undo)
+                    .disabled(!model.canUndo(exercise.id))
+            } label: {
+                Image(systemName: "ellipsis.circle").font(.title3).foregroundStyle(Palette.challenge)
+                    .frame(minWidth: 32, minHeight: 32)
+            }
+            .accessibilityLabel("More for \(exercise.name)")
+        }
+    }
+}
+
+/// Pinned to the bottom while a timed session runs: timer, band heart rate, Finish, and Cancel in
+/// the menu. Sessions go to Health as Strength training workouts.
+struct ChallengeSessionBar: View {
+    let model: ChallengeModel
+    let start: Date
+
+    var body: some View {
+        HStack(spacing: 12) {
+            TimelineView(.periodic(from: .now, by: 1)) { context in
+                Text(clockText(context.date.timeIntervalSince(start))).numberFont(22).monospacedDigit()
+            }
+            Label(model.sessionHeartRate.map { "\($0)" } ?? "-", systemImage: "heart.fill")
+                .font(.subheadline.bold()).monospacedDigit()
+                .foregroundStyle(Palette.heart)
+                .accessibilityLabel(model.sessionHeartRate.map { "Heart rate \($0)" } ?? "No heart rate")
+            Spacer(minLength: 0)
+            Menu {
+                Button("Cancel session", systemImage: "xmark", role: .destructive) { model.cancelSession() }
+            } label: {
+                Image(systemName: "ellipsis.circle").font(.title3).frame(minWidth: 32, minHeight: 32)
+            }
+            .accessibilityLabel("Session options")
+            Button("Finish") { Task { await model.finishSession() } }
+                .buttonStyle(.borderedProminent).buttonBorderShape(.capsule)
+        }
+        .tint(Palette.challenge)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+    }
+}
+
+/// "+10 Push-ups · Undo" for a few seconds after a set.
+struct UndoBanner: View {
+    let set: LoggedSet
+    let undo: () -> Void
+
+    var body: some View {
+        HStack {
+            Text("+\(set.count) \(set.exercise.name)").font(.subheadline.bold())
+            Spacer()
+            Button("Undo", action: undo).font(.subheadline.bold()).tint(Palette.challenge)
+                .accessibilityLabel("Undo \(set.count) \(set.exercise.name)")
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
+        .background(.regularMaterial, in: Capsule())
     }
 }
 

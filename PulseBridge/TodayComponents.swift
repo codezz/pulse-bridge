@@ -13,11 +13,8 @@ struct DayRings {
     static func of(_ day: Date, metrics: DailyMetrics?, challenge: ChallengeModel, liveSteps: Int? = nil) -> DayRings {
         let score = metrics?.sleepScore(on: day)?.value
         let count = max(liveSteps ?? 0, metrics?.stepsTotal(on: day) ?? 0)
-        let active = challenge.history.exercises.filter { challenge.history.isActive($0, on: day) }
-        let progress = active.map { min(1, challenge.history.progress(of: $0, on: day).fraction) }
         return DayRings(sleep: Double(score ?? 0) / 100, steps: Double(count) / Double(stepGoal),
-                        challenge: progress.isEmpty ? nil : progress.reduce(0, +) / Double(progress.count),
-                        sleepScore: score, stepCount: count)
+                        challenge: challenge.history.dayFraction(on: day), sleepScore: score, stepCount: count)
     }
 
     var rings: [ActivityRings.Ring] {

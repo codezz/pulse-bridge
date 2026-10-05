@@ -147,6 +147,14 @@ public struct ChallengeHistory: Sendable {
         ChallengeProgress(total: total(of: exercise.id, on: day), target: target(of: exercise, on: day) ?? 0)
     }
 
+    /// How much of the day's challenge was done (0...1): the average progress of the exercises
+    /// active that day, each capped at 100%. Nil when none was active.
+    public func dayFraction(on day: Date) -> Double? {
+        let active = exercises.filter { isActive($0, on: day) }
+        guard !active.isEmpty else { return nil }
+        return active.map { min(1, progress(of: $0, on: day).fraction) }.reduce(0, +) / Double(active.count)
+    }
+
     /// The Monday-to-Monday week containing `day`, whatever the locale's first weekday.
     public func week(containing day: Date) -> DateInterval {
         var monday = calendar
