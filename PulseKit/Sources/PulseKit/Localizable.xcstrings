@@ -1,45 +1,68 @@
 {
-  "sourceLanguage": "en",
-  "strings": {
-    "%lld days ago": {
-      "localizations": {
-        "en": {
-          "variations": {
-            "plural": {
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%lld day ago"
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%@ steps · usual %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ steps · usual %2$@"
+          }
+        }
+      }
+    },
+    "%@ °C vs usual" : {
+
+    },
+    "%lld bpm · usual %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld bpm · usual %2$lld"
+          }
+        }
+      }
+    },
+    "%lld days ago" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld day ago"
                 }
               },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%lld days ago"
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld days ago"
                 }
               }
             }
           }
         },
-        "ro": {
-          "variations": {
-            "plural": {
-              "few": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "acum %lld zile"
+        "ro" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "acum %lld zile"
                 }
               },
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "acum %lld zi"
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "acum %lld zi"
                 }
               },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "acum %lld de zile"
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "acum %lld de zile"
                 }
               }
             }
@@ -47,16 +70,138 @@
         }
       }
     },
-    "Steady": {
-      "localizations": {
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Constant"
+    "%lld h ago" : {
+
+    },
+    "%lld min ago" : {
+
+    },
+    "%lld ms · usual %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld ms · usual %2$lld"
           }
         }
       }
+    },
+    "A sync is already running." : {
+
+    },
+    "Big activity day yesterday" : {
+
+    },
+    "Fair" : {
+
+    },
+    "Good" : {
+
+    },
+    "HRV %lld ms, %lld%% higher than usual" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "HRV %1$lld ms, %2$lld%% higher than usual"
+          }
+        }
+      }
+    },
+    "HRV %lld ms, %lld%% lower than usual" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "HRV %1$lld ms, %2$lld%% lower than usual"
+          }
+        }
+      }
+    },
+    "HRV %lld%% below your usual" : {
+
+    },
+    "Night temperature %@ °C above your usual" : {
+
+    },
+    "Night temperature %@ °C below your usual" : {
+
+    },
+    "Optimal" : {
+
+    },
+    "Pay attention" : {
+
+    },
+    "Resting heart rate %lld above your usual" : {
+
+    },
+    "Resting heart rate %lld bpm, %lld above your recent average" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Resting heart rate %1$lld bpm, %2$lld above your recent average"
+          }
+        }
+      }
+    },
+    "Resting heart rate %lld bpm, %lld below your recent average" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Resting heart rate %1$lld bpm, %2$lld below your recent average"
+          }
+        }
+      }
+    },
+    "Short or restless sleep" : {
+
+    },
+    "Sleep score %lld" : {
+
+    },
+    "Steady" : {
+      "localizations" : {
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Constant"
+          }
+        }
+      }
+    },
+    "Steps down %lld%% on the week before" : {
+
+    },
+    "Steps up %lld%% on the week before" : {
+
+    },
+    "Temperature %@ °C above your usual" : {
+
+    },
+    "The band did not answer command %@." : {
+
+    },
+    "The band disconnected." : {
+
+    },
+    "You slept %lld min less per night than the week before" : {
+
+    },
+    "You slept %lld min more per night than the week before" : {
+
+    },
+    "You're recovered" : {
+
+    },
+    "just now" : {
+
+    },
+    "yesterday" : {
+
     }
   },
-  "version": "1.0"
+  "version" : "1.0"
 }

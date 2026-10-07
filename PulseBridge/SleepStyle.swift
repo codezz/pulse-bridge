@@ -71,7 +71,8 @@ func scoreColor(_ value: Int) -> Color {
 }
 
 func hoursAndMinutes(_ minutes: Int) -> String {
-    "\(minutes / 60)h \(String(format: "%02d", minutes % 60))m"
+    let rest = String(format: "%02d", minutes % 60)
+    return String(localized: "\(minutes / 60)h \(rest)m", comment: "Duration, e.g. 7h 05m")
 }
 
 struct ScoreRing: View {

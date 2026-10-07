@@ -33,9 +33,19 @@ struct Card<Content: View, Accessory: View>: View {
     @ViewBuilder let content: Content
     @ViewBuilder var accessory: Accessory
 
-    init(title: String, systemImage: String, color: Color = .gray, caption: String? = nil, chevron: Bool = false,
+    /// A literal title is looked up in the String Catalog.
+    init(title: LocalizedStringResource, systemImage: String, color: Color = .gray, caption: String? = nil, chevron: Bool = false,
          @ViewBuilder content: () -> Content, @ViewBuilder accessory: () -> Accessory) {
-        self.title = title
+        self.init(title: String(localized: title), systemImage: systemImage, color: color, caption: caption, chevron: chevron,
+                  content: content, accessory: accessory)
+    }
+
+    /// Text that is already localized (or user data) is shown as is. Disfavored, so literals pick
+    /// the catalog init above (as with `Text`).
+    @_disfavoredOverload
+    init<S: StringProtocol>(title: S, systemImage: String, color: Color = .gray, caption: String? = nil, chevron: Bool = false,
+                            @ViewBuilder content: () -> Content, @ViewBuilder accessory: () -> Accessory) {
+        self.title = String(title)
         self.systemImage = systemImage
         self.color = color
         self.caption = caption
@@ -66,8 +76,15 @@ struct Card<Content: View, Accessory: View>: View {
 }
 
 extension Card where Accessory == EmptyView {
-    init(title: String, systemImage: String, color: Color = .gray, caption: String? = nil, chevron: Bool = false,
+    init(title: LocalizedStringResource, systemImage: String, color: Color = .gray, caption: String? = nil, chevron: Bool = false,
          @ViewBuilder content: () -> Content) {
+        self.init(title: String(localized: title), systemImage: systemImage, color: color, caption: caption, chevron: chevron,
+                  content: content, accessory: { EmptyView() })
+    }
+
+    @_disfavoredOverload
+    init<S: StringProtocol>(title: S, systemImage: String, color: Color = .gray, caption: String? = nil, chevron: Bool = false,
+                            @ViewBuilder content: () -> Content) {
         self.init(title: title, systemImage: systemImage, color: color, caption: caption, chevron: chevron,
                   content: content, accessory: { EmptyView() })
     }
@@ -178,8 +195,8 @@ struct ActivityRings: View {
 struct SectionTitle: View {
     let title: String
 
-    init(_ title: String) {
-        self.title = title
+    init(_ title: LocalizedStringResource) {
+        self.title = String(localized: title)
     }
 
     var body: some View {

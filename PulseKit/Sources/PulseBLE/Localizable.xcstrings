@@ -1,7 +1,30 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Band not found. Keep it close to the phone and make sure it is charged." : {
 
+    },
+    "Bluetooth access is not allowed. Enable it in Settings > Pulse Bridge." : {
+
+    },
+    "Bluetooth is not available on this device." : {
+
+    },
+    "Bluetooth is off. Turn it on in Control Center." : {
+
+    },
+    "No band paired yet." : {
+
+    },
+    "The band stopped responding." : {
+
+    },
+    "This iPhone no longer knows the band. Use Forget band, then pair it again." : {
+
+    },
+    "Unknown band" : {
+
+    }
   },
   "version" : "1.0"
 }
