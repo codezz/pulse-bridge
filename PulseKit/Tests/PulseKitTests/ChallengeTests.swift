@@ -101,6 +101,34 @@ struct ChallengeTests {
         #expect(!ChallengeProgress(total: 0, target: 0).isDone)     // no target yet
     }
 
+    @Test func shareSummaryListsTodaysExercisesInOrder() {
+        let es = [exercise(push, [change(-10, 60)]), exercise(squat, [change(-10, 60)])]
+        let sets = [SetInfo(exerciseID: push, date: day(0), count: 60), SetInfo(exerciseID: squat, date: day(0), count: 40),
+                    SetInfo(exerciseID: push, date: day(-1), count: 60), SetInfo(exerciseID: squat, date: day(-1), count: 60)]
+        let s = ChallengeHistory(exercises: es, sets: sets, calendar: calendar).shareSummary(today: day(0))
+        #expect(s.items.map(\.name) == ["Push-ups", "Squats"])
+        #expect(s.items.map(\.total) == [60, 40])
+        #expect(s.items.map(\.done) == [true, false])
+        #expect(s.streak == 1)          // yesterday done, today not yet
+        #expect(s.daysDone == 1)
+    }
+
+    @Test func shareSummaryLeavesOutArchivedAndCountsNewExercises() {
+        let es = [exercise(push, [change(-10, 60)]), exercise(squat, archived: 0, [change(-10, 60)])]
+        let s = ChallengeHistory(exercises: es, sets: [], calendar: calendar).shareSummary(today: day(0))
+        #expect(s.items.map(\.name) == ["Push-ups"])
+        #expect(s.items[0].total == 0)
+        #expect(s.streak == 0)
+    }
+
+    @Test func shareSummaryIncludesAnExerciseAddedToday() {
+        let es = [exercise(push, created: 0, [change(0, 30)])]
+        let s = ChallengeHistory(exercises: es, sets: [SetInfo(exerciseID: push, date: day(0), count: 30)], calendar: calendar)
+            .shareSummary(today: day(0))
+        #expect(s.items == [.init(name: "Push-ups", total: 30, target: 30)])
+        #expect(s.streak == 1)
+    }
+
     /// The day's ring: each active exercise counts at most 100%, archived ones not at all.
     @Test func dayFractionAveragesCappedProgress() {
         let es = [exercise(push, [change(-10, 60)]), exercise(squat, archived: 1, [change(-10, 60)])]
