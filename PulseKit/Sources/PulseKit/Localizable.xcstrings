@@ -1,0 +1,32 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%lld days" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : { "stringUnit" : { "state" : "translated", "value" : "%lld day" } },
+              "other" : { "stringUnit" : { "state" : "translated", "value" : "%lld days" } }
+            }
+          }
+        },
+        "ro" : {
+          "variations" : {
+            "plural" : {
+              "few" : { "stringUnit" : { "state" : "translated", "value" : "%lld zile" } },
+              "one" : { "stringUnit" : { "state" : "translated", "value" : "%lld zi" } },
+              "other" : { "stringUnit" : { "state" : "translated", "value" : "%lld de zile" } }
+            }
+          }
+        }
+      }
+    },
+    "Steady" : {
+      "localizations" : {
+        "ro" : { "stringUnit" : { "state" : "translated", "value" : "Constant" } }
+      }
+    }
+  },
+  "version" : "1.0"
+}

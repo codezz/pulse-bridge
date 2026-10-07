@@ -12,7 +12,9 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: PulseKit tests
-        run: swift test --package-path PulseKit
+        # xcodebuild, not swift test: only Xcode's build compiles the String Catalogs.
+        working-directory: PulseKit
+        run: xcodebuild test -scheme PulseKit-Package -destination 'platform=macOS' -quiet
 
       - name: Build pulse-sync
         run: swift build --package-path tools/pulse-sync
