@@ -982,6 +982,16 @@
         }
       }
     },
+    "App language": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Limba aplicației"
+          }
+        }
+      }
+    },
     "Archive": {
       "localizations": {
         "ro": {
@@ -3152,6 +3162,16 @@
         }
       }
     },
+    "Share in": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Distribuie în"
+          }
+        }
+      }
+    },
     "Share of time in bed spent asleep; 90% or more for full marks": {
       "localizations": {
         "ro": {
@@ -3458,6 +3478,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ținta zilnică este cât îți propui să faci în fiecare zi; o zi contează ca făcută când fiecare exercițiu o atinge. Schimbările încep de azi, iar zilele trecute își păstrează ținta pe care o aveau. Cu creșterea pornită, ținta urcă singură în fiecare săptămână."
+          }
+        }
+      }
+    },
+    "The language of the text the share button sends to your group.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Limba textului pe care butonul de distribuire îl trimite grupului."
           }
         }
       }

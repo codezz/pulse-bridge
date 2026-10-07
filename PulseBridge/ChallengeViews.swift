@@ -402,9 +402,20 @@ struct UndoBanner: View {
 }
 
 /// Exercises and their targets: reorder, archive, add, edit.
+/// The language of the shared challenge text: the app's, or one picked for the group chat.
+enum ShareLanguage: String, CaseIterable, Identifiable {
+    case app = "", english = "en", romanian = "ro"
+
+    static let key = "challengeShareLanguage"
+    var id: String { rawValue }
+    /// Nil follows the app's language.
+    var code: String? { self == .app ? nil : rawValue }
+}
+
 struct ChallengeSettingsView: View {
     let model: ChallengeModel
     @State private var archiving: ExerciseInfo?
+    @AppStorage(ShareLanguage.key) private var shareLanguage = ShareLanguage.app
 
     var body: some View {
         List {
@@ -429,6 +440,16 @@ struct ChallengeSettingsView: View {
                 }
             } footer: {
                 Text("Started before using Pulse Bridge? Bring over your days done and streaks.")
+            }
+            Section {
+                Picker("Share in", selection: $shareLanguage) {
+                    Text("App language").tag(ShareLanguage.app)
+                    // Language names in their own language, as iOS shows them.
+                    Text(verbatim: "English").tag(ShareLanguage.english)
+                    Text(verbatim: "Română").tag(ShareLanguage.romanian)
+                }
+            } footer: {
+                Text("The language of the text the share button sends to your group.")
             }
         }
         .navigationTitle("Exercises")
@@ -594,9 +615,10 @@ struct ExerciseEditor: View {
 /// Shares today's numbers as a text message, in the app's language.
 struct ChallengeShareButton: View {
     let model: ChallengeModel
+    @AppStorage(ShareLanguage.key) private var language = ShareLanguage.app
 
     var body: some View {
-        ShareLink(item: model.history.shareSummary(today: .now).text()) {
+        ShareLink(item: model.history.shareSummary(today: .now).text(language: language.code)) {
             Image(systemName: "square.and.arrow.up")
         }
         .accessibilityLabel("Share")

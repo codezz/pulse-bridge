@@ -6,7 +6,8 @@
   language or Settings > Pulse Bridge > Language. Apple Health data and the diagnostics log stay
   in English.
 - **Challenge share as text:** two short lines in the app's language instead of an image, e.g.
-  "💪 Ziua 37/42. 5 zile la rând" and "✅ 60F/60G" (count and first letter per exercise).
+  "💪 Ziua 37/42. 5 zile la rând" and "✅ 60F/60G" (count and first letter per exercise). The share
+  language can differ from the app's (Challenge > Exercises > Share in).
 - At large text sizes, Vitals tile titles wrap and the Band tab's Sync / Open Health buttons stack.
 
 ## 0.2.0 (2026-10-05)

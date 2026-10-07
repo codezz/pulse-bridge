@@ -377,6 +377,9 @@ T = {
     "well above the night's typical heart rate": "mult peste pulsul obișnuit al nopții",
     # Widget
     "Paused": "Pauză",
+    "Share in": "Distribuie în",
+    "App language": "Limba aplicației",
+    "The language of the text the share button sends to your group.": "Limba textului pe care butonul de distribuire îl trimite grupului.",
     "💪 Day %lld/%lld": "💪 Ziua %lld/%lld",
     "Never": "Niciodată",
     "Not yet": "Încă nu",
