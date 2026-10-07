@@ -115,6 +115,8 @@ python3 tools/l10n/check.py        # fails on a missing translation or a stale t
 ```
 
 `check.py` also fails if the Apple Health or diagnostics code starts going through translation.
+CI runs `tools/l10n/verify.sh` after the app build: it also fails when the committed catalogs are
+out of date with the code or `ro.py`.
 
 ## Tools (macOS, band nearby, phone app closed)
 
