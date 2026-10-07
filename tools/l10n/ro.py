@@ -375,9 +375,9 @@ T = {
     "under 10%": "sub 10%",
     "very easy": "foarte ușor",
     "well above the night's typical heart rate": "mult peste pulsul obișnuit al nopții",
-    "💪 Daily challenge · %@": "💪 Provocarea zilei · %@",
     # Widget
     "Paused": "Pauză",
+    "💪 Day %lld/%lld": "💪 Ziua %lld/%lld",
     "Never": "Niciodată",
     "Not yet": "Încă nu",
     "None": "Niciuna",
@@ -438,7 +438,6 @@ P = {
     "Done for today · %lld-day streak": (None, ("Gata pentru azi · serie de %lld zi", "Gata pentru azi · serie de %lld zile", "Gata pentru azi · serie de %lld de zile")),
     "of %lld days": (("of %lld day", "of %lld days"), ("din %lld zi", "din %lld zile", "din %lld de zile")),
     "%lld days": (("%lld day", "%lld days"), ("%lld zi", "%lld zile", "%lld de zile")),
-    "🔥 %lld-day streak": (None, ("🔥 Serie de %lld zi", "🔥 Serie de %lld zile", "🔥 Serie de %lld de zile")),
 }
 
 # Plurals on one of several numbers: arg number, (en one, other) or None, ro template with %#@n@, ro (one, few, other).
@@ -447,8 +446,8 @@ S = {
     "%@ steps %lld": (2, ("%1$@ %#@n@", ("step", "steps")), ("%1$@ %#@n@", ("pas", "pași", "de pași"))),
     "%@ steps · usual %@ %lld": (3, ("%1$@ %#@n@ · usual %2$@", ("step", "steps")),
                                  ("%1$@ %#@n@ · de obicei %2$@", ("pas", "pași", "de pași"))),
-    "📅 %lld days done · day %lld": (1, ("📅 %#@n@ · day %2$lld", ("%arg day done", "%arg days done")),
-                                     ("📅 %#@n@ · ziua %2$lld", ("%arg zi făcută", "%arg zile făcute", "%arg de zile făcute"))),
+    # The share message: day and streak.
+    "💪 Day %lld/%lld. %lld-day streak": (3, None, ("💪 Ziua %1$lld/%2$lld. %#@n@", ("%arg zi la rând", "%arg zile la rând", "%arg de zile la rând"))),
     "🔥 %lld-day streak · best %lld": (1, None, ("🔥 Serie de %#@n@ · record %2$lld", ("%arg zi", "%arg zile", "%arg de zile"))),
     "%lld day streak, best %lld": (1, None, ("Serie de %#@n@, record %2$lld", ("%arg zi", "%arg zile", "%arg de zile"))),
     "%lld min awake · %lld wake-ups": (2, ("%1$lld min awake · %#@n@", ("%arg wake-up", "%arg wake-ups")),

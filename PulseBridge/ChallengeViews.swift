@@ -596,7 +596,7 @@ struct ChallengeShareButton: View {
     let model: ChallengeModel
 
     var body: some View {
-        ShareLink(item: ChallengeShareText.make(model.history.shareSummary(today: .now))) {
+        ShareLink(item: model.history.shareSummary(today: .now).text()) {
             Image(systemName: "square.and.arrow.up")
         }
         .accessibilityLabel("Share")

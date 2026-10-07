@@ -150,9 +150,10 @@ order set in Edit Today (default: Highlights, Sleep, Heart rate, Vitals, Daily c
    and your first day in the app have a dashed ring and can't be opened; earlier days are plain.
    With an average per day entered (e.g. 50), each exercise's all-time total includes 33 x 50.
    The stats line shows streak (best), days done (of day number) and % of days hit.
-38. Share: the share button opens the share sheet with a text: "💪 Daily challenge · <date>", one line per
-   exercise with ✅ (target reached) or ⏳ and its count, "🔥 N-day streak" (left out at 0) and
-   "📅 N days done · day M". In Romanian it reads "Provocarea zilei", "Serie de N zile" and so on.
+38. Share: the share button opens the share sheet with two lines, e.g. in Romanian
+   "💪 Ziua 37/42. 5 zile la rând" (days done / day number, then the streak, left out at 0) and
+   "✅ 60F/60G" (each exercise's count and first letter; ⏳ until every target is reached). In English:
+   "💪 Day 37/42. 5-day streak".
 39. Timed session: Start timed session (its note says "No band: no heart rate" when not connected)
    pins a bar at the bottom with the timer and band heart rate; log sets; Finish:
    Health shows a Strength training workout from Pulse Bridge with that duration and heart rate.
