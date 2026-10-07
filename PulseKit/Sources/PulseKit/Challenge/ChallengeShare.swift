@@ -41,12 +41,13 @@ extension ChallengeShareSummary {
     ///     ✅ 60F/60G
     ///
     /// ✅ when every exercise reached its target, ⏳ otherwise; each count carries the first letter of
-    /// the exercise's name. Without a streak, the first line is the day alone.
+    /// the exercise's name (the default exercises' name in `language`). Without a streak, the first
+    /// line is the day alone.
     public func text(language: String? = nil) -> String {
         let first = streak > 0
             ? L("💪 Day \(daysDone)/\(challengeDay). \(streak)-day streak", language: language)
             : L("💪 Day \(daysDone)/\(challengeDay)", language: language)
-        let counts = items.map { "\($0.total)\($0.name.first.map { String($0).uppercased() } ?? "")" }
+        let counts = items.map { "\($0.total)\(ChallengeDefaults.name($0.name, in: language).first.map { String($0).uppercased() } ?? "")" }
         let mark = !items.isEmpty && items.allSatisfy(\.done) ? "✅" : "⏳"
         return "\(first)\n\(mark) \(counts.joined(separator: "/"))"
     }

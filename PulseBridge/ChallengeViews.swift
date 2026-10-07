@@ -104,7 +104,7 @@ struct ChallengeCard: View {
 struct ChallengeSetupView: View {
     let model: ChallengeModel
     @Environment(\.dismiss) private var dismiss
-    @State private var rows: [Row] = [Row(name: String(localized: "Push-ups"), target: 60), Row(name: String(localized: "Squats"), target: 60)]
+    @State private var rows: [Row] = ChallengeDefaults.exerciseNames().map { Row(name: $0, target: 60) }
 
     struct Row: Identifiable {
         let id = UUID()

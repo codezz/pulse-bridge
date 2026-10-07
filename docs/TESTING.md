@@ -155,6 +155,8 @@ order set in Edit Today (default: Highlights, Sleep, Heart rate, Vitals, Daily c
    "✅ 60F/60G" (each exercise's count and first letter; ⏳ until every target is reached). In English:
    "💪 Day 37/42. 5-day streak". Exercises (gear) > Share in: Română shares the Romanian text while
    the app stays in English (and English the other way round); App language follows the app.
+   Exercises named Push-ups / Squats share as F / G in Romanian (and Flotări / Genuflexiuni as
+   P / S in English); other names keep their own first letter.
 39. Timed session: Start timed session (its note says "No band: no heart rate" when not connected)
    pins a bar at the bottom with the timer and band heart rate; log sets; Finish:
    Health shows a Strength training workout from Pulse Bridge with that duration and heart rate.

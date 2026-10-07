@@ -297,6 +297,16 @@
         }
       }
     },
+    "Push-ups": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flotări"
+          }
+        }
+      }
+    },
     "Resting heart rate %lld above your usual": {
       "localizations": {
         "ro": {
@@ -355,6 +365,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Scor de somn %lld"
+          }
+        }
+      }
+    },
+    "Squats": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Genuflexiuni"
           }
         }
       }

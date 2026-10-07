@@ -2860,16 +2860,6 @@
     "Pulse One": {
       "shouldTranslate": false
     },
-    "Push-ups": {
-      "localizations": {
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Flotări"
-          }
-        }
-      }
-    },
     "REM": {
       "shouldTranslate": false
     },
@@ -3248,16 +3238,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Segmente"
-          }
-        }
-      }
-    },
-    "Squats": {
-      "localizations": {
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Genuflexiuni"
           }
         }
       }

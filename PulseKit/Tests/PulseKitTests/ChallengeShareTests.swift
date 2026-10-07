@@ -30,4 +30,22 @@ struct ChallengeShareTests {
         let s = summary([("Push-ups", 60, 60), ("squats", 45, 60)], streak: 5)
         #expect(s.text(language: "en") == "💪 Day 37/42. 5-day streak\n⏳ 60P/45S")
     }
+
+    /// The app's default exercises take the share language's letter, whatever language they were named in.
+    @Test func defaultExercisesUseTheShareLanguage() {
+        let english = summary([("Push-ups", 60, 60), ("Squats", 60, 60)], streak: 5)
+        #expect(english.text(language: "ro").hasSuffix("✅ 60F/60G"))
+        let romanian = summary([("Flotări", 60, 60), ("genuflexiuni", 50, 60)], streak: 5)
+        #expect(romanian.text(language: "en").hasSuffix("⏳ 60P/50S"))
+    }
+
+    @Test func ownNamesKeepTheirLetter() {
+        let s = summary([("Abdomene", 30, 30), ("Push-ups", 60, 60)], streak: 2)
+        #expect(s.text(language: "ro").hasSuffix("✅ 30A/60F"))
+    }
+
+    @Test func defaultNamesPerLanguage() {
+        #expect(ChallengeDefaults.exerciseNames(language: "ro") == ["Flotări", "Genuflexiuni"])
+        #expect(ChallengeDefaults.exerciseNames(language: "en") == ["Push-ups", "Squats"])
+    }
 }
