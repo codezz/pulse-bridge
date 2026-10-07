@@ -281,7 +281,9 @@ struct ActivitySummaryView: View {
                 LabeledContent("Distance", value: kmText(recorder.distance))
                 LabeledContent("Moving time", value: clockText(recorder.movingTime(at: end)))
                 LabeledContent("Average pace", value: "\(paceText(recorder.averagePace(at: end))) /km")
-                LabeledContent("Heart rate", value: "avg \(recorder.averageHeartRate.map(String.init) ?? "-") · max \(recorder.maxHeartRate.map(String.init) ?? "-") bpm")
+                let average = recorder.averageHeartRate.map(String.init) ?? "-"
+                let max = recorder.maxHeartRate.map(String.init) ?? "-"
+                LabeledContent("Heart rate", value: String(localized: "avg \(average) · max \(max) bpm"))
                 if let target = recorder.targetZone {
                     LabeledContent("Time in zone \(target)", value: clockText(recorder.timeInTarget))
                 }

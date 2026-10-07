@@ -115,7 +115,9 @@ private struct ChallengeCalendarCard: View {
             days = (0..<7).map { calendar.date(byAdding: .day, value: $0, to: monday)! }
             blanks = 0
         }
-        let symbols = ["M", "T", "W", "T", "F", "S", "S"]
+        // The locale's narrow weekday names, Monday first (the list starts on Sunday).
+        let narrow = calendar.veryShortStandaloneWeekdaySymbols
+        let symbols = Array(narrow[1...] + narrow[..<1])
         return LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 8) {
             ForEach(Array(symbols.enumerated()), id: \.offset) { Text($0.element).font(.caption2).foregroundStyle(.secondary) }
             ForEach(0..<blanks, id: \.self) { _ in Color.clear.frame(height: cellSize) }

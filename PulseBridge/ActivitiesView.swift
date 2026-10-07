@@ -27,7 +27,12 @@ extension WorkoutActivity {
 extension Workout {
     var durationText: String {
         let s = info.seconds
-        return s >= 3600 ? "\(s / 3600)h \(String(format: "%02d", s % 3600 / 60))m" : "\(s / 60)m \(String(format: "%02d", s % 60))s"
+        if s >= 3600 {
+            let minutes = String(format: "%02d", s % 3600 / 60)
+            return String(localized: "\(s / 3600)h \(minutes)m")
+        }
+        let seconds = String(format: "%02d", s % 60)
+        return String(localized: "\(s / 60)m \(seconds)s")
     }
 
     var distanceText: String {

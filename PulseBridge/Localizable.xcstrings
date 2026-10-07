@@ -230,6 +230,52 @@
         }
       }
     },
+    "%lld days": {
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld day"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld days"
+                }
+              }
+            }
+          }
+        },
+        "ro": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld zile"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld zi"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld de zile"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "%lld in the last 7 days": {
       "localizations": {
         "ro": {
@@ -512,6 +558,22 @@
         }
       }
     },
+    "%lldm %@s": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$lldm %2$@s"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld min %@ s"
+          }
+        }
+      }
+    },
     "+%lld": {
       "shouldTranslate": false
     },
@@ -552,6 +614,17 @@
     },
     "30 s": {
       "shouldTranslate": false
+    },
+    "6M": {
+      "comment": "Range: six months",
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "6L"
+          }
+        }
+      }
     },
     "75 s": {
       "shouldTranslate": false
@@ -1240,6 +1313,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Altă valoare"
+          }
+        }
+      }
+    },
+    "D": {
+      "comment": "Range: one day",
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Z"
           }
         }
       }
@@ -2038,6 +2122,17 @@
         }
       }
     },
+    "M": {
+      "comment": "Range: one month",
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L"
+          }
+        }
+      }
+    },
     "Male": {
       "localizations": {
         "ro": {
@@ -2150,6 +2245,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nume"
+          }
+        }
+      }
+    },
+    "Never": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Niciodată"
           }
         }
       }
@@ -2324,6 +2429,16 @@
         }
       }
     },
+    "None": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Niciuna"
+          }
+        }
+      }
+    },
     "Not allowed in Health": {
       "localizations": {
         "ro": {
@@ -2390,6 +2505,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nesincronizat încă"
+          }
+        }
+      }
+    },
+    "Not yet": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Încă nu"
           }
         }
       }
@@ -2694,7 +2819,7 @@
         "ro": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ritm cardiac în repaus"
+            "value": "Puls în repaus"
           }
         }
       }
@@ -3421,6 +3546,17 @@
         }
       }
     },
+    "W": {
+      "comment": "Range: one week",
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "S"
+          }
+        }
+      }
+    },
     "Waiting for GPS...": {
       "localizations": {
         "ro": {
@@ -3609,6 +3745,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "în total"
+          }
+        }
+      }
+    },
+    "avg %@ · max %@ bpm": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "avg %1$@ · max %2$@ bpm"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "medie %@ · max %@ bpm"
           }
         }
       }

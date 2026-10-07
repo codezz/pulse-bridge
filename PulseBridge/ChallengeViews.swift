@@ -419,7 +419,7 @@ struct ChallengeSettingsView: View {
             }
             Section {
                 NavigationLink { BaselineEditor(model: model) } label: {
-                    LabeledContent("Progress before the app", value: model.baseline.map { "\($0.daysDoneBefore) days" } ?? "None")
+                    LabeledContent("Progress before the app", value: model.baseline.map { String(localized: "\($0.daysDoneBefore) days") } ?? String(localized: "None"))
                 }
             } footer: {
                 Text("Started before using Pulse Bridge? Bring over your days done and streaks.")

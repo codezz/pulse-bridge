@@ -34,6 +34,11 @@ T = {
     "%lld percent": "%lld la sută",
     "%lld percent of days hit": "%lld la sută din zile reușite",
     "%lldh %@m": "%lld h %@ min",
+    "%lldm %@s": "%lld min %@ s",
+    "D": "Z",
+    "W": "S",
+    "M": "L",
+    "6M": "6L",
     "+%lld every week": "+%lld în fiecare săptămână",
     "3 buzzes above the zone, 2 below": "3 vibrații peste zonă, 2 sub",
     "85+ Optimal · 70-84 Good · 60-69 Fair · under 60 Pay attention": "85+ Optim · 70-84 Bun · 60-69 Acceptabil · sub 60 Atenție",
@@ -236,7 +241,7 @@ T = {
     "Reps": "Repetări",
     "Restfulness": "Odihnă",
     "Resting HR": "Puls în repaus",
-    "Resting heart rate": "Ritm cardiac în repaus",
+    "Resting heart rate": "Puls în repaus",
     "Resume": "Reia",
     "Ride": "Bicicletă",
     "Route map": "Harta traseului",
@@ -333,6 +338,7 @@ T = {
     "all time": "în total",
     "avg %lld bpm": "medie %lld bpm",
     "avg /km": "medie /km",
+    "avg %@ · max %@ bpm": "medie %@ · max %@ bpm",
     "before the app": "înainte de aplicație",
     "best %lld": "record %lld",
     "coming out of REM": "la ieșirea din REM",
@@ -368,6 +374,9 @@ T = {
     "💪 Daily challenge · %@": "💪 Provocarea zilei · %@",
     # Widget
     "Paused": "Pauză",
+    "Never": "Niciodată",
+    "Not yet": "Încă nu",
+    "None": "Niciuna",
     # PulseKit
     "%@ steps · usual %@": "%@ pași · de obicei %@",
     "%@ °C vs usual": "%@ °C față de obișnuit",
@@ -424,6 +433,7 @@ P = {
          "Calibrare: încă %lld de nopți cu brățara ca să-ți învețe nivelul de bază.")),
     "Done for today · %lld-day streak": (None, ("Gata pentru azi · serie de %lld zi", "Gata pentru azi · serie de %lld zile", "Gata pentru azi · serie de %lld de zile")),
     "of %lld days": (("of %lld day", "of %lld days"), ("din %lld zi", "din %lld zile", "din %lld de zile")),
+    "%lld days": (("%lld day", "%lld days"), ("%lld zi", "%lld zile", "%lld de zile")),
     "🔥 %lld-day streak": (None, ("🔥 Serie de %lld zi", "🔥 Serie de %lld zile", "🔥 Serie de %lld de zile")),
 }
 

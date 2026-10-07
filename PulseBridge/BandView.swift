@@ -188,13 +188,29 @@ private struct BandCard: View {
     @Environment(\.openURL) private var openURL
     private var band: BandClient { coordinator.band }
 
+    @ViewBuilder private var syncButtons: some View {
+        Button {
+            Task { await coordinator.sync() }
+        } label: {
+            Text(coordinator.phase == .syncing ? "Syncing..." : "Sync").fixedSize().frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.borderedProminent)
+        .disabled(!coordinator.canSync)
+        Button {
+            if let url = URL(string: "x-apple-health://") { openURL(url) }
+        } label: {
+            Text("Open Health").fixedSize().frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.bordered)
+    }
+
     var body: some View {
         Card(title: "Sync", systemImage: "arrow.triangle.2.circlepath", color: .blue) {
             TimelineView(.periodic(from: .now, by: 30)) { context in
                 VStack(spacing: 12) {
-                    LabeledContent("Last sync", value: coordinator.lastSync.map { RelativeTime.text($0, now: context.date) } ?? "Never")
+                    LabeledContent("Last sync", value: coordinator.lastSync.map { RelativeTime.text($0, now: context.date) } ?? String(localized: "Never"))
                     LabeledContent("Health export", value: healthExport(now: context.date))
-                    LabeledContent("Background sync", value: coordinator.lastBackgroundSync.map { RelativeTime.text($0, now: context.date) } ?? "Not yet")
+                    LabeledContent("Background sync", value: coordinator.lastBackgroundSync.map { RelativeTime.text($0, now: context.date) } ?? String(localized: "Not yet"))
                     if UIApplication.shared.backgroundRefreshStatus != .available {
                         Text("Turn on Background App Refresh for Pulse Bridge in Settings to sync without opening the app.")
                             .font(.caption).foregroundStyle(.secondary)
@@ -211,20 +227,10 @@ private struct BandCard: View {
             if band.pairedID == nil {
                 Button("Pair band", action: onPair).buttonStyle(.borderedProminent)
             }
-            HStack {
-                Button {
-                    Task { await coordinator.sync() }
-                } label: {
-                    Text(coordinator.phase == .syncing ? "Syncing..." : "Sync").frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.borderedProminent)
-                .disabled(!coordinator.canSync)
-                Button {
-                    if let url = URL(string: "x-apple-health://") { openURL(url) }
-                } label: {
-                    Text("Open Health").frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.bordered)
+            // Side by side when they fit, stacked at large text sizes.
+            ViewThatFits(in: .horizontal) {
+                HStack { syncButtons }
+                VStack { syncButtons }
             }
             Button {
                 Task { await coordinator.exportToHealthNow() }

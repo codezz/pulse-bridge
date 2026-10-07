@@ -150,8 +150,9 @@ order set in Edit Today (default: Highlights, Sleep, Heart rate, Vitals, Daily c
    and your first day in the app have a dashed ring and can't be opened; earlier days are plain.
    With an average per day entered (e.g. 50), each exercise's all-time total includes 33 x 50.
    The stats line shows streak (best), days done (of day number) and % of days hit.
-38. Share: the share button opens the share sheet with an image of today's numbers, the streak and the
-   last 7 days.
+38. Share: the share button opens the share sheet with a text: "💪 Daily challenge · <date>", one line per
+   exercise with ✅ (target reached) or ⏳ and its count, "🔥 N-day streak" (left out at 0) and
+   "📅 N days done · day M". In Romanian it reads "Provocarea zilei", "Serie de N zile" and so on.
 39. Timed session: Start timed session (its note says "No band: no heart rate" when not connected)
    pins a bar at the bottom with the timer and band heart rate; log sets; Finish:
    Health shows a Strength training workout from Pulse Bridge with that duration and heart rate.
@@ -195,3 +196,17 @@ order set in Edit Today (default: Highlights, Sleep, Heart rate, Vitals, Daily c
    "Pulse One"; distance samples are one minute long.
 57. Fitness workout with the band paired in Settings > Bluetooth: heart rate shows in the workout;
    Pulse Bridge still syncs afterwards.
+
+## Language
+
+58. Settings > Pulse Bridge > Language > Română (or the phone in Romanian): every tab, detail, alert,
+   the highlights, readiness reasons, sleep labels, "Sincronizat acum N min" and the Live Activity are
+   in Romanian; numbers and dates use Romanian formatting; plurals read right ("1 zi", "6 zile",
+   "20 de zile"). The first Bluetooth, Health and Location prompts are in Romanian too.
+59. In Romanian, sync and export: Health samples still show the device "Pulse One"; a challenge
+   session's workout is a Strength training workout as before. Band > Diagnostics > Export log
+   stays in English.
+60. Largest text sizes in Romanian: titles and buttons wrap or stack (Vitals tiles, Sync / Open
+   Health), nothing is cut off with "...".
+61. New challenge setup in Romanian suggests "Flotări" and "Genuflexiuni"; exercises you already
+   named keep their names.

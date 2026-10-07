@@ -29,7 +29,7 @@ for name in catalogs:
         ro = entry.get("localizations", {}).get("ro")
         if not ro or not translated(ro):
             problems.append(f"{name}: no Romanian for {key!r}")
-        if "—" in json.dumps(entry, ensure_ascii=False):
+        if "\u2014" in json.dumps(entry, ensure_ascii=False):
             problems.append(f"{name}: em-dash in {key!r}")
 
 for name in english_only:

@@ -3,6 +3,16 @@ import SwiftUI
 enum DaySpan: String, CaseIterable, Identifiable {
     case day = "D", week = "W", month = "M", sixMonths = "6M"
     var id: String { rawValue }
+
+    /// The segment label in the app's language ("D" / "Z").
+    var label: String {
+        switch self {
+        case .day: String(localized: "D", comment: "Range: one day")
+        case .week: String(localized: "W", comment: "Range: one week")
+        case .month: String(localized: "M", comment: "Range: one month")
+        case .sixMonths: String(localized: "6M", comment: "Range: six months")
+        }
+    }
     var days: Int {
         switch self {
         case .day: 1
@@ -24,7 +34,7 @@ struct DayRangeHeader: View {
 
     var body: some View {
         Picker("Range", selection: $span) {
-            ForEach(spans) { Text($0.rawValue).tag($0) }
+            ForEach(spans) { Text($0.label).tag($0) }
         }
         .pickerStyle(.segmented)
         HStack {

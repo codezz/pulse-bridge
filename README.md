@@ -39,14 +39,16 @@ phone and writes it to **Apple Health**. No account, no cloud, no third-party se
   15 s below (at most once a minute), also with the screen locked.
 - **Daily challenge:** a daily goal like push-ups and squats. Log sets with +5 / +10 / +20 or a
   custom count, change targets any time (optionally +N every week), and follow streaks, a month
-  calendar and totals. Share an image with your group; a timed session is saved to Apple Health as
-  a Strength training workout with band heart rate.
+  calendar and totals. Share today's numbers with your group as a text message; a timed session is
+  saved to Apple Health as a Strength training workout with band heart rate.
 - **Profile and zones:** age, sex, height and weight (shared with the band); max and resting heart
   rate come from your own data, and the five Karvonen zones update by themselves.
 - **Live data on Today:** live heart rate on demand, on-demand HRV and heart-rate measurements,
   and today's steps following the band's live count while the app is open.
 - **Band tab:** connection, battery with a 30-day history and daily use, sync, Apple Health export,
   pairing, and a diagnostics log (band traffic and sync events) you can export for bug reports.
+- **English and Romanian:** follows the phone's language, or Settings > Pulse Bridge > Language.
+  What goes to Apple Health and the diagnostics log stays in English.
 - **Safe by design:** the commands that reset or wipe the band (`12`, `2E`, `61`, history delete
   mode `99`) can't be built by the code at all.
 
@@ -89,13 +91,30 @@ again after pulling or after changing `project.yml`.
 Tests and a simulator build need no band, no signing and no Team ID:
 
 ```bash
-swift test --package-path PulseKit
+(cd PulseKit && xcodebuild test -scheme PulseKit-Package -destination 'platform=macOS')
 xcodegen generate
 xcodebuild -project PulseBridge.xcodeproj -scheme PulseBridge \
   -destination 'generic/platform=iOS Simulator' build CODE_SIGNING_ALLOWED=NO
 ```
 
-CI runs the same on every push (`.github/workflows/ci.yml`).
+PulseKit's tests run through `xcodebuild` rather than `swift test`: only Xcode's build compiles the
+String Catalogs, and some tests check Romanian texts. CI runs the same on every push
+(`.github/workflows/ci.yml`).
+
+### Translations
+
+Texts live in String Catalogs (`Localizable.xcstrings` in the app, the widget extension, PulseKit and
+PulseBLE, plus `PulseBridge/InfoPlist.xcstrings` for the permission prompts). After changing texts:
+
+```bash
+xcodebuild -project PulseBridge.xcodeproj -scheme PulseBridge -destination 'generic/platform=iOS Simulator' \
+  -derivedDataPath /tmp/pb-dd build CODE_SIGNING_ALLOWED=NO
+tools/l10n/sync.sh /tmp/pb-dd      # pull new texts from the code into the catalogs
+python3 tools/l10n/ro.py           # apply the Romanian translations (edit them in this file)
+python3 tools/l10n/check.py        # fails on a missing translation or a stale text
+```
+
+`check.py` also fails if the Apple Health or diagnostics code starts going through translation.
 
 ## Tools (macOS, band nearby, phone app closed)
 

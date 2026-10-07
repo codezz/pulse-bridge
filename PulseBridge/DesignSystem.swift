@@ -105,7 +105,8 @@ struct MetricTile: View {
             Label(title, systemImage: systemImage)
                 .font(.caption.bold())
                 .foregroundStyle(color)
-                .lineLimit(1)
+                .lineLimit(2)
+                .fixedSize(horizontal: false, vertical: true)
             HStack(alignment: .firstTextBaseline, spacing: 3) {
                 Text(value).numberFont(26).lineLimit(1).minimumScaleFactor(0.6)
                 Text(unit).font(.caption).foregroundStyle(.secondary)
