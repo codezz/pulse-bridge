@@ -24,4 +24,8 @@ jobs:
           brew install xcodegen
           xcodegen generate
           xcodebuild -project PulseBridge.xcodeproj -scheme PulseBridge \
-            -destination 'generic/platform=iOS Simulator' -quiet build CODE_SIGNING_ALLOWED=NO
+            -destination 'generic/platform=iOS Simulator' -derivedDataPath "$RUNNER_TEMP/dd" \
+            -quiet build CODE_SIGNING_ALLOWED=NO
+
+      - name: Translations up to date and complete
+        run: tools/l10n/verify.sh "$RUNNER_TEMP/dd"
