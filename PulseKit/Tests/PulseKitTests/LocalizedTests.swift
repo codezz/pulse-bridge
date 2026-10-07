@@ -23,14 +23,14 @@ struct LocalizedTests {
         #expect(L("Steady") == "Steady")
     }
 
-    @Test(.disabled("Romanian values arrive with the translations")) func relativeTimeInRomanian() {
+    @Test func relativeTimeInRomanian() {
         let now = Date(timeIntervalSince1970: 1_800_000_000)
         #expect(RelativeTime.text(now - 30, now: now, language: "ro") == "chiar acum")
         #expect(RelativeTime.text(now - 300, now: now, language: "ro") == "acum 5 min")
         #expect(RelativeTime.text(now - 7200, now: now, language: "ro") == "acum 2 h")
     }
 
-    @Test(.disabled("Romanian values arrive with the translations")) func sleepLabelInRomanian() {
+    @Test func sleepLabelInRomanian() {
         #expect(SleepScore.label(for: 90, language: "ro") == "Optim")
     }
 }

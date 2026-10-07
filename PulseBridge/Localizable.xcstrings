@@ -1,1443 +1,4183 @@
 {
-  "sourceLanguage" : "en",
-  "strings" : {
-    "%" : {
-
+  "sourceLanguage": "en",
+  "strings": {
+    "%": {
+      "shouldTranslate": false
     },
-    "%@ - %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@ - %2$@"
+    "%@ - %@": {
+      "shouldTranslate": false
+    },
+    "%@ - %@ · %@": {
+      "shouldTranslate": false
+    },
+    "%@ /km": {
+      "shouldTranslate": false
+    },
+    "%@ asleep": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ de somn"
           }
         }
       }
     },
-    "%@ - %@ · %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@ - %2$@ · %3$@"
+    "%@ steps": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ pași"
           }
         }
       }
     },
-    "%@ /km" : {
-
-    },
-    "%@ asleep" : {
-
-    },
-    "%@ steps" : {
-
-    },
-    "%@ this week" : {
-
-    },
-    "%@ vs last week" : {
-
-    },
-    "%@ · %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@ · %2$@"
+    "%@ this week": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ săptămâna aceasta"
           }
         }
       }
     },
-    "%@ · %@ steps · %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@ · %2$@ steps · %3$@"
+    "%@ vs last week": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ față de săptămâna trecută"
           }
         }
       }
     },
-    "%@ · %@ vs usual" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@ · %2$@ vs usual"
+    "%@ · %@": {
+      "shouldTranslate": false
+    },
+    "%@ · %@ steps · %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@ · %2$@ steps · %3$@"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · %@ pași · %@"
           }
         }
       }
     },
-    "%@ · %@ · %@ /km" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@ · %2$@ · %3$@ /km"
+    "%@ · %@ vs usual": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@ · %2$@ vs usual"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · %@ față de obișnuit"
           }
         }
       }
     },
-    "%@ · %lld / %lld" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@ · %2$lld / %3$lld"
+    "%@ · %@ · %@ /km": {
+      "shouldTranslate": false
+    },
+    "%@ · %lld / %lld": {
+      "shouldTranslate": false
+    },
+    "%@ · %lld bpm, %@": {
+      "shouldTranslate": false
+    },
+    "%@ · %lld%%": {
+      "shouldTranslate": false
+    },
+    "%@%@": {
+      "shouldTranslate": false
+    },
+    "%@, %@": {
+      "shouldTranslate": false
+    },
+    "%@, last 14 days against the daily target": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, ultimele 14 zile față de ținta zilnică"
           }
         }
       }
     },
-    "%@ · %lld bpm, %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@ · %2$lld bpm, %3$@"
+    "%@: %lld all time, %lld this week": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@: %2$lld all time, %3$lld this week"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: %lld în total, %lld săptămâna aceasta"
           }
         }
       }
     },
-    "%@ · %lld%%" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@ · %2$lld%%"
+    "%@: %lld of %lld %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@: %2$lld of %3$lld %4$@"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: %lld din %lld %@"
           }
         }
       }
     },
-    "%@%@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@%2$@"
+    "%lld": {
+      "shouldTranslate": false
+    },
+    "%lld %@ a day": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$lld %2$@ a day"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld %@ pe zi"
           }
         }
       }
     },
-    "%@, %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@, %2$@"
+    "%lld %@, +%lld every %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$lld %2$@, +%3$lld every %4$@"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld %@, +%lld în fiecare %@"
           }
         }
       }
     },
-    "%@, last 14 days against the daily target" : {
-
+    "%lld bpm": {
+      "shouldTranslate": false
     },
-    "%@: %lld all time, %lld this week" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@: %2$lld all time, %3$lld this week"
+    "%lld day streak, best %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$lld day streak, best %2$lld"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serie de %#@n@, record %2$lld"
+          },
+          "substitutions": {
+            "n": {
+              "argNum": 1,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "few": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg zile"
+                    }
+                  },
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg zi"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg de zile"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
     },
-    "%@: %lld of %lld %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@: %2$lld of %3$lld %4$@"
+    "%lld in the last 7 days": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld în ultimele 7 zile"
           }
         }
       }
     },
-    "%lld" : {
-
-    },
-    "%lld %@ a day" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$lld %2$@ a day"
+    "%lld min awake · %lld wake-ups": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld min awake · %#@n@"
+          },
+          "substitutions": {
+            "n": {
+              "argNum": 2,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg wake-up"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg wake-ups"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld min treaz · %#@n@"
+          },
+          "substitutions": {
+            "n": {
+              "argNum": 2,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "few": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg treziri"
+                    }
+                  },
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg trezire"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg de treziri"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
     },
-    "%lld %@, +%lld every %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$lld %2$@, +%3$lld every %4$@"
+    "%lld of %lld days done": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$lld of %2$lld days done"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zile făcute: %lld din %lld"
           }
         }
       }
     },
-    "%lld bpm" : {
-
-    },
-    "%lld day streak, best %lld" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$lld day streak, best %2$lld"
+    "%lld of 100": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld din 100"
           }
         }
       }
     },
-    "%lld in the last 7 days" : {
-
-    },
-    "%lld min awake · %lld wake-ups" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$lld min awake · %2$lld wake-ups"
+    "%lld percent": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld la sută"
           }
         }
       }
     },
-    "%lld of %lld days done" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$lld of %2$lld days done"
+    "%lld percent of days hit": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld la sută din zile reușite"
           }
         }
       }
     },
-    "%lld of 100" : {
-
-    },
-    "%lld percent" : {
-
-    },
-    "%lld percent of days hit" : {
-
-    },
-    "%lld steps" : {
-
-    },
-    "%lld years · female · %lld cm · %lld kg" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$lld years · female · %2$lld cm · %3$lld kg"
+    "%lld steps": {
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld step"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld steps"
+                }
+              }
+            }
+          }
+        },
+        "ro": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld pași"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld pas"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld de pași"
+                }
+              }
+            }
           }
         }
       }
     },
-    "%lld years · male · %lld cm · %lld kg" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$lld years · male · %2$lld cm · %3$lld kg"
+    "%lld years · female · %lld cm · %lld kg": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$lld years · female · %2$lld cm · %3$lld kg"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%#@n@ · femeie · %2$lld cm · %3$lld kg"
+          },
+          "substitutions": {
+            "n": {
+              "argNum": 1,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "few": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg ani"
+                    }
+                  },
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg an"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg de ani"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
     },
-    "%lld%%" : {
-
-    },
-    "%lld-%lld bpm" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$lld-%2$lld bpm"
+    "%lld years · male · %lld cm · %lld kg": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$lld years · male · %2$lld cm · %3$lld kg"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%#@n@ · bărbat · %2$lld cm · %3$lld kg"
+          },
+          "substitutions": {
+            "n": {
+              "argNum": 1,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "few": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg ani"
+                    }
+                  },
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg an"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg de ani"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
     },
-    "%lld/%lld %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$lld/%2$lld %3$@"
+    "%lld%%": {
+      "shouldTranslate": false
+    },
+    "%lld-%lld bpm": {
+      "shouldTranslate": false
+    },
+    "%lld/%lld %@": {
+      "shouldTranslate": false
+    },
+    "%lldh %@m": {
+      "comment": "Duration, e.g. 7h 05m",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$lldh %2$@m"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld h %@ min"
           }
         }
       }
     },
-    "%lldh %@m" : {
-      "comment" : "Duration, e.g. 7h 05m",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$lldh %2$@m"
+    "+%lld": {
+      "shouldTranslate": false
+    },
+    "+%lld %@": {
+      "shouldTranslate": false
+    },
+    "+%lld every week": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+%lld în fiecare săptămână"
           }
         }
       }
     },
-    "+%lld" : {
-
+    "-": {
+      "shouldTranslate": false
     },
-    "+%lld %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "+%1$lld %2$@"
+    "/%lld": {
+      "shouldTranslate": false
+    },
+    "13-23%": {
+      "shouldTranslate": false
+    },
+    "20-25%": {
+      "shouldTranslate": false
+    },
+    "3 buzzes above the zone, 2 below": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3 vibrații peste zonă, 2 sub"
           }
         }
       }
     },
-    "+%lld every week" : {
-
+    "30 s": {
+      "shouldTranslate": false
     },
-    "-" : {
-
+    "75 s": {
+      "shouldTranslate": false
     },
-    "/%lld" : {
-
-    },
-    "13-23%" : {
-
-    },
-    "20-25%" : {
-
-    },
-    "3 buzzes above the zone, 2 below" : {
-
-    },
-    "30 s" : {
-
-    },
-    "75 s" : {
-
-    },
-    "85+ Optimal · 70-84 Good · 60-69 Fair · under 60 Pay attention" : {
-
-    },
-    "A rough number is fine: it's multiplied by the days done and added to each exercise's all-time total." : {
-
-    },
-    "About %lld%% per day" : {
-
-    },
-    "Above zone %lld" : {
-
-    },
-    "Above zone %lld: ease off" : {
-
-    },
-    "Activities" : {
-
-    },
-    "Activity" : {
-
-    },
-    "Activity balance" : {
-
-    },
-    "Add %lld" : {
-
-    },
-    "Add %lld %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Add %1$lld %2$@"
+    "85+ Optimal · 70-84 Good · 60-69 Fair · under 60 Pay attention": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "85+ Optim · 70-84 Bun · 60-69 Acceptabil · sub 60 Atenție"
           }
         }
       }
     },
-    "Add exercise" : {
-
-    },
-    "All time" : {
-
-    },
-    "Allow location in Settings to record distance and the route." : {
-
-    },
-    "Allow location to record distance and the route." : {
-
-    },
-    "An activity from %@ (%@) was not saved. Save it?" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "An activity from %1$@ (%2$@) was not saved. Save it?"
+    "A rough number is fine: it's multiplied by the days done and added to each exercise's all-time total.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un număr aproximativ e suficient: se înmulțește cu zilele făcute și se adaugă la totalul fiecărui exercițiu."
           }
         }
       }
     },
-    "An estimate in the style of Oura's sleep score, with this app's own published formula. Each contributor scores 0-100; the score is their weighted average. Ranges follow the National Sleep Foundation's sleep quality recommendations (Ohayon 2017) and the AASM's 7+ hours. Stages count little because wrist bands can't tell deep sleep from REM reliably." : {
-
-    },
-    "Archive" : {
-
-    },
-    "Archive %@?" : {
-
-    },
-    "Archived exercises leave the card and the logger; their history stays." : {
-
-    },
-    "Average" : {
-
-    },
-    "Average pace" : {
-
-    },
-    "Average per day" : {
-
-    },
-    "Averages" : {
-
-    },
-    "Avg/day" : {
-
-    },
-    "Awake" : {
-
-    },
-    "Awake time and wake-ups over 5 min; 20 min or less and 0-1 wake-ups is ideal" : {
-
-    },
-    "Awakenings" : {
-
-    },
-    "Background sync" : {
-
-    },
-    "Band" : {
-
-    },
-    "Band not connected: GPS only, no heart rate." : {
-
-    },
-    "Band traffic and sync events from recent syncs (%@). Useful when reporting a problem. It contains your raw band data, so share it only with people you trust." : {
-
-    },
-    "Battery" : {
-
-    },
-    "Battery %lld percent" : {
-
-    },
-    "Bedtime consistency" : {
-
-    },
-    "Before the app" : {
-
-    },
-    "Below zone %lld" : {
-
-    },
-    "Below zone %lld: pick it up" : {
-
-    },
-    "Below zone 1" : {
-
-    },
-    "Best streak" : {
-
-    },
-    "Birth year" : {
-
-    },
-    "Blood oxygen" : {
-
-    },
-    "Blood pressure (estimate)" : {
-
-    },
-    "Bluetooth not allowed" : {
-
-    },
-    "Bluetooth off" : {
-
-    },
-    "Bluetooth unavailable" : {
-
-    },
-    "Body temperature" : {
-
-    },
-    "Both update automatically from your band data." : {
-
-    },
-    "Calibrating: %lld more nights with the band to learn your baseline." : {
-
-    },
-    "Cancel" : {
-
-    },
-    "Cancel session" : {
-
-    },
-    "Challenge" : {
-
-    },
-    "Challenge started" : {
-
-    },
-    "Clear" : {
-
-    },
-    "Clear the diagnostics log?" : {
-
-    },
-    "Collecting data for the daily estimate" : {
-
-    },
-    "Collecting data: a reading is saved at each connection and sync." : {
-
-    },
-    "Connected" : {
-
-    },
-    "Connecting" : {
-
-    },
-    "Connecting..." : {
-
-    },
-    "Contributors" : {
-
-    },
-    "Core" : {
-
-    },
-    "Couldn't load data: %@" : {
-
-    },
-    "Count" : {
-
-    },
-    "Custom amount" : {
-
-    },
-    "Daily average" : {
-
-    },
-    "Daily challenge" : {
-
-    },
-    "Daily target: %lld %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Daily target: %1$lld %2$@"
+    "About %lld%% per day": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cam %lld%% pe zi"
           }
         }
       }
     },
-    "Daily totals (stored only)" : {
-
-    },
-    "Day" : {
-
-    },
-    "Days done" : {
-
-    },
-    "Deep" : {
-
-    },
-    "Deep share of sleep (band estimate); 16% or more is typical" : {
-
-    },
-    "Deep sleep" : {
-
-    },
-    "Default until 3 nights of sleep data exist." : {
-
-    },
-    "Diagnostics" : {
-
-    },
-    "Discard" : {
-
-    },
-    "Discard this activity? It won't be saved or sent to Health." : {
-
-    },
-    "Distance" : {
-
-    },
-    "Done" : {
-
-    },
-    "Done for today · %lld-day streak" : {
-
-    },
-    "Drag to reorder, switch off what you don't need. The rings and the day strip always stay on top." : {
-
-    },
-    "Edit Today" : {
-
-    },
-    "Edit exercise" : {
-
-    },
-    "Efficiency" : {
-
-    },
-    "End" : {
-
-    },
-    "Estimated wake-up %@, %lld bpm" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Estimated wake-up %1$@, %2$lld bpm"
+    "Above zone %lld": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Peste zona %lld"
           }
         }
       }
     },
-    "Exercise" : {
-
-    },
-    "Exercises" : {
-
-    },
-    "Exercises and targets" : {
-
-    },
-    "Export log" : {
-
-    },
-    "Export to Health now" : {
-
-    },
-    "Exporting..." : {
-
-    },
-    "Fell asleep" : {
-
-    },
-    "Female" : {
-
-    },
-    "Finish" : {
-
-    },
-    "Finish this activity?" : {
-
-    },
-    "Forget band" : {
-
-    },
-    "Forget this band? You'll need to pair it again. Data on the phone stays." : {
-
-    },
-    "Free" : {
-
-    },
-    "From heart-rate rises the band's stages explain; the band itself rarely marks waking in the night." : {
-
-    },
-    "From your age (208 - 0.7 x age); a harder effort will raise it." : {
-
-    },
-    "Full colour: target reached. Dashed line: the daily target." : {
-
-    },
-    "Full marks: 7-9 h asleep; efficiency 90%+; 20 min or less awake after falling asleep and at most 1 wake-up over 5 min; sleep midpoint within 30 min of your usual (median of the last 14 nights; 00:00-03:00 until there are 3 nights); 5-30 min to fall asleep; REM 21-40%; deep 16%+. Nights under 6 h score at most 70." : {
-
-    },
-    "Goal" : {
-
-    },
-    "Goal reached on %lld of %lld days" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Goal reached on %1$lld of %2$lld days"
+    "Above zone %lld: ease off": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Peste zona %lld: încetinește"
           }
         }
       }
     },
-    "Grow automatically" : {
-
-    },
-    "HR %@" : {
-
-    },
-    "HRV" : {
-
-    },
-    "HRV (average asleep)" : {
-
-    },
-    "HRV balance" : {
-
-    },
-    "Health data since" : {
-
-    },
-    "Health error" : {
-
-    },
-    "Health export" : {
-
-    },
-    "Heart rate" : {
-
-    },
-    "Heart rate %lld" : {
-
-    },
-    "Heart rate checks" : {
-
-    },
-    "Height: %lld cm" : {
-
-    },
-    "Highest heart rate held in the last 6 months." : {
-
-    },
-    "Highlights" : {
-
-    },
-    "Hike" : {
-
-    },
-    "Hour" : {
-
-    },
-    "Hours" : {
-
-    },
-    "In bed" : {
-
-    },
-    "In zone %lld" : {
-
-    },
-    "In zone %lld: %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "In zone %1$lld: %2$@"
+    "Activities": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activități"
           }
         }
       }
     },
-    "Keep the band close to the phone and make sure no other app is connected to it." : {
-
-    },
-    "Km %lld" : {
-
-    },
-    "LIVE" : {
-
-    },
-    "Last 14 days" : {
-
-    },
-    "Last night" : {
-
-    },
-    "Last sync" : {
-
-    },
-    "Latency" : {
-
-    },
-    "Live" : {
-
-    },
-    "Log" : {
-
-    },
-    "Log %@" : {
-
-    },
-    "Log sets" : {
-
-    },
-    "Looking for your band" : {
-
-    },
-    "Male" : {
-
-    },
-    "Max" : {
-
-    },
-    "Max heart rate" : {
-
-    },
-    "Measurement stopped." : {
-
-    },
-    "Measuring %@... keep still" : {
-
-    },
-    "Median of the last 14 nights." : {
-
-    },
-    "Middle of your sleep vs your last 14 nights; within 30 min is ideal" : {
-
-    },
-    "Min" : {
-
-    },
-    "Minutes" : {
-
-    },
-    "Month" : {
-
-    },
-    "More for %@" : {
-
-    },
-    "Moving time" : {
-
-    },
-    "Name" : {
-
-    },
-    "New exercise" : {
-
-    },
-    "Next month" : {
-
-    },
-    "Next week" : {
-
-    },
-    "Night" : {
-
-    },
-    "Night average (asleep)" : {
-
-    },
-    "Night vitals" : {
-
-    },
-    "No activities in the last 30 days" : {
-
-    },
-    "No activities in the last 7 days" : {
-
-    },
-    "No band: no heart rate" : {
-
-    },
-    "No data" : {
-
-    },
-    "No data today" : {
-
-    },
-    "No heart rate" : {
-
-    },
-    "No heart-rate readings during the night" : {
-
-    },
-    "No reading. Wear the band snug and keep still." : {
-
-    },
-    "No sleep data" : {
-
-    },
-    "No sleep data for last night" : {
-
-    },
-    "No sleep data for this night" : {
-
-    },
-    "Not allowed in Health" : {
-
-    },
-    "Not connected" : {
-
-    },
-    "Not enough data for this night." : {
-
-    },
-    "Not enough data from last night yet. Sync after waking up." : {
-
-    },
-    "Not enough data yet" : {
-
-    },
-    "Not on wrist?" : {
-
-    },
-    "Not synced yet" : {
-
-    },
-    "Nothing logged" : {
-
-    },
-    "Nothing stands out yet. Highlights appear once there are a few nights and days to compare." : {
-
-    },
-    "OK" : {
-
-    },
-    "On" : {
-
-    },
-    "On the next automatic sync" : {
-
-    },
-    "Open Health" : {
-
-    },
-    "Open Settings" : {
-
-    },
-    "Pair band" : {
-
-    },
-    "Partly done" : {
-
-    },
-    "Pause" : {
-
-    },
-    "Previous month" : {
-
-    },
-    "Previous week" : {
-
-    },
-    "Profile" : {
-
-    },
-    "Profile and zones" : {
-
-    },
-    "Progress before the app" : {
-
-    },
-    "Pulse Bridge diagnostics" : {
-
-    },
-    "Pulse One" : {
-
-    },
-    "Push-ups" : {
-
-    },
-    "REM" : {
-
-    },
-    "REM share of sleep (band estimate); 21-40% is typical" : {
-
-    },
-    "REM sleep" : {
-
-    },
-    "Range" : {
-
-    },
-    "Range %@-%@ %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Range %1$@-%2$@ %3$@"
+    "Activity": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activitate"
           }
         }
       }
     },
-    "Readiness" : {
-
-    },
-    "Readiness compares last night with your own baseline (average of up to 30 earlier nights): HRV 35%, resting heart rate 25%, sleep score 20%, yesterday's steps against your usual 10%, and night temperature 10% (warmer than usual lowers it). It needs 5 earlier nights to start." : {
-
-    },
-    "Recorded with GPS" : {
-
-    },
-    "Regularity" : {
-
-    },
-    "Remove" : {
-
-    },
-    "Reps" : {
-
-    },
-    "Restfulness" : {
-
-    },
-    "Resting HR" : {
-
-    },
-    "Resting heart rate" : {
-
-    },
-    "Resume" : {
-
-    },
-    "Ride" : {
-
-    },
-    "Route map" : {
-
-    },
-    "Run" : {
-
-    },
-    "Save" : {
-
-    },
-    "Saved on the band; it reaches Apple Health on the next sync." : {
-
-    },
-    "Saved to Health" : {
-
-    },
-    "Scanning" : {
-
-    },
-    "Score" : {
-
-    },
-    "Seconds" : {
-
-    },
-    "Session options" : {
-
-    },
-    "Set up challenge" : {
-
-    },
-    "Set your age for accurate heart-rate zones" : {
-
-    },
-    "Set your age in Band > Profile for accurate zones." : {
-
-    },
-    "Sex" : {
-
-    },
-    "Share" : {
-
-    },
-    "Share of time in bed spent asleep; 90% or more for full marks" : {
-
-    },
-    "Show month" : {
-
-    },
-    "Show week" : {
-
-    },
-    "Sleep" : {
-
-    },
-    "Sleep score" : {
-
-    },
-    "Sleep score (estimate)" : {
-
-    },
-    "Sleep stages" : {
-
-    },
-    "Splits" : {
-
-    },
-    "Squats" : {
-
-    },
-    "Stage" : {
-
-    },
-    "Stages (Deep/REM split is an estimate)" : {
-
-    },
-    "Stages per night" : {
-
-    },
-    "Start" : {
-
-    },
-    "Start a streak today" : {
-
-    },
-    "Start activity" : {
-
-    },
-    "Start live heart rate" : {
-
-    },
-    "Start timed session" : {
-
-    },
-    "Started before using Pulse Bridge? Bring over your days done and streaks." : {
-
-    },
-    "Starting" : {
-
-    },
-    "Starting the sensor..." : {
-
-    },
-    "Steps" : {
-
-    },
-    "Stop live heart rate" : {
-
-    },
-    "Streak" : {
-
-    },
-    "Stress" : {
-
-    },
-    "Sync" : {
-
-    },
-    "Sync failed" : {
-
-    },
-    "Synced %@" : {
-
-    },
-    "Syncing..." : {
-
-    },
-    "Target" : {
-
-    },
-    "Temperature" : {
-
-    },
-    "The daily target is how many you aim for each day; a day counts as done when every exercise reaches it. Changes start today and past days keep the target they had. With growth on, the target goes up by itself every week." : {
-
-    },
-    "This week" : {
-
-    },
-    "This week vs last week" : {
-
-    },
-    "Time" : {
-
-    },
-    "Time asleep" : {
-
-    },
-    "Time asleep; 7-9 h for full marks" : {
-
-    },
-    "Time in zone %lld" : {
-
-    },
-    "Time in zones" : {
-
-    },
-    "Time to fall asleep" : {
-
-    },
-    "Time to fall asleep; 5-30 min is ideal" : {
-
-    },
-    "Times your sets and saves a Strength training workout with band heart rate to Apple Health." : {
-
-    },
-    "Timing" : {
-
-    },
-    "Today" : {
-
-    },
-    "Total" : {
-
-    },
-    "Total sleep" : {
-
-    },
-    "Totals" : {
-
-    },
-    "Track a daily goal like push-ups and squats, with streaks and history." : {
-
-    },
-    "Trends" : {
-
-    },
-    "Turn on Background App Refresh for Pulse Bridge in Settings to sync without opening the app." : {
-
-    },
-    "Turn on Precise Location for Pulse Bridge in Settings; approximate location can't measure distance." : {
-
-    },
-    "Undo" : {
-
-    },
-    "Undo %lld %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Undo %1$lld %2$@"
+    "Activity balance": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Echilibrul activității"
           }
         }
       }
     },
-    "Undo last set" : {
-
-    },
-    "Unfinished activity" : {
-
-    },
-    "Unit" : {
-
-    },
-    "Up to %@, the day before your first day in the app. Days you complete here add to these." : {
-
-    },
-    "Vitals" : {
-
-    },
-    "Waiting for GPS..." : {
-
-    },
-    "Wake-ups (estimated)" : {
-
-    },
-    "Walk" : {
-
-    },
-    "Week" : {
-
-    },
-    "Weight: %lld kg" : {
-
-    },
-    "Woke up" : {
-
-    },
-    "Written to Health" : {
-
-    },
-    "You can change targets any time, and let them grow every week." : {
-
-    },
-    "Your first kilometre shows here." : {
-
-    },
-    "Zone" : {
-
-    },
-    "Zone %lld" : {
-
-    },
-    "Zone %lld · %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Zone %1$lld · %2$@"
+    "Add %lld": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adaugă %lld"
           }
         }
       }
     },
-    "Zone %lld · %lld-%lld bpm" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Zone %1$lld · %2$lld-%3$lld bpm"
+    "Add %lld %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Add %1$lld %2$@"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adaugă %lld %@"
           }
         }
       }
     },
-    "Zone alerts on" : {
-
-    },
-    "Zone alerts on the band" : {
-
-    },
-    "Zones" : {
-
-    },
-    "about 50%" : {
-
-    },
-    "all time" : {
-
-    },
-    "avg %lld bpm" : {
-
-    },
-    "avg /km" : {
-
-    },
-    "before the app" : {
-
-    },
-    "best %lld" : {
-
-    },
-    "bpm" : {
-
-    },
-    "coming out of REM" : {
-
-    },
-    "day streak" : {
-
-    },
-    "done" : {
-
-    },
-    "easy" : {
-
-    },
-    "hard" : {
-
-    },
-    "heart rate" : {
-
-    },
-    "hit" : {
-
-    },
-    "i" : {
-
-    },
-    "km" : {
-
-    },
-    "max" : {
-
-    },
-    "midpoint %@" : {
-
-    },
-    "midpoint %@ · usual %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "midpoint %1$@ · usual %2$@"
+    "Add exercise": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adaugă exercițiu"
           }
         }
       }
     },
-    "moderate" : {
-
-    },
-    "ms" : {
-
-    },
-    "no data" : {
-
-    },
-    "none" : {
-
-    },
-    "not part of the challenge" : {
-
-    },
-    "nothing logged" : {
-
-    },
-    "of %@" : {
-
-    },
-    "of %lld days" : {
-
-    },
-    "out of deep sleep" : {
-
-    },
-    "pace /km" : {
-
-    },
-    "partial" : {
-
-    },
-    "reps" : {
-
-    },
-    "rest" : {
-
-    },
-    "resting %lld" : {
-
-    },
-    "s" : {
-      "comment" : "seconds, short"
-    },
-    "score %lld" : {
-
-    },
-    "steps" : {
-
-    },
-    "the band marked awake" : {
-
-    },
-    "today %lld-%lld" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "today %1$lld-%2$lld"
+    "All time": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "În total"
           }
         }
       }
     },
-    "typical %@" : {
-
-    },
-    "under 10%" : {
-
-    },
-    "v" : {
-
-    },
-    "very easy" : {
-
-    },
-    "well above the night's typical heart rate" : {
-
-    },
-    "💪 Daily challenge · %@" : {
-
-    },
-    "📅 %lld days done · day %lld" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "📅 %1$lld days done · day %2$lld"
+    "Allow location in Settings to record distance and the route.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permite localizarea în Configurări pentru a înregistra distanța și traseul."
           }
         }
       }
     },
-    "🔥 %lld-day streak" : {
-
+    "Allow location to record distance and the route.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permite localizarea pentru a înregistra distanța și traseul."
+          }
+        }
+      }
     },
-    "🔥 %lld-day streak · best %lld" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "🔥 %1$lld-day streak · best %2$lld"
+    "An activity from %@ (%@) was not saved. Save it?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "An activity from %1$@ (%2$@) was not saved. Save it?"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O activitate din %@ (%@) nu a fost salvată. O salvezi?"
+          }
+        }
+      }
+    },
+    "An estimate in the style of Oura's sleep score, with this app's own published formula. Each contributor scores 0-100; the score is their weighted average. Ranges follow the National Sleep Foundation's sleep quality recommendations (Ohayon 2017) and the AASM's 7+ hours. Stages count little because wrist bands can't tell deep sleep from REM reliably.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O estimare în stilul scorului de somn Oura, cu formula publicată a acestei aplicații. Fiecare factor primește 0-100; scorul este media lor ponderată. Intervalele urmează recomandările National Sleep Foundation pentru calitatea somnului (Ohayon 2017) și cele 7+ ore ale AASM. Stadiile contează puțin, pentru că brățările nu pot deosebi sigur somnul profund de REM."
+          }
+        }
+      }
+    },
+    "Archive": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arhivează"
+          }
+        }
+      }
+    },
+    "Archive %@?": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arhivezi %@?"
+          }
+        }
+      }
+    },
+    "Archived exercises leave the card and the logger; their history stays.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exercițiile arhivate dispar de pe card și din jurnal; istoricul lor rămâne."
+          }
+        }
+      }
+    },
+    "Average": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Medie"
+          }
+        }
+      }
+    },
+    "Average pace": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ritm mediu"
+          }
+        }
+      }
+    },
+    "Average per day": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Medie pe zi"
+          }
+        }
+      }
+    },
+    "Averages": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Medii"
+          }
+        }
+      }
+    },
+    "Avg/day": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Medie/zi"
+          }
+        }
+      }
+    },
+    "Awake": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Treaz"
+          }
+        }
+      }
+    },
+    "Awake time and wake-ups over 5 min; 20 min or less and 0-1 wake-ups is ideal": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Timp treaz și treziri de peste 5 min; ideal 20 min sau mai puțin și 0-1 treziri"
+          }
+        }
+      }
+    },
+    "Awakenings": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Treziri"
+          }
+        }
+      }
+    },
+    "Background sync": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sincronizare în fundal"
+          }
+        }
+      }
+    },
+    "Band": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brățară"
+          }
+        }
+      }
+    },
+    "Band not connected: GPS only, no heart rate.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brățara nu e conectată: doar GPS, fără ritm cardiac."
+          }
+        }
+      }
+    },
+    "Band traffic and sync events from recent syncs (%@). Useful when reporting a problem. It contains your raw band data, so share it only with people you trust.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Traficul cu brățara și evenimentele din ultimele sincronizări (%@). Util când raportezi o problemă. Conține datele brute ale brățării, așa că trimite-l doar persoanelor în care ai încredere."
+          }
+        }
+      }
+    },
+    "Battery": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Baterie"
+          }
+        }
+      }
+    },
+    "Battery %lld percent": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Baterie %lld la sută"
+          }
+        }
+      }
+    },
+    "Bedtime consistency": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Regularitatea orei de culcare"
+          }
+        }
+      }
+    },
+    "Before the app": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Înainte de aplicație"
+          }
+        }
+      }
+    },
+    "Below zone %lld": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sub zona %lld"
+          }
+        }
+      }
+    },
+    "Below zone %lld: pick it up": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sub zona %lld: accelerează"
+          }
+        }
+      }
+    },
+    "Below zone 1": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sub zona 1"
+          }
+        }
+      }
+    },
+    "Best streak": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cea mai lungă serie"
+          }
+        }
+      }
+    },
+    "Birth year": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anul nașterii"
+          }
+        }
+      }
+    },
+    "Blood oxygen": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oxigen în sânge"
+          }
+        }
+      }
+    },
+    "Blood pressure (estimate)": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tensiune arterială (estimare)"
+          }
+        }
+      }
+    },
+    "Bluetooth not allowed": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bluetooth nepermis"
+          }
+        }
+      }
+    },
+    "Bluetooth off": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bluetooth oprit"
+          }
+        }
+      }
+    },
+    "Bluetooth unavailable": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bluetooth indisponibil"
+          }
+        }
+      }
+    },
+    "Body temperature": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Temperatura corpului"
+          }
+        }
+      }
+    },
+    "Both update automatically from your band data.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ambele se actualizează automat din datele brățării."
+          }
+        }
+      }
+    },
+    "Calibrating: %lld more nights with the band to learn your baseline.": {
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Calibrating: %lld more night with the band to learn your baseline."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Calibrating: %lld more nights with the band to learn your baseline."
+                }
+              }
+            }
+          }
+        },
+        "ro": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Calibrare: încă %lld nopți cu brățara ca să-ți învețe nivelul de bază."
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Calibrare: încă %lld noapte cu brățara ca să-ți învețe nivelul de bază."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Calibrare: încă %lld de nopți cu brățara ca să-ți învețe nivelul de bază."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Cancel": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anulează"
+          }
+        }
+      }
+    },
+    "Cancel session": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anulează sesiunea"
+          }
+        }
+      }
+    },
+    "Challenge": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Provocare"
+          }
+        }
+      }
+    },
+    "Challenge started": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Începutul provocării"
+          }
+        }
+      }
+    },
+    "Clear": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Șterge"
+          }
+        }
+      }
+    },
+    "Clear the diagnostics log?": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ștergi jurnalul de diagnosticare?"
+          }
+        }
+      }
+    },
+    "Collecting data for the daily estimate": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se adună date pentru estimarea zilnică"
+          }
+        }
+      }
+    },
+    "Collecting data: a reading is saved at each connection and sync.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se adună date: o citire se salvează la fiecare conectare și sincronizare."
+          }
+        }
+      }
+    },
+    "Connected": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conectată"
+          }
+        }
+      }
+    },
+    "Connecting": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se conectează"
+          }
+        }
+      }
+    },
+    "Connecting...": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se conectează..."
+          }
+        }
+      }
+    },
+    "Contributors": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Factori"
+          }
+        }
+      }
+    },
+    "Core": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esențial"
+          }
+        }
+      }
+    },
+    "Couldn't load data: %@": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Datele nu s-au putut încărca: %@"
+          }
+        }
+      }
+    },
+    "Count": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Număr"
+          }
+        }
+      }
+    },
+    "Custom amount": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Altă valoare"
+          }
+        }
+      }
+    },
+    "Daily average": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Medie zilnică"
+          }
+        }
+      }
+    },
+    "Daily challenge": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Provocarea zilei"
+          }
+        }
+      }
+    },
+    "Daily target: %lld %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Daily target: %1$lld %2$@"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Țintă zilnică: %lld %@"
+          }
+        }
+      }
+    },
+    "Daily totals (stored only)": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Totaluri zilnice (doar stocate)"
+          }
+        }
+      }
+    },
+    "Day": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zi"
+          }
+        }
+      }
+    },
+    "Days done": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zile făcute"
+          }
+        }
+      }
+    },
+    "Deep": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Profund"
+          }
+        }
+      }
+    },
+    "Deep share of sleep (band estimate); 16% or more is typical": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Proporția de somn profund (estimarea brățării); de obicei 16% sau mai mult"
+          }
+        }
+      }
+    },
+    "Deep sleep": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Somn profund"
+          }
+        }
+      }
+    },
+    "Default until 3 nights of sleep data exist.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Valoare implicită până există 3 nopți de date de somn."
+          }
+        }
+      }
+    },
+    "Diagnostics": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diagnosticare"
+          }
+        }
+      }
+    },
+    "Discard": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Renunță"
+          }
+        }
+      }
+    },
+    "Discard this activity? It won't be saved or sent to Health.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Renunți la această activitate? Nu va fi salvată și nici trimisă în Sănătate."
+          }
+        }
+      }
+    },
+    "Distance": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Distanță"
+          }
+        }
+      }
+    },
+    "Done": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gata"
+          }
+        }
+      }
+    },
+    "Done for today · %lld-day streak": {
+      "localizations": {
+        "ro": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Gata pentru azi · serie de %lld zile"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Gata pentru azi · serie de %lld zi"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Gata pentru azi · serie de %lld de zile"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Drag to reorder, switch off what you don't need. The rings and the day strip always stay on top.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trage pentru a reordona și oprește ce nu-ți trebuie. Inelele și banda zilelor rămân mereu sus."
+          }
+        }
+      }
+    },
+    "Edit Today": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Editează Azi"
+          }
+        }
+      }
+    },
+    "Edit exercise": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Editează exercițiul"
+          }
+        }
+      }
+    },
+    "Efficiency": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eficiență"
+          }
+        }
+      }
+    },
+    "End": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sfârșit"
+          }
+        }
+      }
+    },
+    "Estimated wake-up %@, %lld bpm": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Estimated wake-up %1$@, %2$lld bpm"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trezire estimată %@, %lld bpm"
+          }
+        }
+      }
+    },
+    "Exercise": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exercițiu"
+          }
+        }
+      }
+    },
+    "Exercises": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exerciții"
+          }
+        }
+      }
+    },
+    "Exercises and targets": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exerciții și ținte"
+          }
+        }
+      }
+    },
+    "Export log": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exportă jurnalul"
+          }
+        }
+      }
+    },
+    "Export to Health now": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exportă acum în Sănătate"
+          }
+        }
+      }
+    },
+    "Exporting...": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se exportă..."
+          }
+        }
+      }
+    },
+    "Fell asleep": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adormit la"
+          }
+        }
+      }
+    },
+    "Female": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Femeie"
+          }
+        }
+      }
+    },
+    "Finish": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Termină"
+          }
+        }
+      }
+    },
+    "Finish this activity?": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Termini această activitate?"
+          }
+        }
+      }
+    },
+    "Forget band": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uită brățara"
+          }
+        }
+      }
+    },
+    "Forget this band? You'll need to pair it again. Data on the phone stays.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uiți această brățară? Va trebui să o asociezi din nou. Datele de pe telefon rămân."
+          }
+        }
+      }
+    },
+    "Free": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Liber"
+          }
+        }
+      }
+    },
+    "From heart-rate rises the band's stages explain; the band itself rarely marks waking in the night.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Din creșterile pulsului pe care le explică stadiile brățării; brățara însăși marchează rar trezirile din timpul nopții."
+          }
+        }
+      }
+    },
+    "From your age (208 - 0.7 x age); a harder effort will raise it.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Din vârstă (208 - 0,7 x vârsta); un efort mai intens îl va crește."
+          }
+        }
+      }
+    },
+    "Full colour: target reached. Dashed line: the daily target.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Culoare plină: țintă atinsă. Linie punctată: ținta zilnică."
+          }
+        }
+      }
+    },
+    "Full marks: 7-9 h asleep; efficiency 90%+; 20 min or less awake after falling asleep and at most 1 wake-up over 5 min; sleep midpoint within 30 min of your usual (median of the last 14 nights; 00:00-03:00 until there are 3 nights); 5-30 min to fall asleep; REM 21-40%; deep 16%+. Nights under 6 h score at most 70.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Punctaj maxim: 7-9 h de somn; eficiență 90%+; cel mult 20 min treaz după adormire și cel mult o trezire de peste 5 min; mijlocul somnului la cel mult 30 min de cel obișnuit (mediana ultimelor 14 nopți; 00:00-03:00 până există 3 nopți); 5-30 min până la adormire; REM 21-40%; profund 16%+. Nopțile sub 6 h primesc cel mult 70."
+          }
+        }
+      }
+    },
+    "Goal": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obiectiv"
+          }
+        }
+      }
+    },
+    "Goal reached on %lld of %lld days": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Goal reached on %1$lld of %#@n@"
+          },
+          "substitutions": {
+            "n": {
+              "argNum": 2,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg day"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg days"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obiectiv atins în %1$lld din %#@n@"
+          },
+          "substitutions": {
+            "n": {
+              "argNum": 2,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "few": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg zile"
+                    }
+                  },
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg zi"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg de zile"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Grow automatically": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crește automat"
+          }
+        }
+      }
+    },
+    "HR %@": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Puls %@"
+          }
+        }
+      }
+    },
+    "HRV": {
+      "shouldTranslate": false
+    },
+    "HRV (average asleep)": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HRV (medie în somn)"
+          }
+        }
+      }
+    },
+    "HRV balance": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Echilibrul HRV"
+          }
+        }
+      }
+    },
+    "Health data since": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Date în Sănătate din"
+          }
+        }
+      }
+    },
+    "Health error": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eroare Sănătate"
+          }
+        }
+      }
+    },
+    "Health export": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Export în Sănătate"
+          }
+        }
+      }
+    },
+    "Heart rate": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ritm cardiac"
+          }
+        }
+      }
+    },
+    "Heart rate %lld": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ritm cardiac %lld"
+          }
+        }
+      }
+    },
+    "Heart rate checks": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Măsurători de puls"
+          }
+        }
+      }
+    },
+    "Height: %lld cm": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Înălțime: %lld cm"
+          }
+        }
+      }
+    },
+    "Highest heart rate held in the last 6 months.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cel mai mare puls menținut în ultimele 6 luni."
+          }
+        }
+      }
+    },
+    "Highlights": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repere"
+          }
+        }
+      }
+    },
+    "Hike": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drumeție"
+          }
+        }
+      }
+    },
+    "Hour": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oră"
+          }
+        }
+      }
+    },
+    "Hours": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ore"
+          }
+        }
+      }
+    },
+    "In bed": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "În pat"
+          }
+        }
+      }
+    },
+    "In zone %lld": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "În zona %lld"
+          }
+        }
+      }
+    },
+    "In zone %lld: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "In zone %1$lld: %2$@"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "În zona %lld: %@"
+          }
+        }
+      }
+    },
+    "Keep the band close to the phone and make sure no other app is connected to it.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ține brățara aproape de telefon și asigură-te că nicio altă aplicație nu e conectată la ea."
+          }
+        }
+      }
+    },
+    "Km %lld": {
+      "shouldTranslate": false
+    },
+    "LIVE": {
+      "shouldTranslate": false
+    },
+    "Last 14 days": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ultimele 14 zile"
+          }
+        }
+      }
+    },
+    "Last night": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Azi-noapte"
+          }
+        }
+      }
+    },
+    "Last sync": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ultima sincronizare"
+          }
+        }
+      }
+    },
+    "Latency": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Latență"
+          }
+        }
+      }
+    },
+    "Live": {
+      "shouldTranslate": false
+    },
+    "Log": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notează"
+          }
+        }
+      }
+    },
+    "Log %@": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notează %@"
+          }
+        }
+      }
+    },
+    "Log sets": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notează seturi"
+          }
+        }
+      }
+    },
+    "Looking for your band": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se caută brățara"
+          }
+        }
+      }
+    },
+    "Male": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bărbat"
+          }
+        }
+      }
+    },
+    "Max": {
+      "shouldTranslate": false
+    },
+    "Max heart rate": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Puls maxim"
+          }
+        }
+      }
+    },
+    "Measurement stopped.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Măsurătoarea s-a oprit."
+          }
+        }
+      }
+    },
+    "Measuring %@... keep still": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se măsoară %@... stai nemișcat"
+          }
+        }
+      }
+    },
+    "Median of the last 14 nights.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mediana ultimelor 14 nopți."
+          }
+        }
+      }
+    },
+    "Middle of your sleep vs your last 14 nights; within 30 min is ideal": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mijlocul somnului față de ultimele 14 nopți; ideal la cel mult 30 min"
+          }
+        }
+      }
+    },
+    "Min": {
+      "shouldTranslate": false
+    },
+    "Minutes": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minute"
+          }
+        }
+      }
+    },
+    "Month": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lună"
+          }
+        }
+      }
+    },
+    "More for %@": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mai multe pentru %@"
+          }
+        }
+      }
+    },
+    "Moving time": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Timp în mișcare"
+          }
+        }
+      }
+    },
+    "Name": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nume"
+          }
+        }
+      }
+    },
+    "New exercise": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exercițiu nou"
+          }
+        }
+      }
+    },
+    "Next month": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Luna următoare"
+          }
+        }
+      }
+    },
+    "Next week": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Săptămâna următoare"
+          }
+        }
+      }
+    },
+    "Night": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noapte"
+          }
+        }
+      }
+    },
+    "Night average (asleep)": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Medie pe noapte (în somn)"
+          }
+        }
+      }
+    },
+    "Night vitals": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Semne vitale nocturne"
+          }
+        }
+      }
+    },
+    "No activities in the last 30 days": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nicio activitate în ultimele 30 de zile"
+          }
+        }
+      }
+    },
+    "No activities in the last 7 days": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nicio activitate în ultimele 7 zile"
+          }
+        }
+      }
+    },
+    "No band: no heart rate": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fără brățară: fără puls"
+          }
+        }
+      }
+    },
+    "No data": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fără date"
+          }
+        }
+      }
+    },
+    "No data today": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nicio dată azi"
+          }
+        }
+      }
+    },
+    "No heart rate": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fără puls"
+          }
+        }
+      }
+    },
+    "No heart-rate readings during the night": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nicio citire de puls în timpul nopții"
+          }
+        }
+      }
+    },
+    "No reading. Wear the band snug and keep still.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nicio citire. Poartă brățara strâns și stai nemișcat."
+          }
+        }
+      }
+    },
+    "No sleep data": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fără date de somn"
+          }
+        }
+      }
+    },
+    "No sleep data for last night": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nicio dată de somn pentru azi-noapte"
+          }
+        }
+      }
+    },
+    "No sleep data for this night": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nicio dată de somn pentru această noapte"
+          }
+        }
+      }
+    },
+    "Not allowed in Health": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nepermis în Sănătate"
+          }
+        }
+      }
+    },
+    "Not connected": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neconectată"
+          }
+        }
+      }
+    },
+    "Not enough data for this night.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Date insuficiente pentru această noapte."
+          }
+        }
+      }
+    },
+    "Not enough data from last night yet. Sync after waking up.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Încă nu sunt destule date de azi-noapte. Sincronizează după ce te trezești."
+          }
+        }
+      }
+    },
+    "Not enough data yet": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Încă nu sunt destule date"
+          }
+        }
+      }
+    },
+    "Not on wrist?": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nu e pe încheietură?"
+          }
+        }
+      }
+    },
+    "Not synced yet": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nesincronizat încă"
+          }
+        }
+      }
+    },
+    "Nothing logged": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nimic notat"
+          }
+        }
+      }
+    },
+    "Nothing stands out yet. Highlights appear once there are a few nights and days to compare.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Încă nu iese nimic în evidență. Reperele apar când există câteva nopți și zile de comparat."
+          }
+        }
+      }
+    },
+    "OK": {
+      "shouldTranslate": false
+    },
+    "On": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ziua"
+          }
+        }
+      }
+    },
+    "On the next automatic sync": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La următoarea sincronizare automată"
+          }
+        }
+      }
+    },
+    "Open Health": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deschide Sănătate"
+          }
+        }
+      }
+    },
+    "Open Settings": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deschide Configurări"
+          }
+        }
+      }
+    },
+    "Pair band": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Asociază brățara"
+          }
+        }
+      }
+    },
+    "Partly done": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parțial făcut"
+          }
+        }
+      }
+    },
+    "Pause": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pauză"
+          }
+        }
+      }
+    },
+    "Previous month": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Luna anterioară"
+          }
+        }
+      }
+    },
+    "Previous week": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Săptămâna anterioară"
+          }
+        }
+      }
+    },
+    "Profile": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Profil"
+          }
+        }
+      }
+    },
+    "Profile and zones": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Profil și zone"
+          }
+        }
+      }
+    },
+    "Progress before the app": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Progres înainte de aplicație"
+          }
+        }
+      }
+    },
+    "Pulse Bridge diagnostics": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diagnosticare Pulse Bridge"
+          }
+        }
+      }
+    },
+    "Pulse One": {
+      "shouldTranslate": false
+    },
+    "Push-ups": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flotări"
+          }
+        }
+      }
+    },
+    "REM": {
+      "shouldTranslate": false
+    },
+    "REM share of sleep (band estimate); 21-40% is typical": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Proporția de somn REM (estimarea brățării); de obicei 21-40%"
+          }
+        }
+      }
+    },
+    "REM sleep": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Somn REM"
+          }
+        }
+      }
+    },
+    "Range": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Interval"
+          }
+        }
+      }
+    },
+    "Range %@-%@ %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Range %1$@-%2$@ %3$@"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Interval %@-%@ %@"
+          }
+        }
+      }
+    },
+    "Readiness": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pregătire"
+          }
+        }
+      }
+    },
+    "Readiness compares last night with your own baseline (average of up to 30 earlier nights): HRV 35%, resting heart rate 25%, sleep score 20%, yesterday's steps against your usual 10%, and night temperature 10% (warmer than usual lowers it). It needs 5 earlier nights to start.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pregătirea compară noaptea trecută cu nivelul tău de bază (media a până la 30 de nopți anterioare): HRV 35%, pulsul în repaus 25%, scorul de somn 20%, pașii de ieri față de obișnuit 10% și temperatura nopții 10% (mai cald decât de obicei o scade). Are nevoie de 5 nopți anterioare ca să înceapă."
+          }
+        }
+      }
+    },
+    "Recorded with GPS": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Înregistrată cu GPS"
+          }
+        }
+      }
+    },
+    "Regularity": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Regularitate"
+          }
+        }
+      }
+    },
+    "Remove": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elimină"
+          }
+        }
+      }
+    },
+    "Reps": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repetări"
+          }
+        }
+      }
+    },
+    "Restfulness": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odihnă"
+          }
+        }
+      }
+    },
+    "Resting HR": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Puls în repaus"
+          }
+        }
+      }
+    },
+    "Resting heart rate": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ritm cardiac în repaus"
+          }
+        }
+      }
+    },
+    "Resume": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reia"
+          }
+        }
+      }
+    },
+    "Ride": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bicicletă"
+          }
+        }
+      }
+    },
+    "Route map": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Harta traseului"
+          }
+        }
+      }
+    },
+    "Run": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alergare"
+          }
+        }
+      }
+    },
+    "Save": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salvează"
+          }
+        }
+      }
+    },
+    "Saved on the band; it reaches Apple Health on the next sync.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salvată pe brățară; ajunge în Sănătate la următoarea sincronizare."
+          }
+        }
+      }
+    },
+    "Saved to Health": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se salvează în Sănătate"
+          }
+        }
+      }
+    },
+    "Scanning": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se caută"
+          }
+        }
+      }
+    },
+    "Score": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scor"
+          }
+        }
+      }
+    },
+    "Seconds": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Secunde"
+          }
+        }
+      }
+    },
+    "Session options": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opțiuni sesiune"
+          }
+        }
+      }
+    },
+    "Set up challenge": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Configurează provocarea"
+          }
+        }
+      }
+    },
+    "Set your age for accurate heart-rate zones": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Setează-ți vârsta pentru zone de puls corecte"
+          }
+        }
+      }
+    },
+    "Set your age in Band > Profile for accurate zones.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Setează-ți vârsta în Brățară > Profil pentru zone corecte."
+          }
+        }
+      }
+    },
+    "Sex": {
+      "shouldTranslate": false
+    },
+    "Share": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Distribuie"
+          }
+        }
+      }
+    },
+    "Share of time in bed spent asleep; 90% or more for full marks": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Proporția din timpul în pat petrecută dormind; 90% sau mai mult pentru punctaj maxim"
+          }
+        }
+      }
+    },
+    "Show month": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arată luna"
+          }
+        }
+      }
+    },
+    "Show week": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arată săptămâna"
+          }
+        }
+      }
+    },
+    "Sleep": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Somn"
+          }
+        }
+      }
+    },
+    "Sleep score": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scor de somn"
+          }
+        }
+      }
+    },
+    "Sleep score (estimate)": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scor de somn (estimare)"
+          }
+        }
+      }
+    },
+    "Sleep stages": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stadii de somn"
+          }
+        }
+      }
+    },
+    "Splits": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Segmente"
+          }
+        }
+      }
+    },
+    "Squats": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Genuflexiuni"
+          }
+        }
+      }
+    },
+    "Stage": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stadiu"
+          }
+        }
+      }
+    },
+    "Stages (Deep/REM split is an estimate)": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stadii (împărțirea Profund/REM e o estimare)"
+          }
+        }
+      }
+    },
+    "Stages per night": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stadii pe noapte"
+          }
+        }
+      }
+    },
+    "Start": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Începe"
+          }
+        }
+      }
+    },
+    "Start a streak today": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Începe o serie azi"
+          }
+        }
+      }
+    },
+    "Start activity": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Începe o activitate"
+          }
+        }
+      }
+    },
+    "Start live heart rate": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pornește pulsul live"
+          }
+        }
+      }
+    },
+    "Start timed session": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Începe o sesiune cronometrată"
+          }
+        }
+      }
+    },
+    "Started before using Pulse Bridge? Bring over your days done and streaks.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ai început înainte de Pulse Bridge? Adu aici zilele făcute și seriile."
+          }
+        }
+      }
+    },
+    "Starting": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pornire"
+          }
+        }
+      }
+    },
+    "Starting the sensor...": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pornește senzorul..."
+          }
+        }
+      }
+    },
+    "Steps": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pași"
+          }
+        }
+      }
+    },
+    "Stop live heart rate": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oprește pulsul live"
+          }
+        }
+      }
+    },
+    "Streak": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serie"
+          }
+        }
+      }
+    },
+    "Stress": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stres"
+          }
+        }
+      }
+    },
+    "Sync": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sincronizare"
+          }
+        }
+      }
+    },
+    "Sync failed": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sincronizarea a eșuat"
+          }
+        }
+      }
+    },
+    "Synced %@": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sincronizat %@"
+          }
+        }
+      }
+    },
+    "Syncing...": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se sincronizează..."
+          }
+        }
+      }
+    },
+    "Target": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Țintă"
+          }
+        }
+      }
+    },
+    "Temperature": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Temperatură"
+          }
+        }
+      }
+    },
+    "The daily target is how many you aim for each day; a day counts as done when every exercise reaches it. Changes start today and past days keep the target they had. With growth on, the target goes up by itself every week.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ținta zilnică este cât îți propui să faci în fiecare zi; o zi contează ca făcută când fiecare exercițiu o atinge. Schimbările încep de azi, iar zilele trecute își păstrează ținta pe care o aveau. Cu creșterea pornită, ținta urcă singură în fiecare săptămână."
+          }
+        }
+      }
+    },
+    "This week": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Săptămâna aceasta"
+          }
+        }
+      }
+    },
+    "This week vs last week": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Săptămâna aceasta față de cea trecută"
+          }
+        }
+      }
+    },
+    "Time": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Timp"
+          }
+        }
+      }
+    },
+    "Time asleep": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Timp de somn"
+          }
+        }
+      }
+    },
+    "Time asleep; 7-9 h for full marks": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Timp de somn; 7-9 h pentru punctaj maxim"
+          }
+        }
+      }
+    },
+    "Time in zone %lld": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Timp în zona %lld"
+          }
+        }
+      }
+    },
+    "Time in zones": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Timp în zone"
+          }
+        }
+      }
+    },
+    "Time to fall asleep": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Timp până la adormire"
+          }
+        }
+      }
+    },
+    "Time to fall asleep; 5-30 min is ideal": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Timp până la adormire; ideal 5-30 min"
+          }
+        }
+      }
+    },
+    "Times your sets and saves a Strength training workout with band heart rate to Apple Health.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cronometrează seturile și salvează în Sănătate un antrenament de forță cu pulsul de la brățară."
+          }
+        }
+      }
+    },
+    "Timing": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Program"
+          }
+        }
+      }
+    },
+    "Today": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Azi"
+          }
+        }
+      }
+    },
+    "Total": {
+      "shouldTranslate": false
+    },
+    "Total sleep": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Somn total"
+          }
+        }
+      }
+    },
+    "Totals": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Totaluri"
+          }
+        }
+      }
+    },
+    "Track a daily goal like push-ups and squats, with streaks and history.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Urmărește un obiectiv zilnic, ca flotări și genuflexiuni, cu serii și istoric."
+          }
+        }
+      }
+    },
+    "Trends": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tendințe"
+          }
+        }
+      }
+    },
+    "Turn on Background App Refresh for Pulse Bridge in Settings to sync without opening the app.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activează Reîmprospătare în fundal pentru Pulse Bridge în Configurări, ca să sincronizeze fără să deschizi aplicația."
+          }
+        }
+      }
+    },
+    "Turn on Precise Location for Pulse Bridge in Settings; approximate location can't measure distance.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activează Localizare precisă pentru Pulse Bridge în Configurări; localizarea aproximativă nu poate măsura distanța."
+          }
+        }
+      }
+    },
+    "Undo": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anulează"
+          }
+        }
+      }
+    },
+    "Undo %lld %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Undo %1$lld %2$@"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anulează %lld %@"
+          }
+        }
+      }
+    },
+    "Undo last set": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anulează ultimul set"
+          }
+        }
+      }
+    },
+    "Unfinished activity": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activitate neterminată"
+          }
+        }
+      }
+    },
+    "Unit": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unitate"
+          }
+        }
+      }
+    },
+    "Up to %@, the day before your first day in the app. Days you complete here add to these.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Până la %@, ziua dinaintea primei zile în aplicație. Zilele pe care le completezi aici se adaugă la acestea."
+          }
+        }
+      }
+    },
+    "Vitals": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Semne vitale"
+          }
+        }
+      }
+    },
+    "Waiting for GPS...": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se așteaptă GPS..."
+          }
+        }
+      }
+    },
+    "Wake-ups (estimated)": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Treziri (estimate)"
+          }
+        }
+      }
+    },
+    "Walk": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plimbare"
+          }
+        }
+      }
+    },
+    "Week": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Săptămână"
+          }
+        }
+      }
+    },
+    "Weight: %lld kg": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Greutate: %lld kg"
+          }
+        }
+      }
+    },
+    "Woke up": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trezit la"
+          }
+        }
+      }
+    },
+    "Written to Health": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scrise în Sănătate"
+          }
+        }
+      }
+    },
+    "You can change targets any time, and let them grow every week.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poți schimba țintele oricând și le poți lăsa să crească în fiecare săptămână."
+          }
+        }
+      }
+    },
+    "Your first kilometre shows here.": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Primul kilometru apare aici."
+          }
+        }
+      }
+    },
+    "Zone": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zonă"
+          }
+        }
+      }
+    },
+    "Zone %lld": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zona %lld"
+          }
+        }
+      }
+    },
+    "Zone %lld · %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Zone %1$lld · %2$@"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zona %lld · %@"
+          }
+        }
+      }
+    },
+    "Zone %lld · %lld-%lld bpm": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Zone %1$lld · %2$lld-%3$lld bpm"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zona %lld · %lld-%lld bpm"
+          }
+        }
+      }
+    },
+    "Zone alerts on": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alerte de zonă pornite"
+          }
+        }
+      }
+    },
+    "Zone alerts on the band": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alerte de zonă pe brățară"
+          }
+        }
+      }
+    },
+    "Zones": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zone"
+          }
+        }
+      }
+    },
+    "about 50%": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "circa 50%"
+          }
+        }
+      }
+    },
+    "all time": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "în total"
+          }
+        }
+      }
+    },
+    "avg %lld bpm": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "medie %lld bpm"
+          }
+        }
+      }
+    },
+    "avg /km": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "medie /km"
+          }
+        }
+      }
+    },
+    "before the app": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "înainte de aplicație"
+          }
+        }
+      }
+    },
+    "best %lld": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "record %lld"
+          }
+        }
+      }
+    },
+    "bpm": {
+      "shouldTranslate": false
+    },
+    "coming out of REM": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "la ieșirea din REM"
+          }
+        }
+      }
+    },
+    "day streak": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "zile la rând"
+          }
+        }
+      }
+    },
+    "done": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "gata"
+          }
+        }
+      }
+    },
+    "easy": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ușor"
+          }
+        }
+      }
+    },
+    "hard": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "greu"
+          }
+        }
+      }
+    },
+    "heart rate": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "pulsul"
+          }
+        }
+      }
+    },
+    "hit": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "reușite"
+          }
+        }
+      }
+    },
+    "i": {
+      "shouldTranslate": false
+    },
+    "km": {
+      "shouldTranslate": false
+    },
+    "max": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "maxim"
+          }
+        }
+      }
+    },
+    "midpoint %@": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "mijloc %@"
+          }
+        }
+      }
+    },
+    "midpoint %@ · usual %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "midpoint %1$@ · usual %2$@"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "mijloc %@ · de obicei %@"
+          }
+        }
+      }
+    },
+    "moderate": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "moderat"
+          }
+        }
+      }
+    },
+    "ms": {
+      "shouldTranslate": false
+    },
+    "no data": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "fără date"
+          }
+        }
+      }
+    },
+    "none": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "niciunul"
+          }
+        }
+      }
+    },
+    "not part of the challenge": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nu face parte din provocare"
+          }
+        }
+      }
+    },
+    "nothing logged": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nimic notat"
+          }
+        }
+      }
+    },
+    "of %@": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "din %@"
+          }
+        }
+      }
+    },
+    "of %lld days": {
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "of %lld day"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "of %lld days"
+                }
+              }
+            }
+          }
+        },
+        "ro": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "din %lld zile"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "din %lld zi"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "din %lld de zile"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "out of deep sleep": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "din somn profund"
+          }
+        }
+      }
+    },
+    "pace /km": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ritm /km"
+          }
+        }
+      }
+    },
+    "partial": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "parțial"
+          }
+        }
+      }
+    },
+    "reps": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "repetări"
+          }
+        }
+      }
+    },
+    "rest": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "repaus"
+          }
+        }
+      }
+    },
+    "resting %lld": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "repaus %lld"
+          }
+        }
+      }
+    },
+    "s": {
+      "comment": "seconds, short",
+      "shouldTranslate": false
+    },
+    "score %lld": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "scor %lld"
+          }
+        }
+      }
+    },
+    "steps": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "pași"
+          }
+        }
+      }
+    },
+    "the band marked awake": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "brățara a marcat treaz"
+          }
+        }
+      }
+    },
+    "today %lld-%lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "today %1$lld-%2$lld"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "azi %lld-%lld"
+          }
+        }
+      }
+    },
+    "typical %@": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "tipic %@"
+          }
+        }
+      }
+    },
+    "under 10%": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sub 10%"
+          }
+        }
+      }
+    },
+    "v": {
+      "shouldTranslate": false
+    },
+    "very easy": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "foarte ușor"
+          }
+        }
+      }
+    },
+    "well above the night's typical heart rate": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "mult peste pulsul obișnuit al nopții"
+          }
+        }
+      }
+    },
+    "💪 Daily challenge · %@": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "💪 Provocarea zilei · %@"
+          }
+        }
+      }
+    },
+    "📅 %lld days done · day %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "📅 %#@n@ · day %2$lld"
+          },
+          "substitutions": {
+            "n": {
+              "argNum": 1,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg day done"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg days done"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "📅 %#@n@ · ziua %2$lld"
+          },
+          "substitutions": {
+            "n": {
+              "argNum": 1,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "few": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg zile făcute"
+                    }
+                  },
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg zi făcută"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg de zile făcute"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "🔥 %lld-day streak": {
+      "localizations": {
+        "ro": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "🔥 Serie de %lld zile"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "🔥 Serie de %lld zi"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "🔥 Serie de %lld de zile"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "🔥 %lld-day streak · best %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "🔥 %1$lld-day streak · best %2$lld"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "🔥 Serie de %#@n@ · record %2$lld"
+          },
+          "substitutions": {
+            "n": {
+              "argNum": 1,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "few": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg zile"
+                    }
+                  },
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg zi"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg de zile"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
     }
   },
-  "version" : "1.0"
+  "version": "1.0"
 }
