@@ -80,7 +80,7 @@ public final class RecordingChannel: CommandChannel {
         do {
             try await base.send(frame)
         } catch {
-            log.note("send failed: \(error.localizedDescription)")
+            log.note("send failed: \(logText(error))")
             throw error
         }
     }
@@ -96,8 +96,12 @@ public final class RecordingChannel: CommandChannel {
             }
             return packet
         } catch {
-            log.note("read failed: \(error.localizedDescription)")
+            log.note("read failed: \(logText(error))")
             throw error
         }
     }
 }
+
+/// Errors for the diagnostics log: our own errors by case name (`noResponse(18)`), never their
+/// translated description; system errors as iOS describes them (domain and code included).
+public func logText(_ error: Error) -> String { String(describing: error) }

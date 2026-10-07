@@ -41,12 +41,12 @@ public enum Insights {
     public static let baselineDays = 30
     static let minimumWeekDays = 4
 
-    public static func make(_ series: [InsightTopic: [Date: Double]], today: Date, calendar: Calendar) -> [Insight] {
-        [restingHeartRate(series[.restingHeartRate], today, calendar),
-         sleep(series[.sleep], today, calendar),
-         hrv(series[.hrv], today, calendar),
-         steps(series[.steps], today, calendar),
-         temperature(series[.temperature], today, calendar)].compactMap { $0 }
+    public static func make(_ series: [InsightTopic: [Date: Double]], today: Date, calendar: Calendar, language: String? = nil) -> [Insight] {
+        [restingHeartRate(series[.restingHeartRate], today, calendar, language),
+         sleep(series[.sleep], today, calendar, language),
+         hrv(series[.hrv], today, calendar, language),
+         steps(series[.steps], today, calendar, language),
+         temperature(series[.temperature], today, calendar, language)].compactMap { $0 }
     }
 
     /// Average of the last 7 days against the 7 before; `endingYesterday` for totals still growing today.
@@ -80,31 +80,38 @@ public enum Insights {
 
     // MARK: Rules
 
-    private static func restingHeartRate(_ series: [Date: Double]?, _ today: Date, _ calendar: Calendar) -> Insight? {
+    private static func restingHeartRate(_ series: [Date: Double]?, _ today: Date, _ calendar: Calendar, _ language: String?) -> Insight? {
         guard let (last, usual) = lastAgainstUsual(series, today, calendar) else { return nil }
         let diff = Int(last.rounded()) - Int(usual.rounded())
         guard abs(diff) >= 2 else { return nil }
-        return Insight(topic: .restingHeartRate,
-                       text: "Resting heart rate \(Int(last.rounded())) bpm, \(abs(diff)) \(diff < 0 ? "below" : "above") your recent average",
-                       direction: diff < 0 ? .better : .worse)
+        let bpm = Int(last.rounded())
+        let text = diff < 0
+            ? L("Resting heart rate \(bpm) bpm, \(abs(diff)) below your recent average", language: language)
+            : L("Resting heart rate \(bpm) bpm, \(abs(diff)) above your recent average", language: language)
+        return Insight(topic: .restingHeartRate, text: text, direction: diff < 0 ? .better : .worse)
     }
 
-    private static func hrv(_ series: [Date: Double]?, _ today: Date, _ calendar: Calendar) -> Insight? {
+    private static func hrv(_ series: [Date: Double]?, _ today: Date, _ calendar: Calendar, _ language: String?) -> Insight? {
         guard let (last, usual) = lastAgainstUsual(series, today, calendar), usual > 0 else { return nil }
         let percent = Int(((last - usual) / usual * 100).rounded())
         guard abs(percent) >= 10 else { return nil }
-        return Insight(topic: .hrv, text: "HRV \(Int(last.rounded())) ms, \(abs(percent))% \(percent > 0 ? "higher" : "lower") than usual",
-                       direction: percent > 0 ? .better : .worse)
+        let ms = Int(last.rounded())
+        let text = percent > 0
+            ? L("HRV \(ms) ms, \(abs(percent))% higher than usual", language: language)
+            : L("HRV \(ms) ms, \(abs(percent))% lower than usual", language: language)
+        return Insight(topic: .hrv, text: text, direction: percent > 0 ? .better : .worse)
     }
 
     /// A warmer night than usual is an early sign of illness, overtraining or a heavy evening.
-    private static func temperature(_ series: [Date: Double]?, _ today: Date, _ calendar: Calendar) -> Insight? {
+    private static func temperature(_ series: [Date: Double]?, _ today: Date, _ calendar: Calendar, _ language: String?) -> Insight? {
         guard let (last, usual) = lastAgainstUsual(series, today, calendar) else { return nil }
         let diff = last - usual
         guard abs(diff) >= 0.3 else { return nil }      // the raw difference; rounding is for the text only
-        return Insight(topic: .temperature,
-                       text: "Night temperature \(abs(diff).formatted(.number.precision(.fractionLength(1)))) °C \(diff > 0 ? "above" : "below") your usual",
-                       direction: diff > 0 ? .worse : .neutral)
+        let degrees = abs(diff).formatted(.number.precision(.fractionLength(1)))
+        let text = diff > 0
+            ? L("Night temperature \(degrees) °C above your usual", language: language)
+            : L("Night temperature \(degrees) °C below your usual", language: language)
+        return Insight(topic: .temperature, text: text, direction: diff > 0 ? .worse : .neutral)
     }
 
     /// "+0.3", "-0.3", or "0.0" (never "-0.0") in the locale's decimal style.
@@ -114,20 +121,24 @@ public enum Insights {
         return rounded > 0 ? "+" + text : rounded < 0 ? "-" + text : text
     }
 
-    private static func sleep(_ series: [Date: Double]?, _ today: Date, _ calendar: Calendar) -> Insight? {
+    private static func sleep(_ series: [Date: Double]?, _ today: Date, _ calendar: Calendar, _ language: String?) -> Insight? {
         guard let series, let week = week(series, today: today, calendar: calendar) else { return nil }
         let minutes = Int(week.change.rounded())
         guard abs(minutes) >= 15 else { return nil }
-        return Insight(topic: .sleep, text: "You slept \(abs(minutes)) min \(minutes > 0 ? "more" : "less") per night than the week before",
-                       direction: minutes > 0 ? .better : .worse)
+        let text = minutes > 0
+            ? L("You slept \(abs(minutes)) min more per night than the week before", language: language)
+            : L("You slept \(abs(minutes)) min less per night than the week before", language: language)
+        return Insight(topic: .sleep, text: text, direction: minutes > 0 ? .better : .worse)
     }
 
-    private static func steps(_ series: [Date: Double]?, _ today: Date, _ calendar: Calendar) -> Insight? {
+    private static func steps(_ series: [Date: Double]?, _ today: Date, _ calendar: Calendar, _ language: String?) -> Insight? {
         guard let series, let week = week(series, today: today, calendar: calendar, endingYesterday: true), week.last > 0 else { return nil }
         let percent = Int((week.change / week.last * 100).rounded())
         guard abs(percent) >= 10 else { return nil }
-        return Insight(topic: .steps, text: "Steps \(percent > 0 ? "up" : "down") \(abs(percent))% on the week before",
-                       direction: percent > 0 ? .better : .worse)
+        let text = percent > 0
+            ? L("Steps up \(abs(percent))% on the week before", language: language)
+            : L("Steps down \(abs(percent))% on the week before", language: language)
+        return Insight(topic: .steps, text: text, direction: percent > 0 ? .better : .worse)
     }
 
     // MARK: Helpers

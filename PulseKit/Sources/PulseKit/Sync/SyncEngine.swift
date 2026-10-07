@@ -82,7 +82,7 @@ public final class SyncEngine {
             } catch is CancellationError {
                 throw CancellationError()
             } catch {
-                Self.log.error("\(String(describing: kind)) failed: \(error.localizedDescription)")
+                Self.log.error("\(String(describing: kind)) failed: \(logText(error))")
                 report.failures[kind] = error.localizedDescription
             }
         }

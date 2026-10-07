@@ -154,7 +154,7 @@ final class SyncCoordinator {
             phase = .idle
         } catch {
             phase = .failed(error.localizedDescription)
-            diagnostics.note("connect failed: \(error.localizedDescription)")
+            diagnostics.note("connect failed: \(logText(error))")
         }
     }
 
@@ -205,7 +205,7 @@ final class SyncCoordinator {
             diagnostics.note("sync skipped: busy")
         } catch {
             phase = .failed(error.localizedDescription)
-            diagnostics.note("sync failed: \(error.localizedDescription)")
+            diagnostics.note("sync failed: \(logText(error))")
             if !toHealth && !quiet { manualSyncFeedback = SyncFeedback(count: manualSyncFeedback.count + 1, succeeded: false) }
         }
         await startLive()
@@ -236,7 +236,7 @@ final class SyncCoordinator {
             phase = .idle
         } catch {
             phase = .idle
-            diagnostics.note("background sync: band not in range (\(error.localizedDescription))")
+            diagnostics.note("background sync: band not in range (\(logText(error)))")
             return
         }
         let now = Date()
@@ -453,7 +453,7 @@ final class SyncCoordinator {
             do {
                 try store.save(session.recorder, id: session.id)
             } catch {
-                diagnostics.note("activity save failed, kept for recovery: \(error.localizedDescription)")
+                diagnostics.note("activity save failed, kept for recovery: \(logText(error))")
                 return
             }
         }
@@ -470,7 +470,7 @@ final class SyncCoordinator {
         do {
             try store.save(finished, id: id)
         } catch {
-            diagnostics.note("recovered activity save failed, kept for next launch: \(error.localizedDescription)")
+            diagnostics.note("recovered activity save failed, kept for next launch: \(logText(error))")
             return
         }
         cachedHeartRateProfile = nil
@@ -502,7 +502,7 @@ final class SyncCoordinator {
                 try? store.markActivityExported([stored])
                 diagnostics.note("activity exported to Health")
             } catch {
-                diagnostics.note("activity export failed: \(error.localizedDescription)")
+                diagnostics.note("activity export failed: \(logText(error))")
             }
         }
         await challenge.exportPendingSessions()

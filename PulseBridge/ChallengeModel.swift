@@ -147,7 +147,7 @@ final class ChallengeModel {
                 try? store.markSessionExported(session.id)
                 note?("challenge session exported to Health")
             } catch {
-                note?("challenge session export failed: \(error.localizedDescription)")
+                note?("challenge session export failed: \(logText(error))")
             }
         }
     }

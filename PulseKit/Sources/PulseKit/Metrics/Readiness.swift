@@ -39,24 +39,24 @@ public enum Readiness {
         var contributors: [ReadinessContributor] = []
         if let (last, usual) = hrv.values {
             contributors.append(ReadinessContributor(kind: .hrv, score: scale(last / usual, zeroAt: 0.75, fullAt: 1.05),
-                                                     detail: "\(Int(last.rounded())) ms · usual \(Int(usual.rounded()))"))
+                                                     detail: L("\(Int(last.rounded())) ms · usual \(Int(usual.rounded()))")))
         }
         if let (last, usual) = resting.values {
             contributors.append(ReadinessContributor(kind: .restingHeartRate, score: scale(last - usual, zeroAt: 8, fullAt: -1),
-                                                     detail: "\(Int(last.rounded())) bpm · usual \(Int(usual.rounded()))"))
+                                                     detail: L("\(Int(last.rounded())) bpm · usual \(Int(usual.rounded()))")))
         }
         guard !contributors.isEmpty else {
             return .calibrating(nightsNeeded: max(0, baselineNights - max(hrv.earlier, resting.earlier)))
         }
         if let sleepScore {
-            contributors.append(ReadinessContributor(kind: .sleep, score: min(100, max(0, sleepScore)), detail: "Sleep score \(sleepScore)"))
+            contributors.append(ReadinessContributor(kind: .sleep, score: min(100, max(0, sleepScore)), detail: L("Sleep score \(sleepScore)")))
         }
         if let activity = activityBalance(series[.steps], day, calendar) { contributors.append(activity) }
         let temperature = lastAndBaseline(series[.temperature], day, calendar)
         if let (last, usual) = temperature.values {
             // A warmer night lowers readiness: 100 up to +0.2 °C, 0 at +1.0 °C. Cooler doesn't count against it.
             contributors.append(ReadinessContributor(kind: .temperature, score: scale(last - usual, zeroAt: 1.0, fullAt: 0.2),
-                                                     detail: "\(Insights.signedCelsius(last - usual)) °C vs usual"))
+                                                     detail: L("\(Insights.signedCelsius(last - usual)) °C vs usual")))
         }
 
         let total = contributors.reduce(0) { $0 + weights[$1.kind]! }
@@ -88,7 +88,7 @@ public enum Readiness {
         let ratio = steps / usual
         let score = ratio <= 1.3 ? 100 : max(40, Int((100 - (ratio - 1.3) / 1.2 * 60).rounded()))
         return ReadinessContributor(kind: .activity, score: score,
-                                    detail: "\(Int(steps.rounded()).formatted()) steps · usual \(Int(usual.rounded()).formatted())")
+                                    detail: L("\(Int(steps.rounded()).formatted()) steps · usual \(Int(usual.rounded()).formatted())"))
     }
 
     /// 0 at `zeroAt`, 100 at `fullAt`, linear between, clamped (works in either direction).
@@ -100,20 +100,20 @@ public enum Readiness {
     private static func reason(_ contributors: [ReadinessContributor], _ score: Int,
                                hrv: (Double, Double)?, resting: (Double, Double)?, temperature: (Double, Double)?) -> String {
         guard let weakest = contributors.min(by: { $0.score < $1.score }), weakest.score < 70 else {
-            return score >= 85 ? "You're recovered" : "Steady"
+            return score >= 85 ? L("You're recovered") : L("Steady")
         }
         switch weakest.kind {
         case .hrv:
             let percent = hrv.map { Int(((1 - $0.0 / $0.1) * 100).rounded()) } ?? 0
-            return "HRV \(percent)% below your usual"
+            return L("HRV \(percent)% below your usual")
         case .restingHeartRate:
             let above = resting.map { Int(($0.0 - $0.1).rounded()) } ?? 0
-            return "Resting heart rate \(above) above your usual"
+            return L("Resting heart rate \(above) above your usual")
         case .temperature:
             let above = (temperature.map { $0.0 - $0.1 } ?? 0).formatted(.number.precision(.fractionLength(1)))
-            return "Temperature \(above) °C above your usual"
-        case .sleep: return "Short or restless sleep"
-        case .activity: return "Big activity day yesterday"
+            return L("Temperature \(above) °C above your usual")
+        case .sleep: return L("Short or restless sleep")
+        case .activity: return L("Big activity day yesterday")
         }
     }
 }

@@ -15,9 +15,9 @@ public enum PulseError: Error, Equatable, LocalizedError {
 
     public var errorDescription: String? {
         switch self {
-        case .notConnected: "The band disconnected."
-        case .noResponse(let op): String(format: "The band did not answer command 0x%02X.", op)
-        case .busy: "A sync is already running."
+        case .notConnected: L("The band disconnected.")
+        case .noResponse(let op): L("The band did not answer command \(String(format: "0x%02X", op)).")
+        case .busy: L("A sync is already running.")
         }
     }
 }

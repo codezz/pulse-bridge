@@ -22,13 +22,13 @@ public enum BandError: LocalizedError {
 
     public var errorDescription: String? {
         switch self {
-        case .bluetoothOff: "Bluetooth is off. Turn it on in Control Center."
-        case .bluetoothUnauthorized: "Bluetooth access is not allowed. Enable it in Settings > Pulse Bridge."
-        case .bluetoothUnsupported: "Bluetooth is not available on this device."
-        case .notPaired: "No band paired yet."
-        case .bandForgotten: "This iPhone no longer knows the band. Use Forget band, then pair it again."
-        case .writeTimedOut: "The band stopped responding."
-        case .notFound: "Band not found. Keep it close to the phone and make sure it is charged."
+        case .bluetoothOff: L("Bluetooth is off. Turn it on in Control Center.")
+        case .bluetoothUnauthorized: L("Bluetooth access is not allowed. Enable it in Settings > Pulse Bridge.")
+        case .bluetoothUnsupported: L("Bluetooth is not available on this device.")
+        case .notPaired: L("No band paired yet.")
+        case .bandForgotten: L("This iPhone no longer knows the band. Use Forget band, then pair it again.")
+        case .writeTimedOut: L("The band stopped responding.")
+        case .notFound: L("Band not found. Keep it close to the phone and make sure it is charged.")
         }
     }
 }
@@ -359,7 +359,7 @@ extension BandClient: CBCentralManagerDelegate {
                                     advertisementData: [String: Any], rssi RSSI: NSNumber) {
         let band = DiscoveredBand(
             id: peripheral.identifier,
-            name: advertisementData[CBAdvertisementDataLocalNameKey] as? String ?? peripheral.name ?? "Unknown band",
+            name: advertisementData[CBAdvertisementDataLocalNameKey] as? String ?? peripheral.name ?? L("Unknown band"),
             rssi: RSSI.intValue)
         MainActor.assumeIsolated { found(band) }
     }

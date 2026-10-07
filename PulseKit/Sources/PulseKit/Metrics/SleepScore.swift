@@ -30,12 +30,12 @@ public struct SleepScore: Sendable, Equatable {
     public let usualMidpoint: Int?
     public var label: String { Self.label(for: value) }
 
-    public static func label(for value: Int) -> String {
+    public static func label(for value: Int, language: String? = nil) -> String {
         switch value {
-        case 85...: "Optimal"
-        case 70..<85: "Good"
-        case 60..<70: "Fair"
-        default: "Pay attention"
+        case 85...: L("Optimal", language: language)
+        case 70..<85: L("Good", language: language)
+        case 60..<70: L("Fair", language: language)
+        default: L("Pay attention", language: language)
         }
     }
 

@@ -1,32 +1,62 @@
 {
-  "sourceLanguage" : "en",
-  "strings" : {
-    "%lld days" : {
-      "localizations" : {
-        "en" : {
-          "variations" : {
-            "plural" : {
-              "one" : { "stringUnit" : { "state" : "translated", "value" : "%lld day" } },
-              "other" : { "stringUnit" : { "state" : "translated", "value" : "%lld days" } }
+  "sourceLanguage": "en",
+  "strings": {
+    "%lld days ago": {
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld day ago"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld days ago"
+                }
+              }
             }
           }
         },
-        "ro" : {
-          "variations" : {
-            "plural" : {
-              "few" : { "stringUnit" : { "state" : "translated", "value" : "%lld zile" } },
-              "one" : { "stringUnit" : { "state" : "translated", "value" : "%lld zi" } },
-              "other" : { "stringUnit" : { "state" : "translated", "value" : "%lld de zile" } }
+        "ro": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "acum %lld zile"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "acum %lld zi"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "acum %lld de zile"
+                }
+              }
             }
           }
         }
       }
     },
-    "Steady" : {
-      "localizations" : {
-        "ro" : { "stringUnit" : { "state" : "translated", "value" : "Constant" } }
+    "Steady": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Constant"
+          }
+        }
       }
     }
   },
-  "version" : "1.0"
+  "version": "1.0"
 }
