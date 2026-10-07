@@ -49,21 +49,21 @@ struct ProgressRing<Label: View>: View {
 extension Metric {
     var title: String {
         switch self {
-        case .heartRate: "Heart rate"
-        case .restingHeartRate: "Resting heart rate"
-        case .hrv: "HRV"
-        case .spo2: "Blood oxygen"
-        case .steps: "Steps"
-        case .temperature: "Temperature"
+        case .heartRate: String(localized: "Heart rate")
+        case .restingHeartRate: String(localized: "Resting heart rate")
+        case .hrv: String(localized: "HRV")
+        case .spo2: String(localized: "Blood oxygen")
+        case .steps: String(localized: "Steps")
+        case .temperature: String(localized: "Temperature")
         }
     }
 
     var unit: String {
         switch self {
-        case .heartRate, .restingHeartRate: "bpm"
-        case .hrv: "ms"
+        case .heartRate, .restingHeartRate: String(localized: "bpm")
+        case .hrv: String(localized: "ms")
         case .spo2: "%"
-        case .steps: "steps"
+        case .steps: String(localized: "steps")
         case .temperature: "°C"
         }
     }

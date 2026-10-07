@@ -48,7 +48,7 @@ struct SummaryHeader: View {
         case .failed:
             Text("Sync failed").foregroundStyle(.orange)
         case .idle:
-            Text(coordinator.lastSync.map { "Synced \(RelativeTime.text($0, now: now))" } ?? "Not synced yet")
+            Text(coordinator.lastSync.map { String(localized: "Synced \(RelativeTime.text($0, now: now))") } ?? String(localized: "Not synced yet"))
         }
     }
 }

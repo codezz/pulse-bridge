@@ -6,12 +6,12 @@ import SwiftUI
 
 func zoneName(_ zone: Int) -> String {
     switch zone {
-    case 1: "very easy"
-    case 2: "easy"
-    case 3: "moderate"
-    case 4: "hard"
-    case 5: "max"
-    default: "rest"
+    case 1: String(localized: "very easy")
+    case 2: String(localized: "easy")
+    case 3: String(localized: "moderate")
+    case 4: String(localized: "hard")
+    case 5: String(localized: "max")
+    default: String(localized: "rest")
     }
 }
 
@@ -249,12 +249,12 @@ private struct ActivityLiveView: View {
     }
 
     private func status(_ zone: Int) -> String {
-        guard let target = recorder.targetZone else { return "Zone \(zone) · \(zoneName(zone))" }
-        if zone == target { return "In zone \(target)" }
-        return zone > target ? "Above zone \(target): ease off" : "Below zone \(target): pick it up"
+        guard let target = recorder.targetZone else { return String(localized: "Zone \(zone) · \(zoneName(zone))") }
+        if zone == target { return String(localized: "In zone \(target)") }
+        return zone > target ? String(localized: "Above zone \(target): ease off") : String(localized: "Below zone \(target): pick it up")
     }
 
-    private func stat(_ value: String, _ label: String) -> some View {
+    private func stat(_ value: String, _ label: LocalizedStringResource) -> some View {
         VStack {
             Text(value).font(.title2.bold()).monospacedDigit()
             Text(label).font(.caption).foregroundStyle(.secondary)

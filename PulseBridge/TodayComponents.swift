@@ -18,12 +18,12 @@ struct DayRings {
     }
 
     var rings: [ActivityRings.Ring] {
-        var result = [ActivityRings.Ring(id: "Sleep", progress: sleep, color: Palette.sleep,
-                                         spoken: sleepScore.map { "score \($0)" } ?? "no data"),
-                      ActivityRings.Ring(id: "Steps", progress: steps, color: Palette.steps, spoken: "\(stepCount) steps")]
+        var result = [ActivityRings.Ring(id: String(localized: "Sleep"), progress: sleep, color: Palette.sleep,
+                                         spoken: sleepScore.map { String(localized: "score \($0)") } ?? String(localized: "no data")),
+                      ActivityRings.Ring(id: String(localized: "Steps"), progress: steps, color: Palette.steps, spoken: String(localized: "\(stepCount) steps"))]
         if let challenge {
-            result.append(ActivityRings.Ring(id: "Challenge", progress: challenge, color: Palette.challenge,
-                                             spoken: challenge >= 1 ? "done" : "\(Int((challenge * 100).rounded())) percent"))
+            result.append(ActivityRings.Ring(id: String(localized: "Challenge"), progress: challenge, color: Palette.challenge,
+                                             spoken: challenge >= 1 ? String(localized: "done") : String(localized: "\(Int((challenge * 100).rounded())) percent")))
         }
         return result
     }
@@ -143,7 +143,7 @@ struct TodayHero: View {
         .celebrates(isToday && challenge.history.status(on: day) == .done, context: context)
     }
 
-    private func row(_ title: String, _ color: Color, _ value: String) -> some View {
+    private func row(_ title: LocalizedStringResource, _ color: Color, _ value: String) -> some View {
         VStack(alignment: .leading, spacing: 1) {
             Text(title).font(.caption.bold()).foregroundStyle(color)
             Text(value).font(.headline).monospacedDigit()
@@ -246,16 +246,16 @@ struct VitalsGrid: View {
     var body: some View {
         VStack(spacing: 12) {
             LazyVGrid(columns: columns, spacing: 12) {
-                tile(.restingHeartRate, value: metrics?.restingHeartRate(on: day).map(String.init), caption: "Last night",
+                tile(.restingHeartRate, value: metrics?.restingHeartRate(on: day).map(String.init), caption: String(localized: "Last night"),
                      sparkline: nightly(.restingHeartRate))
-                tile(.hrv, value: metrics?.hrv(on: day).map(String.init), caption: "Last night", sparkline: nightly(.hrv))
+                tile(.hrv, value: metrics?.hrv(on: day).map(String.init), caption: String(localized: "Last night"), sparkline: nightly(.hrv))
                 tile(.spo2, value: metrics?.readings(.spo2, on: day).last.map { Metric.spo2.format($0.value) },
                      caption: metrics?.readings(.spo2, on: day).last.map { $0.date.formatted(date: .omitted, time: .shortened) },
                      sparkline: (metrics?.readings(.spo2, on: day) ?? []).map(\.value))
                 tile(.temperature, value: metrics?.nightTemperature(on: day).map { Metric.temperature.format($0) },
-                     caption: "Last night", sparkline: nightly(.temperature))
+                     caption: String(localized: "Last night"), sparkline: nightly(.temperature))
             }
-            tile(.steps, value: steps.formatted(), caption: "of \(stepGoal.formatted())",
+            tile(.steps, value: steps.formatted(), caption: String(localized: "of \(stepGoal.formatted())"),
                  sparkline: (metrics?.stepsByHour(on: day) ?? []).map(\.value))
         }
     }
@@ -273,7 +273,7 @@ struct VitalsGrid: View {
     private func tile(_ metric: Metric, value: String?, caption: String?, sparkline: [Double]) -> some View {
         NavigationLink(value: SummaryRoute.metric(metric, day: day)) {
             MetricTile(title: metric.title, systemImage: metric.systemImage, color: metric.color, value: value ?? "-",
-                       unit: metric.unit, caption: value == nil ? "No data" : caption, sparkline: sparkline)
+                       unit: metric.unit, caption: value == nil ? String(localized: "No data") : caption, sparkline: sparkline)
         }
         .buttonStyle(.plain)
     }
@@ -286,13 +286,13 @@ enum TodaySection: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .readiness: "Readiness"
-        case .highlights: "Highlights"
-        case .sleep: "Sleep"
-        case .heartRate: "Heart rate"
-        case .vitals: "Vitals"
-        case .challenge: "Daily challenge"
-        case .activities: "Activities"
+        case .readiness: String(localized: "Readiness")
+        case .highlights: String(localized: "Highlights")
+        case .sleep: String(localized: "Sleep")
+        case .heartRate: String(localized: "Heart rate")
+        case .vitals: String(localized: "Vitals")
+        case .challenge: String(localized: "Daily challenge")
+        case .activities: String(localized: "Activities")
         }
     }
 }

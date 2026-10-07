@@ -70,18 +70,18 @@ struct HeartRateCard: View {
     }
 
     private func status(now: Date) -> (text: String, icon: String, color: Color)? {
-        if !connected { return ("Not connected", "antenna.radiowaves.left.and.right.slash", .secondary) }
-        if series.samples.isEmpty { return ("Starting the sensor...", "hourglass", .secondary) }
-        if series.isStale(now: now) { return ("Not on wrist?", "hand.raised", .orange) }
+        if !connected { return (String(localized: "Not connected"), "antenna.radiowaves.left.and.right.slash", .secondary) }
+        if series.samples.isEmpty { return (String(localized: "Starting the sensor..."), "hourglass", .secondary) }
+        if series.isStale(now: now) { return (String(localized: "Not on wrist?"), "hand.raised", .orange) }
         return nil
     }
 
     /// "today 54-118 · resting 58"
     static func subtitle(metrics: DailyMetrics?, today: Date) -> String {
         var parts: [String] = []
-        if let range = metrics?.value(.heartRate, on: today) { parts.append("today \(Int(range.min))-\(Int(range.max))") }
-        if let resting = metrics?.restingHeartRate(on: today) { parts.append("resting \(resting)") }
-        return parts.isEmpty ? "No data today" : parts.joined(separator: " · ")
+        if let range = metrics?.value(.heartRate, on: today) { parts.append(String(localized: "today \(Int(range.min))-\(Int(range.max))")) }
+        if let resting = metrics?.restingHeartRate(on: today) { parts.append(String(localized: "resting \(resting)")) }
+        return parts.isEmpty ? String(localized: "No data today") : parts.joined(separator: " · ")
     }
 
     @ViewBuilder private func chart(now: Date) -> some View {
@@ -197,7 +197,7 @@ struct MeasureRow: View {
         }
     }
 
-    private func button(_ title: String, _ duration: String, _ kind: MeasurementKind) -> some View {
+    private func button(_ title: LocalizedStringResource, _ duration: LocalizedStringResource, _ kind: MeasurementKind) -> some View {
         Button {
             Task { await coordinator.measure(kind) }
         } label: {

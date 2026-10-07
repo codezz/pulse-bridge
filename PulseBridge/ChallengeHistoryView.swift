@@ -73,7 +73,7 @@ private struct ChallengeCalendarCard: View {
     private var calendar: Calendar { .current }
 
     var body: some View {
-        Card(title: showsMonth ? month.formatted(.dateTime.month(.wide).year()) : "This week",
+        Card(title: showsMonth ? month.formatted(.dateTime.month(.wide).year()) : String(localized: "This week"),
              systemImage: "calendar", color: Palette.challenge) {
             grid
             Button {
@@ -160,12 +160,12 @@ private struct ChallengeCalendarCard: View {
         switch kind {
         case .tracked:
             switch history.status(on: day) {
-            case .done: "done"
-            case .partial: "partial"
-            case .none: "nothing logged"
+            case .done: String(localized: "done")
+            case .partial: String(localized: "partial")
+            case .none: String(localized: "nothing logged")
             }
-        case .beforeTracking: "before the app"
-        case .outside: "not part of the challenge"
+        case .beforeTracking: String(localized: "before the app")
+        case .outside: String(localized: "not part of the challenge")
         }
     }
 }
@@ -287,7 +287,7 @@ private struct ExerciseTotalsView: View {
         .navigationTitle(exercise.name)
     }
 
-    private func tile(_ title: String, _ value: Int) -> some View {
+    private func tile(_ title: LocalizedStringResource, _ value: Int) -> some View {
         VStack(spacing: 2) {
             Text(value.formatted()).font(.headline).monospacedDigit().lineLimit(1).minimumScaleFactor(0.6)
             Text(title).font(.caption2).foregroundStyle(.secondary)

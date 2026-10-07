@@ -60,7 +60,7 @@ struct SummaryView: View {
                 .redacted(reason: model.isLoaded ? [] : .placeholder)
             }
             .background(Color(.systemGroupedBackground))
-            .navigationTitle(model.isToday ? "Today" : day.formatted(.dateTime.weekday(.wide).day().month()))
+            .navigationTitle(model.isToday ? String(localized: "Today") : day.formatted(.dateTime.weekday(.wide).day().month()))
             .toolbar {
                 if !model.isToday {
                     Button("Today") { model.select(.now) }
@@ -149,7 +149,7 @@ private struct HeartRateDayCard: View {
     }
 
     private var caption: String {
-        guard let range = metrics?.value(.heartRate, on: day), let last = readings.last else { return "No data" }
+        guard let range = metrics?.value(.heartRate, on: day), let last = readings.last else { return String(localized: "No data") }
         return "\(last.date.formatted(date: .omitted, time: .shortened)) · \(Int(range.min))-\(Int(range.max))"
     }
 }
@@ -174,7 +174,7 @@ private struct SleepCard: View {
                 }
                 StageBar(night: night)
                 HStack {
-                    vital("Resting HR", metrics.restingHeartRate(on: today).map { "\($0) bpm" })
+                    vital("Resting HR", metrics.restingHeartRate(on: today).map { String(localized: "\($0) bpm") })
                     vital("HRV", metrics.hrv(on: today).map { "\($0) ms" })
                 }
             } else {
@@ -184,7 +184,7 @@ private struct SleepCard: View {
         }
     }
 
-    private func vital(_ title: String, _ value: String?) -> some View {
+    private func vital(_ title: LocalizedStringResource, _ value: String?) -> some View {
         VStack(alignment: .leading) {
             Text(value ?? "-").font(.headline)
             Text(title).font(.caption).foregroundStyle(.secondary)

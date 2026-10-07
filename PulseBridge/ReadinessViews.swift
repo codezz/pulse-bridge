@@ -5,11 +5,11 @@ import SwiftUI
 extension ReadinessContributor.Kind {
     var title: String {
         switch self {
-        case .hrv: "HRV balance"
-        case .restingHeartRate: "Resting heart rate"
-        case .sleep: "Sleep"
-        case .activity: "Activity balance"
-        case .temperature: "Body temperature"
+        case .hrv: String(localized: "HRV balance")
+        case .restingHeartRate: String(localized: "Resting heart rate")
+        case .sleep: String(localized: "Sleep")
+        case .activity: String(localized: "Activity balance")
+        case .temperature: String(localized: "Body temperature")
         }
     }
 
@@ -46,8 +46,8 @@ struct ReadinessCard: View {
                     ContributorBars(contributors: score.contributors, compact: true)
                 case .calibrating(let nights):
                     Text(nights > 0
-                         ? "Calibrating: \(nights) more \(nights == 1 ? "night" : "nights") with the band to learn your baseline."
-                         : isToday ? "Not enough data from last night yet. Sync after waking up." : "Not enough data for this night.")
+                         ? String(localized: "Calibrating: \(nights) more nights with the band to learn your baseline.")
+                         : isToday ? String(localized: "Not enough data from last night yet. Sync after waking up.") : String(localized: "Not enough data for this night."))
                         .font(.subheadline).foregroundStyle(.secondary)
                 case nil:
                     Text("-").foregroundStyle(.secondary)

@@ -2,8 +2,8 @@ import PulseKit
 import SwiftUI
 
 extension ExerciseUnit {
-    var short: String { self == .reps ? "reps" : "s" }
-    var title: String { self == .reps ? "Reps" : "Seconds" }
+    var short: String { self == .reps ? String(localized: "reps") : String(localized: "s", comment: "seconds, short") }
+    var title: String { self == .reps ? String(localized: "Reps") : String(localized: "Seconds") }
 }
 
 /// "Monday" for Calendar weekday 2.
@@ -99,7 +99,7 @@ struct ChallengeCard: View {
 struct ChallengeSetupView: View {
     let model: ChallengeModel
     @Environment(\.dismiss) private var dismiss
-    @State private var rows: [Row] = [Row(name: "Push-ups", target: 60), Row(name: "Squats", target: 60)]
+    @State private var rows: [Row] = [Row(name: String(localized: "Push-ups"), target: 60), Row(name: String(localized: "Squats"), target: 60)]
 
     struct Row: Identifiable {
         let id = UUID()
@@ -258,7 +258,7 @@ struct ChallengeStatsLine: View {
         }
     }
 
-    private func stat(_ symbol: String, _ value: String, _ note: String) -> some View {
+    private func stat(_ symbol: String, _ value: String, _ note: LocalizedStringResource) -> some View {
         HStack(spacing: 4) {
             Image(systemName: symbol).foregroundStyle(Palette.challenge).font(.caption)
             Text(value).font(.subheadline.bold()).monospacedDigit()
@@ -359,7 +359,7 @@ struct ChallengeSessionBar: View {
             Label(model.sessionHeartRate.map { "\($0)" } ?? "-", systemImage: "heart.fill")
                 .font(.subheadline.bold()).monospacedDigit()
                 .foregroundStyle(Palette.heart)
-                .accessibilityLabel(model.sessionHeartRate.map { "Heart rate \($0)" } ?? "No heart rate")
+                .accessibilityLabel(model.sessionHeartRate.map { String(localized: "Heart rate \($0)") } ?? String(localized: "No heart rate"))
             Spacer(minLength: 0)
             Menu {
                 Button("Cancel session", systemImage: "xmark", role: .destructive) { model.cancelSession() }
@@ -442,7 +442,7 @@ struct ChallengeSettingsView: View {
         guard let change = exercise.latestChange, change.autoStep != 0, let weekday = change.autoWeekday else {
             return "\(target) \(exercise.unit.short)"
         }
-        return "\(target) \(exercise.unit.short), +\(change.autoStep) \(weekdayName(weekday))s"
+        return String(localized: "\(target) \(exercise.unit.short), +\(change.autoStep) every \(weekdayName(weekday))")
     }
 }
 
@@ -463,9 +463,9 @@ struct BaselineEditor: View {
         Form {
             Section {
                 DatePicker("Challenge started", selection: $start, in: ...firstTracked, displayedComponents: .date)
-                numberRow("Days done", $daysDone)
-                numberRow("Streak", $streak)
-                numberRow("Best streak", $best)
+                numberRow(String(localized: "Days done"), $daysDone)
+                numberRow(String(localized: "Streak"), $streak)
+                numberRow(String(localized: "Best streak"), $best)
             } footer: {
                 Text("Up to \(dayBefore.formatted(date: .abbreviated, time: .omitted)), the day before your first day in the app. Days you complete here add to these.")
             }
@@ -585,76 +585,14 @@ struct ExerciseEditor: View {
     }
 }
 
-/// The image sent to the friends' group: today's numbers, the streak and the last 7 days.
-struct ChallengeShareImage: View {
-    let model: ChallengeModel
-
-    var body: some View {
-        let history = model.history
-        VStack(alignment: .leading, spacing: 14) {
-            Text("Daily challenge · \(Date.now.formatted(date: .abbreviated, time: .omitted))")
-                .font(.headline).foregroundStyle(.white)
-            ForEach(model.exercises) { exercise in
-                let progress = history.progress(of: exercise, on: .now)
-                HStack {
-                    Text(exercise.name).foregroundStyle(.white)
-                    Spacer()
-                    Text("\(progress.total) / \(progress.target)\(progress.isDone ? " ✓" : "")")
-                        .font(.title3.bold()).foregroundStyle(progress.isDone ? .green : .orange)
-                }
-            }
-            Text("🔥 \(history.streak(today: .now))-day streak").font(.subheadline.bold()).foregroundStyle(.white)
-            HStack(spacing: 8) {
-                ForEach((0..<7).reversed(), id: \.self) { back in
-                    let day = Calendar.current.date(byAdding: .day, value: -back, to: .now)!
-                    Circle().fill(statusColor(history.status(on: day))).frame(width: 18, height: 18)
-                }
-            }
-            Text("Pulse Bridge").font(.caption2).foregroundStyle(.white.opacity(0.5))
-        }
-        .padding(24)
-        .frame(width: 360)
-        .background(Color(red: 0.11, green: 0.11, blue: 0.12))
-    }
-}
-
-/// Green done, light green partial, gray nothing: shared by the share image and the history calendar.
-func statusColor(_ status: DayStatus) -> Color {
-    switch status {
-    case .done: .green
-    case .partial: .green.opacity(0.35)
-    case .none: .gray.opacity(0.25)
-    }
-}
-
+/// Shares today's numbers as a text message, in the app's language.
 struct ChallengeShareButton: View {
     let model: ChallengeModel
-    @State private var image: Image?
 
     var body: some View {
-        Group {
-            if let image {
-                ShareLink(item: image, preview: SharePreview("Daily challenge", image: image)) {
-                    Image(systemName: "square.and.arrow.up")
-                }
-                .accessibilityLabel("Share")
-            } else {
-                // Same size while the image renders, so the buttons don't jump.
-                Image(systemName: "square.and.arrow.up").foregroundStyle(.tertiary).accessibilityHidden(true)
-            }
+        ShareLink(item: ChallengeShareText.make(model.history.shareSummary(today: .now))) {
+            Image(systemName: "square.and.arrow.up")
         }
-        .task(id: renderKey) { render() }
-    }
-
-    /// Re-render after a set, a target or name change, or a new day.
-    private var renderKey: String {
-        let exercises = model.exercises.map { "\($0.name):\($0.latestChange?.target ?? 0)" }.joined(separator: ",")
-        return "\(model.history.sets.count)|\(exercises)|\(Calendar.current.startOfDay(for: .now).timeIntervalSince1970)"
-    }
-
-    private func render() {
-        let renderer = ImageRenderer(content: ChallengeShareImage(model: model))
-        renderer.scale = 3
-        image = renderer.uiImage.map { Image(uiImage: $0) }
+        .accessibilityLabel("Share")
     }
 }

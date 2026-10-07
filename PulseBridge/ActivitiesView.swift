@@ -5,11 +5,11 @@ import SwiftUI
 extension WorkoutActivity {
     var title: String {
         switch self {
-        case .running: "Run"
-        case .cycling: "Ride"
-        case .walking: "Walk"
-        case .hiking: "Hike"
-        case .other: "Activity"
+        case .running: String(localized: "Run")
+        case .cycling: String(localized: "Ride")
+        case .walking: String(localized: "Walk")
+        case .hiking: String(localized: "Hike")
+        case .other: String(localized: "Activity")
         }
     }
 
@@ -128,7 +128,7 @@ struct ActivitiesView: View {
                 .compactMap { stored in stored.recorder.map { (stored.id, $0) } }
             error = nil
         } catch {
-            self.error = "Couldn't load data: \(error.localizedDescription)"
+            self.error = String(localized: "Couldn't load data: \(error.localizedDescription)")
         }
     }
 }
@@ -150,10 +150,10 @@ private struct ActivityRow: View {
                     Text("\(workout.start.formatted(date: .omitted, time: .shortened)) - \(workout.end.formatted(date: .omitted, time: .shortened))")
                         .font(.caption).foregroundStyle(.secondary)
                 }
-                Text([workout.durationText, "\(workout.info.steps.formatted()) steps", workout.distanceText, workout.paceText]
+                Text([workout.durationText, String(localized: "\(workout.info.steps.formatted()) steps"), workout.distanceText, workout.paceText]
                         .compactMap { $0 }.joined(separator: " · "))
                     .font(.subheadline)
-                Text([workout.info.heartRate > 0 ? "avg \(workout.info.heartRate) bpm" : nil,
+                Text([workout.info.heartRate > 0 ? String(localized: "avg \(workout.info.heartRate) bpm") : nil,
                       workout.info.calories > 0 ? "\(Int(workout.info.calories)) kcal" : nil]
                         .compactMap { $0 }.joined(separator: " · "))
                     .font(.caption).foregroundStyle(.secondary)

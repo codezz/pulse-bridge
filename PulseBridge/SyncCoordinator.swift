@@ -53,7 +53,7 @@ final class SyncCoordinator {
     private func updateSessionLiveActivity() {
         guard activity == nil else { return }    // a running activity owns the Live Activity
         if let start = challenge.sessionStart {
-            liveActivity.start(kind: .challenge, title: "Daily challenge") { [weak self] in
+            liveActivity.start(kind: .challenge, title: String(localized: "Daily challenge")) { [weak self] in
                 let now = Date()
                 return PulseActivityAttributes.ContentState(
                     timerStart: start, elapsed: now.timeIntervalSince(start), distanceMeters: nil, paceSecondsPerKm: nil,

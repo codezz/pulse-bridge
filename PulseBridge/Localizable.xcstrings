@@ -30,6 +30,9 @@
     "%@ asleep" : {
 
     },
+    "%@ steps" : {
+
+    },
     "%@ this week" : {
 
     },
@@ -52,6 +55,16 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "%1$@ · %2$@ steps · %3$@"
+          }
+        }
+      }
+    },
+    "%@ · %@ vs usual" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · %2$@ vs usual"
           }
         }
       }
@@ -152,12 +165,12 @@
         }
       }
     },
-    "%lld / %lld%@" : {
+    "%lld %@, +%lld every %@" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "%1$lld / %2$lld%3$@"
+            "value" : "%1$lld %2$@, +%3$lld every %4$@"
           }
         }
       }
@@ -178,6 +191,16 @@
     "%lld in the last 7 days" : {
 
     },
+    "%lld min awake · %lld wake-ups" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld min awake · %2$lld wake-ups"
+          }
+        }
+      }
+    },
     "%lld of %lld days done" : {
       "localizations" : {
         "en" : {
@@ -191,8 +214,34 @@
     "%lld of 100" : {
 
     },
+    "%lld percent" : {
+
+    },
     "%lld percent of days hit" : {
 
+    },
+    "%lld steps" : {
+
+    },
+    "%lld years · female · %lld cm · %lld kg" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld years · female · %2$lld cm · %3$lld kg"
+          }
+        }
+      }
+    },
+    "%lld years · male · %lld cm · %lld kg" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld years · male · %2$lld cm · %3$lld kg"
+          }
+        }
+      }
     },
     "%lld%%" : {
 
@@ -250,7 +299,19 @@
     "/%lld" : {
 
     },
+    "13-23%" : {
+
+    },
+    "20-25%" : {
+
+    },
     "3 buzzes above the zone, 2 below" : {
+
+    },
+    "30 s" : {
+
+    },
+    "75 s" : {
 
     },
     "85+ Optimal · 70-84 Good · 60-69 Fair · under 60 Pay attention" : {
@@ -262,10 +323,19 @@
     "About %lld%% per day" : {
 
     },
+    "Above zone %lld" : {
+
+    },
+    "Above zone %lld: ease off" : {
+
+    },
     "Activities" : {
 
     },
     "Activity" : {
+
+    },
+    "Activity balance" : {
 
     },
     "Add %lld" : {
@@ -282,6 +352,9 @@
       }
     },
     "Add exercise" : {
+
+    },
+    "All time" : {
 
     },
     "Allow location in Settings to record distance and the route." : {
@@ -324,6 +397,15 @@
     "Averages" : {
 
     },
+    "Avg/day" : {
+
+    },
+    "Awake" : {
+
+    },
+    "Awake time and wake-ups over 5 min; 20 min or less and 0-1 wake-ups is ideal" : {
+
+    },
     "Awakenings" : {
 
     },
@@ -351,27 +433,44 @@
     "Before the app" : {
 
     },
+    "Below zone %lld" : {
+
+    },
+    "Below zone %lld: pick it up" : {
+
+    },
     "Below zone 1" : {
+
+    },
+    "Best streak" : {
 
     },
     "Birth year" : {
 
     },
+    "Blood oxygen" : {
+
+    },
     "Blood pressure (estimate)" : {
+
+    },
+    "Bluetooth not allowed" : {
+
+    },
+    "Bluetooth off" : {
+
+    },
+    "Bluetooth unavailable" : {
+
+    },
+    "Body temperature" : {
 
     },
     "Both update automatically from your band data." : {
 
     },
-    "Calibrating: %lld more %@ with the band to learn your baseline." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Calibrating: %1$lld more %2$@ with the band to learn your baseline."
-          }
-        }
-      }
+    "Calibrating: %lld more nights with the band to learn your baseline." : {
+
     },
     "Cancel" : {
 
@@ -397,10 +496,19 @@
     "Collecting data: a reading is saved at each connection and sync." : {
 
     },
+    "Connected" : {
+
+    },
+    "Connecting" : {
+
+    },
     "Connecting..." : {
 
     },
     "Contributors" : {
+
+    },
+    "Core" : {
 
     },
     "Couldn't load data: %@" : {
@@ -412,10 +520,10 @@
     "Custom amount" : {
 
     },
-    "Daily challenge" : {
+    "Daily average" : {
 
     },
-    "Daily challenge · %@" : {
+    "Daily challenge" : {
 
     },
     "Daily target: %lld %@" : {
@@ -428,7 +536,22 @@
         }
       }
     },
+    "Daily totals (stored only)" : {
+
+    },
     "Day" : {
+
+    },
+    "Days done" : {
+
+    },
+    "Deep" : {
+
+    },
+    "Deep share of sleep (band estimate); 16% or more is typical" : {
+
+    },
+    "Deep sleep" : {
 
     },
     "Default until 3 nights of sleep data exist." : {
@@ -553,6 +676,9 @@
     "HRV (average asleep)" : {
 
     },
+    "HRV balance" : {
+
+    },
     "Health data since" : {
 
     },
@@ -568,6 +694,9 @@
     "Heart rate %lld" : {
 
     },
+    "Heart rate checks" : {
+
+    },
     "Height: %lld cm" : {
 
     },
@@ -577,6 +706,9 @@
     "Highlights" : {
 
     },
+    "Hike" : {
+
+    },
     "Hour" : {
 
     },
@@ -584,6 +716,9 @@
 
     },
     "In bed" : {
+
+    },
+    "In zone %lld" : {
 
     },
     "In zone %lld: %@" : {
@@ -608,7 +743,13 @@
     "Last 14 days" : {
 
     },
+    "Last night" : {
+
+    },
     "Last sync" : {
+
+    },
+    "Latency" : {
 
     },
     "Live" : {
@@ -635,16 +776,25 @@
     "Max heart rate" : {
 
     },
+    "Measurement stopped." : {
+
+    },
     "Measuring %@... keep still" : {
 
     },
     "Median of the last 14 nights." : {
 
     },
+    "Middle of your sleep vs your last 14 nights; within 30 min is ideal" : {
+
+    },
     "Min" : {
 
     },
     "Minutes" : {
+
+    },
+    "Month" : {
 
     },
     "More for %@" : {
@@ -668,6 +818,9 @@
     "Night" : {
 
     },
+    "Night average (asleep)" : {
+
+    },
     "Night vitals" : {
 
     },
@@ -683,10 +836,16 @@
     "No data" : {
 
     },
+    "No data today" : {
+
+    },
     "No heart rate" : {
 
     },
     "No heart-rate readings during the night" : {
+
+    },
+    "No reading. Wear the band snug and keep still." : {
 
     },
     "No sleep data" : {
@@ -701,6 +860,9 @@
     "Not allowed in Health" : {
 
     },
+    "Not connected" : {
+
+    },
     "Not enough data for this night." : {
 
     },
@@ -708,6 +870,9 @@
 
     },
     "Not enough data yet" : {
+
+    },
+    "Not on wrist?" : {
 
     },
     "Not synced yet" : {
@@ -723,6 +888,9 @@
 
     },
     "On" : {
+
+    },
+    "On the next automatic sync" : {
 
     },
     "Open Health" : {
@@ -755,13 +923,22 @@
     "Progress before the app" : {
 
     },
-    "Pulse Bridge" : {
-
-    },
     "Pulse Bridge diagnostics" : {
 
     },
     "Pulse One" : {
+
+    },
+    "Push-ups" : {
+
+    },
+    "REM" : {
+
+    },
+    "REM share of sleep (band estimate); 21-40% is typical" : {
+
+    },
+    "REM sleep" : {
 
     },
     "Range" : {
@@ -786,7 +963,19 @@
     "Recorded with GPS" : {
 
     },
+    "Regularity" : {
+
+    },
     "Remove" : {
+
+    },
+    "Reps" : {
+
+    },
+    "Restfulness" : {
+
+    },
+    "Resting HR" : {
 
     },
     "Resting heart rate" : {
@@ -813,13 +1002,22 @@
     "Saved to Health" : {
 
     },
+    "Scanning" : {
+
+    },
     "Score" : {
+
+    },
+    "Seconds" : {
 
     },
     "Session options" : {
 
     },
     "Set up challenge" : {
+
+    },
+    "Set your age for accurate heart-rate zones" : {
 
     },
     "Set your age in Band > Profile for accurate zones." : {
@@ -829,6 +1027,9 @@
 
     },
     "Share" : {
+
+    },
+    "Share of time in bed spent asleep; 90% or more for full marks" : {
 
     },
     "Show month" : {
@@ -850,6 +1051,9 @@
 
     },
     "Splits" : {
+
+    },
+    "Squats" : {
 
     },
     "Stage" : {
@@ -879,10 +1083,19 @@
     "Started before using Pulse Bridge? Bring over your days done and streaks." : {
 
     },
+    "Starting" : {
+
+    },
+    "Starting the sensor..." : {
+
+    },
     "Steps" : {
 
     },
     "Stop live heart rate" : {
+
+    },
+    "Streak" : {
 
     },
     "Stress" : {
@@ -909,6 +1122,9 @@
     "The daily target is how many you aim for each day; a day counts as done when every exercise reaches it. Changes start today and past days keep the target they had. With growth on, the target goes up by itself every week." : {
 
     },
+    "This week" : {
+
+    },
     "This week vs last week" : {
 
     },
@@ -916,6 +1132,9 @@
 
     },
     "Time asleep" : {
+
+    },
+    "Time asleep; 7-9 h for full marks" : {
 
     },
     "Time in zone %lld" : {
@@ -927,6 +1146,9 @@
     "Time to fall asleep" : {
 
     },
+    "Time to fall asleep; 5-30 min is ideal" : {
+
+    },
     "Times your sets and saves a Strength training workout with band heart rate to Apple Health." : {
 
     },
@@ -934,6 +1156,12 @@
 
     },
     "Today" : {
+
+    },
+    "Total" : {
+
+    },
+    "Total sleep" : {
 
     },
     "Totals" : {
@@ -988,6 +1216,9 @@
     "Walk" : {
 
     },
+    "Week" : {
+
+    },
     "Weight: %lld kg" : {
 
     },
@@ -1038,26 +1269,161 @@
     "Zones" : {
 
     },
+    "about 50%" : {
+
+    },
     "all time" : {
+
+    },
+    "avg %lld bpm" : {
+
+    },
+    "avg /km" : {
+
+    },
+    "before the app" : {
+
+    },
+    "best %lld" : {
 
     },
     "bpm" : {
 
     },
+    "coming out of REM" : {
+
+    },
+    "day streak" : {
+
+    },
+    "done" : {
+
+    },
+    "easy" : {
+
+    },
+    "hard" : {
+
+    },
+    "heart rate" : {
+
+    },
+    "hit" : {
+
+    },
     "i" : {
+
+    },
+    "km" : {
+
+    },
+    "max" : {
+
+    },
+    "midpoint %@" : {
+
+    },
+    "midpoint %@ · usual %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "midpoint %1$@ · usual %2$@"
+          }
+        }
+      }
+    },
+    "moderate" : {
 
     },
     "ms" : {
 
     },
+    "no data" : {
+
+    },
     "none" : {
 
+    },
+    "not part of the challenge" : {
+
+    },
+    "nothing logged" : {
+
+    },
+    "of %@" : {
+
+    },
+    "of %lld days" : {
+
+    },
+    "out of deep sleep" : {
+
+    },
+    "pace /km" : {
+
+    },
+    "partial" : {
+
+    },
+    "reps" : {
+
+    },
+    "rest" : {
+
+    },
+    "resting %lld" : {
+
+    },
+    "s" : {
+      "comment" : "seconds, short"
+    },
+    "score %lld" : {
+
+    },
+    "steps" : {
+
+    },
+    "the band marked awake" : {
+
+    },
+    "today %lld-%lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "today %1$lld-%2$lld"
+          }
+        }
+      }
     },
     "typical %@" : {
 
     },
+    "under 10%" : {
+
+    },
     "v" : {
 
+    },
+    "very easy" : {
+
+    },
+    "well above the night's typical heart rate" : {
+
+    },
+    "💪 Daily challenge · %@" : {
+
+    },
+    "📅 %lld days done · day %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "📅 %1$lld days done · day %2$lld"
+          }
+        }
+      }
     },
     "🔥 %lld-day streak" : {
 

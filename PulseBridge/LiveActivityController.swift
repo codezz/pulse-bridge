@@ -88,9 +88,9 @@ extension ActivitySession {
         var status: String?
         if let zone {
             if let target = recorder.targetZone {
-                status = zone == target ? "In zone \(target)" : zone > target ? "Above zone \(target)" : "Below zone \(target)"
+                status = zone == target ? String(localized: "In zone \(target)") : zone > target ? String(localized: "Above zone \(target)") : String(localized: "Below zone \(target)")
             } else {
-                status = zone == 0 ? "Below zone 1" : "Zone \(zone)"
+                status = zone == 0 ? String(localized: "Below zone 1") : String(localized: "Zone \(zone)")
             }
         }
         return PulseActivityAttributes.ContentState(

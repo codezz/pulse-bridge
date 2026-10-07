@@ -73,12 +73,12 @@ struct MetricDetailView: View {
 
     /// HRV and resting HR are values of the night (D-1 18:00 to D 12:00), not of the calendar day.
     private var averageLabel: String {
-        guard range == .day else { return "Daily average" }
+        guard range == .day else { return String(localized: "Daily average") }
         switch metric {
-        case .hrv, .temperature: return "Night average (asleep)"
-        case .restingHeartRate: return "Night"
-        case .heartRate, .spo2: return "Average"
-        case .steps: return "Total"
+        case .hrv, .temperature: return String(localized: "Night average (asleep)")
+        case .restingHeartRate: return String(localized: "Night")
+        case .heartRate, .spo2: return String(localized: "Average")
+        case .steps: return String(localized: "Total")
         }
     }
 
@@ -159,7 +159,7 @@ struct MetricDetailView: View {
             insight = metric.insightTopic.flatMap { topicInsight($0, service: service, day: day) }
             error = nil
         } catch {
-            self.error = "Couldn't load data: \(error.localizedDescription)"
+            self.error = String(localized: "Couldn't load data: \(error.localizedDescription)")
         }
     }
 }

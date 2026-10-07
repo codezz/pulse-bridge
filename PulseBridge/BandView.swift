@@ -12,8 +12,11 @@ struct BandView: View {
     private var band: BandClient { coordinator.band }
 
     private var profileSummary: String {
-        guard let p = coordinator.profile else { return "Set your age for accurate heart-rate zones" }
-        return "\(p.age(at: .now, calendar: .current)) years · \(p.sex == .male ? "male" : "female") · \(p.heightCm) cm · \(p.weightKg) kg"
+        guard let p = coordinator.profile else { return String(localized: "Set your age for accurate heart-rate zones") }
+        let age = p.age(at: .now, calendar: .current)
+        return p.sex == .male
+            ? String(localized: "\(age) years · male · \(p.heightCm) cm · \(p.weightKg) kg")
+            : String(localized: "\(age) years · female · \(p.heightCm) cm · \(p.weightKg) kg")
     }
 
     var body: some View {
@@ -149,7 +152,7 @@ private struct BatteryCard: View {
                 .chartYScale(domain: 0...100)
                 .foregroundStyle(.green)
                 .frame(height: 120)
-                Text(BatteryDrain.perDay(readings).map { "About \(Int($0.rounded()))% per day" } ?? "Collecting data for the daily estimate")
+                Text(BatteryDrain.perDay(readings).map { String(localized: "About \(Int($0.rounded()))% per day") } ?? String(localized: "Collecting data for the daily estimate"))
                     .font(.caption).foregroundStyle(.secondary)
             }
         }
@@ -178,7 +181,7 @@ private struct BandCard: View {
     /// Health only gets data from the automatic hourly sync.
     private func healthExport(now: Date) -> String {
         guard let last = coordinator.lastHealthExport, let next = coordinator.nextHealthExport else {
-            return "On the next automatic sync"
+            return String(localized: "On the next automatic sync")
         }
         return "\(RelativeTime.text(last, now: now)) · next around \(next.formatted(date: .omitted, time: .shortened))"
     }
@@ -260,7 +263,7 @@ private struct ReportRows: View {
 
 extension LiveFeed.MeasurementState {
     var problem: String {
-        if case .interrupted = self { "Measurement stopped." } else { "No reading. Wear the band snug and keep still." }
+        if case .interrupted = self { String(localized: "Measurement stopped.") } else { String(localized: "No reading. Wear the band snug and keep still.") }
     }
 }
 
@@ -268,7 +271,7 @@ extension MeasurementKind {
     var title: String {
         switch self {
         case .hrv: "HRV"
-        case .heartRate: "heart rate"
+        case .heartRate: String(localized: "heart rate")
         }
     }
 }
@@ -276,14 +279,14 @@ extension MeasurementKind {
 extension BandClient.State {
     var label: String {
         switch self {
-        case .unknown: "Starting"
-        case .poweredOff: "Bluetooth off"
-        case .unauthorized: "Bluetooth not allowed"
-        case .unsupported: "Bluetooth unavailable"
-        case .disconnected: "Not connected"
-        case .scanning: "Scanning"
-        case .connecting: "Connecting"
-        case .connected: "Connected"
+        case .unknown: String(localized: "Starting")
+        case .poweredOff: String(localized: "Bluetooth off")
+        case .unauthorized: String(localized: "Bluetooth not allowed")
+        case .unsupported: String(localized: "Bluetooth unavailable")
+        case .disconnected: String(localized: "Not connected")
+        case .scanning: String(localized: "Scanning")
+        case .connecting: String(localized: "Connecting")
+        case .connected: String(localized: "Connected")
         }
     }
 }
@@ -291,15 +294,15 @@ extension BandClient.State {
 extension HistoryKind {
     var title: String {
         switch self {
-        case .activity: "Activity"
-        case .continuousHR: "Heart rate"
-        case .spotHR: "Heart rate checks"
-        case .hrv: "HRV"
-        case .spo2: "Blood oxygen"
-        case .sleep: "Sleep"
-        case .dailyTotals: "Daily totals (stored only)"
-        case .workout: "Activities"
-        case .temperature: "Temperature"
+        case .activity: String(localized: "Activity")
+        case .continuousHR: String(localized: "Heart rate")
+        case .spotHR: String(localized: "Heart rate checks")
+        case .hrv: String(localized: "HRV")
+        case .spo2: String(localized: "Blood oxygen")
+        case .sleep: String(localized: "Sleep")
+        case .dailyTotals: String(localized: "Daily totals (stored only)")
+        case .workout: String(localized: "Activities")
+        case .temperature: String(localized: "Temperature")
         }
     }
 }

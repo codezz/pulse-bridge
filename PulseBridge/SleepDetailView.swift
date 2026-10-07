@@ -154,14 +154,15 @@ struct SleepDetailView: View {
         switch contributor {
         case .totalSleep: return hoursAndMinutes(night.asleep)
         case .efficiency: return percent(night.efficiency)
-        case .restfulness: return "\(night.awakeAfterOnset) min awake · \(night.longAwakenings) wake-ups"
+        case .restfulness: return String(localized: "\(night.awakeAfterOnset) min awake · \(night.longAwakenings) wake-ups")
         case .rem: return percent(night.share(.rem))
         case .deep: return percent(night.share(.deep))
         case .latency: return "\(night.latency) min"
         case .regularity:
             let mid = night.midpoint.formatted(date: .omitted, time: .shortened)
-            guard let usual = score.usualMidpoint else { return "midpoint \(mid)" }
-            return "midpoint \(mid) · usual \(String(format: "%02d:%02d", usual / 60, usual % 60))"
+            guard let usual = score.usualMidpoint else { return String(localized: "midpoint \(mid)") }
+            let usualText = String(format: "%02d:%02d", usual / 60, usual % 60)
+            return String(localized: "midpoint \(mid) · usual \(usualText)")
         }
     }
 
@@ -230,7 +231,7 @@ struct SleepDetailView: View {
         guard let night else { return "-" }
         let value = "\(Metric.temperature.format(night)) °C"
         guard let temperature else { return value }
-        return "\(value) · \(Insights.signedCelsius(temperature.last - temperature.usual)) vs usual"
+        return String(localized: "\(value) · \(Insights.signedCelsius(temperature.last - temperature.usual)) vs usual")
     }
 
     private func load() {
@@ -242,7 +243,7 @@ struct SleepDetailView: View {
             temperature = Insights.usual(series[.temperature], today: day, calendar: .current)
             error = nil
         } catch {
-            self.error = "Couldn't load data: \(error.localizedDescription)"
+            self.error = String(localized: "Couldn't load data: \(error.localizedDescription)")
         }
     }
 }
@@ -270,10 +271,10 @@ private struct ScoreInfo: View {
 extension EstimatedWakeUp.Reason {
     var text: String {
         switch self {
-        case .outOfREM: "coming out of REM"
-        case .awake: "the band marked awake"
-        case .outOfDeepSleep: "out of deep sleep"
-        case .highHeartRate: "well above the night's typical heart rate"
+        case .outOfREM: String(localized: "coming out of REM")
+        case .awake: String(localized: "the band marked awake")
+        case .outOfDeepSleep: String(localized: "out of deep sleep")
+        case .highHeartRate: String(localized: "well above the night's typical heart rate")
         }
     }
 }

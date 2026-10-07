@@ -6,7 +6,7 @@ extension Metric {
 }
 
 extension InsightTopic {
-    var title: String { metric?.title ?? "Time asleep" }
+    var title: String { metric?.title ?? String(localized: "Time asleep") }
 
     func format(_ value: Double) -> String {
         switch self {
