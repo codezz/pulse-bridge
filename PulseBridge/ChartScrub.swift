@@ -18,7 +18,7 @@ struct ScrubPoint: Equatable {
 
     /// A weekly bar: rule in the middle of the week, "58 bpm · week of 28 Sep".
     static func week(_ start: Date, _ value: String) -> ScrubPoint {
-        ScrubPoint(date: start.addingTimeInterval(3.5 * 86400), label: "\(value) · week of \(start.formatted(.dateTime.day().month(.abbreviated)))")
+        ScrubPoint(date: start.addingTimeInterval(3.5 * 86400), label: String(localized: "\(value) · week of \(start.formatted(.dateTime.day().month(.abbreviated)))"))
     }
 
     /// A daily bar: rule in the middle of the day, "7h 12m · Fri 3 Oct".

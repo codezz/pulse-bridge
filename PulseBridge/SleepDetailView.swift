@@ -184,7 +184,7 @@ struct SleepDetailView: View {
                 }
                 .chartForegroundStyleScale(domain: SleepStage.chartOrder.map(\.title),
                                            range: SleepStage.chartOrder.map(\.color))
-                .chartScrub(nights.map { .day($0.day, "\(hoursAndMinutes($0.night.asleep)) · score \($0.score.value)") })
+                .chartScrub(nights.map { .day($0.day, String(localized: "\(hoursAndMinutes($0.night.asleep)) · score \($0.score.value)")) })
                 .frame(height: 200)
             }
             Section("Averages") {

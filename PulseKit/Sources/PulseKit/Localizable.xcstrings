@@ -1,18 +1,68 @@
 {
   "sourceLanguage": "en",
   "strings": {
-    "%@ steps · usual %@": {
+    "%@ steps · usual %@ %lld": {
       "localizations": {
         "en": {
           "stringUnit": {
-            "state": "new",
-            "value": "%1$@ steps · usual %2$@"
+            "state": "translated",
+            "value": "%1$@ %#@n@ · usual %2$@"
+          },
+          "substitutions": {
+            "n": {
+              "argNum": 3,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "step"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "steps"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "ro": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ pași · de obicei %@"
+            "value": "%1$@ %#@n@ · de obicei %2$@"
+          },
+          "substitutions": {
+            "n": {
+              "argNum": 3,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "few": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "pași"
+                    }
+                  },
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "pas"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "de pași"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }

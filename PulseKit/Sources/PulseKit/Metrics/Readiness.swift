@@ -88,7 +88,7 @@ public enum Readiness {
         let ratio = steps / usual
         let score = ratio <= 1.3 ? 100 : max(40, Int((100 - (ratio - 1.3) / 1.2 * 60).rounded()))
         return ReadinessContributor(kind: .activity, score: score,
-                                    detail: L("\(Int(steps.rounded()).formatted()) steps · usual \(Int(usual.rounded()).formatted())"))
+                                    detail: L("\(Int(steps.rounded()).formatted()) steps · usual \(Int(usual.rounded()).formatted()) \(Int(steps.rounded()))"))
     }
 
     /// 0 at `zeroAt`, 100 at `fullAt`, linear between, clamped (works in either direction).

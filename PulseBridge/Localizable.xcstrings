@@ -13,6 +13,16 @@
     "%@ /km": {
       "shouldTranslate": false
     },
+    "%@ a day": {
+      "localizations": {
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ pe zi"
+          }
+        }
+      }
+    },
     "%@ asleep": {
       "localizations": {
         "ro": {
@@ -23,12 +33,69 @@
         }
       }
     },
-    "%@ steps": {
+    "%@ steps %lld": {
+      "comment": "Formatted count, then the count again only to pick the plural form",
       "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %#@n@"
+          },
+          "substitutions": {
+            "n": {
+              "argNum": 2,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "step"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "steps"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
         "ro": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ pași"
+            "value": "%1$@ %#@n@"
+          },
+          "substitutions": {
+            "n": {
+              "argNum": 2,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "few": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "pași"
+                    }
+                  },
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "pas"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "de pași"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -100,11 +167,75 @@
     "%@ · %lld%%": {
       "shouldTranslate": false
     },
+    "%@ · next around %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@ · next around %2$@"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · următoarea în jur de %@"
+          }
+        }
+      }
+    },
+    "%@ · score %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@ · score %2$lld"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · scor %lld"
+          }
+        }
+      }
+    },
+    "%@ · week of %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@ · week of %2$@"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · săptămâna din %@"
+          }
+        }
+      }
+    },
     "%@%@": {
       "shouldTranslate": false
     },
     "%@, %@": {
       "shouldTranslate": false
+    },
+    "%@, +%lld every %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@, +%2$lld every %3$@"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, +%lld în fiecare %@"
+          }
+        }
+      }
     },
     "%@, last 14 days against the daily target": {
       "localizations": {
@@ -132,56 +263,56 @@
         }
       }
     },
-    "%@: %lld of %lld %@": {
+    "%@: %lld of %@": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "new",
-            "value": "%1$@: %2$lld of %3$lld %4$@"
+            "value": "%1$@: %2$lld of %3$@"
           }
         },
         "ro": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@: %lld din %lld %@"
+            "value": "%@: %lld din %@"
+          }
+        }
+      }
+    },
+    "%@: %lld of %@, %lld to go": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@: %2$lld of %3$@, %4$lld to go"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: %lld din %@, mai sunt %lld"
+          }
+        }
+      }
+    },
+    "%@: %lld of %@, done": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@: %2$lld of %3$@, done"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: %lld din %@, gata"
           }
         }
       }
     },
     "%lld": {
       "shouldTranslate": false
-    },
-    "%lld %@ a day": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "new",
-            "value": "%1$lld %2$@ a day"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld %@ pe zi"
-          }
-        }
-      }
-    },
-    "%lld %@, +%lld every %@": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "new",
-            "value": "%1$lld %2$@, +%3$lld every %4$@"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld %@, +%lld în fiecare %@"
-          }
-        }
-      }
     },
     "%lld bpm": {
       "shouldTranslate": false
@@ -397,6 +528,56 @@
           }
         }
       }
+    },
+    "%lld reps": {
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld rep"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld reps"
+                }
+              }
+            }
+          }
+        },
+        "ro": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld repetări"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld repetare"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld de repetări"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld s": {
+      "comment": "seconds, short",
+      "shouldTranslate": false
     },
     "%lld steps": {
       "localizations": {
@@ -1348,18 +1529,12 @@
         }
       }
     },
-    "Daily target: %lld %@": {
+    "Daily target: %@": {
       "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "new",
-            "value": "Daily target: %1$lld %2$@"
-          }
-        },
         "ro": {
           "stringUnit": {
             "state": "translated",
-            "value": "Țintă zilnică: %lld %@"
+            "value": "Țintă zilnică: %@"
           }
         }
       }

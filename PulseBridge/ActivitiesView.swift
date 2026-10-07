@@ -155,7 +155,8 @@ private struct ActivityRow: View {
                     Text("\(workout.start.formatted(date: .omitted, time: .shortened)) - \(workout.end.formatted(date: .omitted, time: .shortened))")
                         .font(.caption).foregroundStyle(.secondary)
                 }
-                Text([workout.durationText, String(localized: "\(workout.info.steps.formatted()) steps"), workout.distanceText, workout.paceText]
+                Text([workout.durationText, String(localized: "\(workout.info.steps.formatted()) steps \(workout.info.steps)",
+                                      comment: "Formatted count, then the count again only to pick the plural form"), workout.distanceText, workout.paceText]
                         .compactMap { $0 }.joined(separator: " · "))
                     .font(.subheadline)
                 Text([workout.info.heartRate > 0 ? String(localized: "avg \(workout.info.heartRate) bpm") : nil,

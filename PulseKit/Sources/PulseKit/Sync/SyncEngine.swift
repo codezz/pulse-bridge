@@ -8,13 +8,27 @@ public protocol HealthWriter: AnyObject {
     func save(_ samples: [HealthSample]) async throws -> Set<HealthMetric>
 }
 
+/// An error in a sync report: the message for the screen (app language) and the text for the
+/// diagnostics log (English, see `logText`).
+public struct SyncFailure: Sendable, Equatable, CustomStringConvertible {
+    public let message: String
+    public let log: String
+
+    public init(_ error: Error) {
+        message = error.localizedDescription
+        log = logText(error)
+    }
+
+    public var description: String { log }
+}
+
 public struct SyncReport: Sendable, Equatable {
     public var newRecords: [HistoryKind: Int] = [:]
     public var dropped = 0
     public var exportedSamples = 0
     public var notAllowed: Set<HealthMetric> = []
-    public var failures: [HistoryKind: String] = [:]
-    public var exportError: String?
+    public var failures: [HistoryKind: SyncFailure] = [:]
+    public var exportError: SyncFailure?
     /// False for a band-only sync: new records wait in the export queue for the next full sync.
     public var exportedToHealth = false
     /// UTC offset (seconds) the band clock was set to in this sync. Pass it to the next sync.
@@ -83,7 +97,7 @@ public final class SyncEngine {
                 throw CancellationError()
             } catch {
                 Self.log.error("\(String(describing: kind)) failed: \(logText(error))")
-                report.failures[kind] = error.localizedDescription
+                report.failures[kind] = SyncFailure(error)
             }
         }
         if exportToHealth {
@@ -97,7 +111,7 @@ public final class SyncEngine {
     public func exportToHealth() async -> SyncReport {
         var report = SyncReport()
         guard !isRunning else {
-            report.exportError = PulseError.busy.localizedDescription
+            report.exportError = SyncFailure(PulseError.busy)
             return report
         }
         isRunning = true
@@ -140,7 +154,7 @@ public final class SyncEngine {
             report.exportedSamples = done.reduce(0) { $0 + $1.1.count }
             report.notAllowed = notAllowed
         } catch {
-            report.exportError = error.localizedDescription
+            report.exportError = SyncFailure(error)
         }
     }
 }

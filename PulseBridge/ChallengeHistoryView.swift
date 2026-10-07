@@ -322,7 +322,7 @@ private struct DaySheet: View {
                             Text("Nothing logged").foregroundStyle(.secondary)
                         }
                         ForEach(Array(sets.enumerated()), id: \.offset) { _, set in
-                            LabeledContent(set.date.formatted(date: .omitted, time: .shortened), value: "\(set.count) \(exercise.unit.short)")
+                            LabeledContent(set.date.formatted(date: .omitted, time: .shortened), value: exercise.unit.count(set.count))
                         }
                     }
                 }

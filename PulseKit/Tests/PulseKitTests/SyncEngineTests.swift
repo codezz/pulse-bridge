@@ -48,6 +48,15 @@ struct SyncEngineTests {
         #expect(report.newRecords[.spo2] == 1)
     }
 
+    /// The diagnostics log gets the error by name, whatever language the screen shows it in.
+    @Test func failureKeepsAnEnglishLogText() async throws {
+        let channel = FakeChannel(respond: bandResponder(Self.band, silent: [.hrv]))
+        let report = try await engine.sync(over: channel, serial: "S")
+        let failure = try #require(report.failures[.hrv])
+        #expect(failure.log.hasPrefix("noResponse("))
+        #expect(failure.message == PulseError.noResponse(HistoryKind.hrv.rawValue).localizedDescription)
+    }
+
     @Test func deniedMetricStaysPendingUntilAllowed() async throws {
         let channel = FakeChannel(respond: bandResponder(Self.band))
         health.denied = [.heartRate]

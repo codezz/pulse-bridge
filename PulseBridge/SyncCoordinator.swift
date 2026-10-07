@@ -271,11 +271,11 @@ final class SyncCoordinator {
     /// One line per sync for the diagnostics log.
     private static func summary(_ report: SyncReport) -> String {
         let new = HistoryKind.syncOrder.map { "\($0)=\(report.newRecords[$0] ?? 0)" }.joined(separator: " ")
-        let failures = report.failures.map { "\($0.key): \($0.value)" }.sorted().joined(separator: "; ")
+        let failures = report.failures.map { "\($0.key): \($0.value.log)" }.sorted().joined(separator: "; ")
         var parts = ["new \(new)", "dropped \(report.dropped)"]
         if report.exportedToHealth { parts.append("Health \(report.exportedSamples)") }
         if !report.notAllowed.isEmpty { parts.append("not allowed \(report.notAllowed.map(\.rawValue).sorted())") }
-        if let error = report.exportError { parts.append("Health error \(error)") }
+        if let error = report.exportError { parts.append("Health error \(error.log)") }
         if !failures.isEmpty { parts.append("failed \(failures)") }
         return parts.joined(separator: ", ")
     }
@@ -286,7 +286,7 @@ final class SyncCoordinator {
         isExporting = true
         defer { isExporting = false }
         let report = await engine.exportToHealth()
-        diagnostics.note("Health export: \(report.exportedToHealth ? "\(report.exportedSamples) samples" : report.exportError ?? "failed")")
+        diagnostics.note("Health export: \(report.exportedToHealth ? "\(report.exportedSamples) samples" : report.exportError?.log ?? "failed")")
         lastReport = report
         if report.exportedToHealth {
             let now = Date()

@@ -11,23 +11,28 @@ root = pathlib.Path(__file__).resolve().parents[2]
 KEEP = {
     "%", "%@ - %@", "%@ - %@ · %@", "%@ /km", "%@ · %@", "%@ · %@ · %@ /km", "%@ · %lld / %lld", "%@ · %lld bpm, %@",
     "%@ · %lld%%", "%@%@", "%@, %@", "%lld", "%lld bpm", "%lld%%", "%lld-%lld bpm", "%lld/%lld %@", "+%lld", "+%lld %@",
-    "-", "/%lld", "13-23%", "20-25%", "30 s", "75 s", "HRV", "Km %lld", "LIVE", "Live", "OK", "Pulse One", "REM", "bpm",
+    "-", "/%lld", "%lld s", "13-23%", "20-25%", "30 s", "75 s", "HRV", "Km %lld", "LIVE", "Live", "OK", "Pulse One", "REM", "bpm",
     "i", "km", "ms", "s", "v", "Max", "Min", "Sex", "Total", "Pulse Bridge",
 }
 
 T = {
     # App
     "%@ asleep": "%@ de somn",
-    "%@ steps": "%@ pași",
+    "%@ a day": "%@ pe zi",
+    "%@ · next around %@": "%@ · următoarea în jur de %@",
+    "%@ · score %lld": "%@ · scor %lld",
+    "%@ · week of %@": "%@ · săptămâna din %@",
+    "%@, +%lld every %@": "%@, +%lld în fiecare %@",
+    "%@: %lld of %@": "%@: %lld din %@",
+    "%@: %lld of %@, %lld to go": "%@: %lld din %@, mai sunt %lld",
+    "%@: %lld of %@, done": "%@: %lld din %@, gata",
+    "Daily target: %@": "Țintă zilnică: %@",
     "%@ this week": "%@ săptămâna aceasta",
     "%@ vs last week": "%@ față de săptămâna trecută",
     "%@ · %@ steps · %@": "%@ · %@ pași · %@",
     "%@ · %@ vs usual": "%@ · %@ față de obișnuit",
     "%@, last 14 days against the daily target": "%@, ultimele 14 zile față de ținta zilnică",
     "%@: %lld all time, %lld this week": "%@: %lld în total, %lld săptămâna aceasta",
-    "%@: %lld of %lld %@": "%@: %lld din %lld %@",
-    "%lld %@ a day": "%lld %@ pe zi",
-    "%lld %@, +%lld every %@": "%lld %@, +%lld în fiecare %@",
     "%lld in the last 7 days": "%lld în ultimele 7 zile",
     "%lld of 100": "%lld din 100",
     "%lld of %lld days done": "Zile făcute: %lld din %lld",
@@ -109,7 +114,6 @@ T = {
     "Custom amount": "Altă valoare",
     "Daily average": "Medie zilnică",
     "Daily challenge": "Provocarea zilei",
-    "Daily target: %lld %@": "Țintă zilnică: %lld %@",
     "Daily totals (stored only)": "Totaluri zilnice (doar stocate)",
     "Day": "Zi",
     "Days done": "Zile făcute",
@@ -378,7 +382,6 @@ T = {
     "Not yet": "Încă nu",
     "None": "Niciuna",
     # PulseKit
-    "%@ steps · usual %@": "%@ pași · de obicei %@",
     "%@ °C vs usual": "%@ °C față de obișnuit",
     "%lld bpm · usual %lld": "%lld bpm · de obicei %lld",
     "%lld h ago": "acum %lld h",
@@ -425,6 +428,7 @@ T = {
 # Plurals on the only number: (en one, en other) or None, (ro one, ro few, ro other).
 P = {
     "%lld steps": (("%lld step", "%lld steps"), ("%lld pas", "%lld pași", "%lld de pași")),
+    "%lld reps": (("%lld rep", "%lld reps"), ("%lld repetare", "%lld repetări", "%lld de repetări")),
     "%lld days ago": (("%lld day ago", "%lld days ago"), ("acum %lld zi", "acum %lld zile", "acum %lld de zile")),
     "Calibrating: %lld more nights with the band to learn your baseline.": (
         ("Calibrating: %lld more night with the band to learn your baseline.", "Calibrating: %lld more nights with the band to learn your baseline."),
@@ -439,6 +443,10 @@ P = {
 
 # Plurals on one of several numbers: arg number, (en one, other) or None, ro template with %#@n@, ro (one, few, other).
 S = {
+    # A formatted count ("1.234"), then the count again only to pick the noun's plural form.
+    "%@ steps %lld": (2, ("%1$@ %#@n@", ("step", "steps")), ("%1$@ %#@n@", ("pas", "pași", "de pași"))),
+    "%@ steps · usual %@ %lld": (3, ("%1$@ %#@n@ · usual %2$@", ("step", "steps")),
+                                 ("%1$@ %#@n@ · de obicei %2$@", ("pas", "pași", "de pași"))),
     "📅 %lld days done · day %lld": (1, ("📅 %#@n@ · day %2$lld", ("%arg day done", "%arg days done")),
                                      ("📅 %#@n@ · ziua %2$lld", ("%arg zi făcută", "%arg zile făcute", "%arg de zile făcute"))),
     "🔥 %lld-day streak · best %lld": (1, None, ("🔥 Serie de %#@n@ · record %2$lld", ("%arg zi", "%arg zile", "%arg de zile"))),
@@ -508,6 +516,8 @@ missing = []
 for name in catalogs:
     path = root / name
     data = json.loads(path.read_text())
+    # Texts the code no longer uses (the catalogs are generated from the code and this file).
+    data["strings"] = {k: e for k, e in data["strings"].items() if e.get("extractionState") != "stale"}
     for key, entry in data["strings"].items():
         if not apply(entry, key):
             missing.append(f"{name}: {key!r}")

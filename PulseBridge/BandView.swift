@@ -183,7 +183,7 @@ private struct BandCard: View {
         guard let last = coordinator.lastHealthExport, let next = coordinator.nextHealthExport else {
             return String(localized: "On the next automatic sync")
         }
-        return "\(RelativeTime.text(last, now: now)) · next around \(next.formatted(date: .omitted, time: .shortened))"
+        return String(localized: "\(RelativeTime.text(last, now: now)) · next around \(next.formatted(date: .omitted, time: .shortened))")
     }
     @Environment(\.openURL) private var openURL
     private var band: BandClient { coordinator.band }
@@ -250,7 +250,7 @@ private struct ReportRows: View {
     var body: some View {
         ForEach(HistoryKind.syncOrder, id: \.self) { kind in
             if let failure = report.failures[kind] {
-                LabeledContent(kind.title, value: failure).foregroundStyle(.red)
+                LabeledContent(kind.title, value: failure.message).foregroundStyle(.red)
             } else if let count = report.newRecords[kind], count > 0 {
                 LabeledContent(kind.title, value: "+\(count)")
             }
@@ -262,7 +262,7 @@ private struct ReportRows: View {
             LabeledContent("Not allowed in Health", value: report.notAllowed.map(\.rawValue).sorted().joined(separator: ", "))
         }
         if let error = report.exportError {
-            LabeledContent("Health error", value: error).foregroundStyle(.red)
+            LabeledContent("Health error", value: error.message).foregroundStyle(.red)
         }
     }
 }

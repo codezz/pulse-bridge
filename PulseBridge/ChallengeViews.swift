@@ -4,6 +4,11 @@ import SwiftUI
 extension ExerciseUnit {
     var short: String { self == .reps ? String(localized: "reps") : String(localized: "s", comment: "seconds, short") }
     var title: String { self == .reps ? String(localized: "Reps") : String(localized: "Seconds") }
+
+    /// "60 reps" / "60 de repetări", "45 s": the count with the unit in its plural form.
+    func count(_ value: Int) -> String {
+        self == .reps ? String(localized: "\(value) reps") : String(localized: "\(value) s", comment: "seconds, short")
+    }
 }
 
 /// "Monday" for Calendar weekday 2.
@@ -79,7 +84,7 @@ struct ChallengeCard: View {
             Text(exercise.name).font(.caption).lineLimit(1)
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(exercise.name): \(progress.total) of \(progress.target) \(exercise.unit.short)")
+        .accessibilityLabel(String(localized: "\(exercise.name): \(progress.total) of \(exercise.unit.count(progress.target))"))
     }
 
     @ViewBuilder private var streakLine: some View {
@@ -116,7 +121,7 @@ struct ChallengeSetupView: View {
                         VStack(alignment: .leading) {
                             TextField("Exercise", text: $row.name)
                             Stepper(value: $row.target, in: 1...1000, step: 5) {
-                                Text("\(row.target) \(row.unit.short) a day")
+                                Text("\(row.unit.count(row.target)) a day")
                             }
                             Picker("Unit", selection: $row.unit) {
                                 ForEach(ExerciseUnit.allCases, id: \.self) { Text($0.title).tag($0) }
@@ -313,8 +318,9 @@ private struct ExerciseLogRow: View {
             .fixedSize()
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(exercise.name): \(progress.total) of \(progress.target) \(exercise.unit.short)"
-                            + (progress.isDone ? ", done" : ", \(progress.target - progress.total) to go"))
+        .accessibilityLabel(progress.isDone
+            ? String(localized: "\(exercise.name): \(progress.total) of \(exercise.unit.count(progress.target)), done")
+            : String(localized: "\(exercise.name): \(progress.total) of \(exercise.unit.count(progress.target)), \(progress.target - progress.total) to go"))
     }
 
     private var controls: some View {
@@ -440,9 +446,9 @@ struct ChallengeSettingsView: View {
     private func targetText(_ exercise: ExerciseInfo) -> String {
         let target = model.history.target(of: exercise, on: .now) ?? 0
         guard let change = exercise.latestChange, change.autoStep != 0, let weekday = change.autoWeekday else {
-            return "\(target) \(exercise.unit.short)"
+            return exercise.unit.count(target)
         }
-        return String(localized: "\(target) \(exercise.unit.short), +\(change.autoStep) every \(weekdayName(weekday))")
+        return String(localized: "\(exercise.unit.count(target)), +\(change.autoStep) every \(weekdayName(weekday))")
     }
 }
 
@@ -540,7 +546,7 @@ struct ExerciseEditor: View {
                         ForEach(ExerciseUnit.allCases, id: \.self) { Text($0.title).tag($0) }
                     }
                 }
-                Stepper(value: $target, in: 1...2000, step: 5) { Text("Daily target: \(target) \(unit.short)") }
+                Stepper(value: $target, in: 1...2000, step: 5) { Text("Daily target: \(unit.count(target))") }
             }
             Section {
                 Toggle("Grow automatically", isOn: $grows)
